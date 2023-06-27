@@ -19,6 +19,8 @@ export const env = createEnv({
    */
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
+
+    NEXT_PUBLIC_TMDB_API: z.string().min(1),
   },
 
   /**
@@ -30,6 +32,7 @@ export const env = createEnv({
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 
     DATABASE_URL: process.env.DATABASE_URL,
+    NEXT_PUBLIC_TMDB_API: process.env.NEXT_PUBLIC_TMDB_API,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
