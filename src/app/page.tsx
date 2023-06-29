@@ -6,7 +6,6 @@ import Image from "next/image"
 
 async function getData() {
   const res = await fetch(
-    // `https://api.themoviedb.org/3/tv/popular?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US`
     `https://api.themoviedb.org/3/movie/now_playing?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US&page=1`
   )
   if (!res.ok) {
