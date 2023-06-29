@@ -1,6 +1,7 @@
 import "~/styles/globals.css"
 import { Inter } from "next/font/google"
 import Image from "next/image"
+import { Search, Bell } from "lucide-react"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -32,6 +33,10 @@ export default function RootLayout({
               <p>Movies</p>
               <p>New & Popular</p>
               <p>My List</p>
+            </div>
+            <div className="flex">
+              <Search />
+              <Bell />
             </div>
           </div>
         </header>
