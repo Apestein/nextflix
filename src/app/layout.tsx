@@ -2,6 +2,9 @@ import "~/styles/globals.css"
 import { Inter } from "next/font/google"
 import Image from "next/image"
 import { Search, Bell } from "lucide-react"
+import { Button } from "~/components/ui/button"
+import { cn } from "~/lib/utils"
+import { ThemeProvider } from "~/components/theme-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -17,31 +20,47 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <header className="flex justify-center">
-          <div className="container flex gap-24 border p-3">
-            <Image
-              src={"netflix-logo.svg"}
-              alt="netflix-logo"
-              width={1024}
-              height={276.74}
-              className="h-auto w-28 transition-opacity hover:opacity-80 active:opacity-100"
-            />
-            <div className="flex gap-3">
-              <p>Home</p>
-              <p>TV Shows</p>
-              <p>Movies</p>
-              <p>New & Popular</p>
-              <p>My List</p>
-            </div>
-            <div className="flex">
-              <Search />
-              <Bell />
-            </div>
-          </div>
-        </header>
-        {children}
+      <body
+        className={cn(
+          "min-h-screen bg-neutral-900 text-slate-50 antialiased",
+          inter.className
+        )}
+      >
+        <ThemeProvider attribute="class" defaultTheme="dark">
+          <Header />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
+  )
+}
+
+function Header() {
+  return (
+    <header className="flex justify-center p-3">
+      <div className="container flex justify-between gap-24 border">
+        <div className="flex items-center gap-12">
+          <Image
+            src={"netflix-logo.svg"}
+            alt="netflix-logo"
+            width={1024}
+            height={276.74}
+            className="h-auto w-28 transition-opacity hover:opacity-80 active:opacity-100"
+          />
+          <div className="flex gap-3">
+            <p>Home</p>
+            <p>TV Shows</p>
+            <p>Movies</p>
+            <p>New & Popular</p>
+            <p>My List</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <Search />
+          <Bell />
+          <Button>Login</Button>
+        </div>
+      </div>
+    </header>
   )
 }

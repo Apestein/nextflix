@@ -3,6 +3,7 @@ import { playingWithNeon } from "~/db/schema"
 import { env } from "~/env.mjs"
 import { type Movie } from "~/types"
 import Image from "next/image"
+import { Button } from "~/components/ui/button"
 
 async function getData() {
   const res = await fetch(
@@ -17,21 +18,48 @@ async function getData() {
 
 export default async function Home() {
   // const res = await db.select().from(playingWithNeon)
-  const data = (await getData()) as { results: Movie[] }
+
+  function getRandomNowPlayingMovie() {
+    const movie = results[Math.floor(Math.random() * results.length)]
+    if (movie) return movie
+    else throw new Error("Error getting random movie.")
+  }
+
+  const { results } = (await getData()) as { results: Movie[] }
+  const randomMovie = getRandomNowPlayingMovie()
   return (
     <main className="flex min-h-screen justify-center">
       <div className="container flex flex-col border">
-        {data.results.map((movie) => (
-          <figure key={movie.id}>
-            <h2>{movie.title}</h2>
-            <Image
-              src={`https://image.tmdb.org/t/p/w500${movie.poster_path ?? ""}`}
-              alt="movie-poster"
-              width={200}
-              height={600}
-            />
-          </figure>
-        ))}
+        <div className="max-w-lg space-y-2 pb-12 pt-24">
+          <p className="text-3xl font-bold md:text-4xl">{randomMovie.title}</p>
+          <div className="flex space-x-2 text-xs font-semibold md:text-sm">
+            <p className="text-green-600">
+              {(randomMovie.vote_average * 100) / 10}% Match
+            </p>
+            <p>{randomMovie.release_date}</p>
+          </div>
+          <p className="line-clamp-4 text-sm text-gray-300 md:text-base">
+            {randomMovie.overview}
+          </p>
+          <div className="space-x-3">
+            <Button>Play</Button>
+            <Button variant="outline">More Info</Button>
+          </div>
+        </div>
+        <div className="flex flex-wrap">
+          {results.map((movie) => (
+            <figure key={movie.id}>
+              <Image
+                src={`https://image.tmdb.org/t/p/w500${
+                  movie.poster_path ?? ""
+                }`}
+                alt="movie-poster"
+                width={200}
+                height={600}
+              />
+            </figure>
+          ))}
+        </div>
       </div>
     </main>
   )
