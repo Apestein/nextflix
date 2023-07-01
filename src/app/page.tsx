@@ -1,11 +1,11 @@
 import { db } from "~/db/client"
 import { playingWithNeon } from "~/db/schema"
 import { env } from "~/env.mjs"
-import { type Movie } from "~/types"
-import Image from "next/image"
+import { type Show } from "~/types"
 import { Button } from "~/components/ui/button"
+import { ShowsCarousel } from "~/components/show-carousel"
 
-async function getData() {
+async function getNowPlaying() {
   const res = await fetch(
     `https://api.themoviedb.org/3/movie/now_playing?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US&page=1`
   )
@@ -19,14 +19,14 @@ async function getData() {
 export default async function Home() {
   // const res = await db.select().from(playingWithNeon)
 
-  function getRandomNowPlayingMovie() {
-    const movie = results[Math.floor(Math.random() * results.length)]
-    if (movie) return movie
-    else throw new Error("Error getting random movie.")
+  function pickRandomShow() {
+    const show = results[Math.floor(Math.random() * results.length)]
+    if (show) return show
+    else throw new Error("Error getting random show.")
   }
 
-  const { results } = (await getData()) as { results: Movie[] }
-  const randomMovie = getRandomNowPlayingMovie()
+  const { results } = (await getNowPlaying()) as { results: Show[] }
+  const randomMovie = pickRandomShow()
   return (
     <main className="flex min-h-screen justify-center">
       <div className="container flex flex-col border">
@@ -46,20 +46,7 @@ export default async function Home() {
             <Button variant="outline">More Info</Button>
           </div>
         </div>
-        <div className="flex flex-wrap">
-          {results.map((movie) => (
-            <figure key={movie.id}>
-              <Image
-                src={`https://image.tmdb.org/t/p/w500${
-                  movie.poster_path ?? ""
-                }`}
-                alt="movie-poster"
-                width={200}
-                height={600}
-              />
-            </figure>
-          ))}
-        </div>
+        <ShowsCarousel shows={results} title="Now Playing" />
       </div>
     </main>
   )
