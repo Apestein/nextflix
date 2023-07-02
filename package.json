@@ -7,7 +7,7 @@
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
-    "introspec": "drizzle-kit introspect:pg",
+    "introspect": "drizzle-kit introspect:pg",
     "generate": "drizzle-kit generate:pg",
     "migrate": "tsx ./src/db/migrate.ts"
   },
@@ -37,7 +37,7 @@
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
     "autoprefixer": "^10.4.14",
-    "drizzle-kit": "^0.19.2",
+    "drizzle-kit": "^0.19.3",
     "eslint": "^8.40.0",
     "eslint-config-next": "^13.4.2",
     "postcss": "^8.4.21",
