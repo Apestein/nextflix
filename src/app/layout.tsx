@@ -49,7 +49,7 @@ function Header() {
             height={276.74}
             className="h-auto w-28 transition-opacity hover:opacity-80 active:opacity-100"
           />
-          <div className="flex gap-3 text-sm">
+          <div className="flex gap-6 text-sm">
             <p>Home</p>
             <p>TV Shows</p>
             <p>Movies</p>
@@ -57,7 +57,7 @@ function Header() {
             <p>My List</p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-6">
           <Search />
           <Bell />
           <Button className="bg-red-600 font-semibold text-white hover:bg-red-700 active:bg-red-800">

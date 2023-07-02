@@ -86,9 +86,10 @@ export const ShowsCarousel = ({ title, shows }: ShowsCarouselProps) => {
                   src={`https://image.tmdb.org/t/p/w500${
                     show.backdrop_path ?? ""
                   }`}
-                  alt="movie-poster"
+                  alt="show-backdrop"
                   width={240}
                   height={135}
+                  className="cursor-pointer transition-transform hover:scale-110"
                 />
               ))}
             </div>

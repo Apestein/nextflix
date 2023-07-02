@@ -6,28 +6,17 @@ import { Button } from "~/components/ui/button"
 import { ShowsCarousel } from "~/components/show-carousel"
 import { Play } from "lucide-react"
 
-async function getNowPlaying() {
-  const res = await fetch(
-    `https://api.themoviedb.org/3/movie/now_playing?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US&page=1`
-  )
-  if (!res.ok) {
-    throw new Error("Failed to fetch data")
-  }
-
-  return res.json()
-}
-
 export default async function Home() {
   // const res = await db.select().from(playingWithNeon)
 
-  function pickRandomShow() {
-    const show = results[Math.floor(Math.random() * results.length)]
-    if (show) return show
-    else throw new Error("Error getting random show.")
-  }
+  const nowPlayingData = getNowPlaying()
+  const popularData = getPopular()
+  const [nowPlayingShows, popularShows] = await Promise.all([
+    nowPlayingData,
+    popularData,
+  ])
 
-  const { results } = (await getNowPlaying()) as { results: Show[] }
-  const randomMovie = pickRandomShow()
+  const randomMovie = pickRandomNowPlayingShow(nowPlayingShows.results)
   return (
     <main className="flex min-h-screen justify-center">
       <div className="container flex flex-col border">
@@ -50,8 +39,39 @@ export default async function Home() {
             <Button variant="outline">More Info</Button>
           </div>
         </div>
-        <ShowsCarousel shows={results} title="Now Playing" />
+        <div className="space-y-6">
+          <ShowsCarousel title="Now Playing" shows={nowPlayingShows.results} />
+          <ShowsCarousel title="Popular" shows={popularShows.results} />
+        </div>
       </div>
     </main>
   )
+}
+
+function pickRandomNowPlayingShow(shows: Show[]) {
+  const show = shows[Math.floor(Math.random() * shows.length)]
+  if (show) return show
+  else throw new Error("Error getting random show.")
+}
+
+async function getNowPlaying() {
+  const res = await fetch(
+    `https://api.themoviedb.org/3/movie/now_playing?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US&page=1`
+  )
+  if (!res.ok) {
+    throw new Error("Failed to fetch data")
+  }
+
+  return res.json() as Promise<{ results: Show[] }>
+}
+
+async function getPopular() {
+  const res = await fetch(
+    `https://api.themoviedb.org/3/movie/popular?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US&page=1`
+  )
+  if (!res.ok) {
+    throw new Error("Failed to fetch data")
+  }
+
+  return res.json() as Promise<{ results: Show[] }>
 }
