@@ -1,8 +1,5 @@
 import "~/styles/globals.css"
 import { Inter } from "next/font/google"
-import Image from "next/image"
-import { Search, Bell } from "lucide-react"
-import { Button } from "~/components/ui/button"
 import { cn } from "~/lib/utils"
 import { ThemeProvider } from "~/components/theme-provider"
 
@@ -29,11 +26,16 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark">
           <Header />
           {children}
+          <Footer />
         </ThemeProvider>
       </body>
     </html>
   )
 }
+
+import Image from "next/image"
+import { Search, Bell } from "lucide-react"
+import { Button } from "~/components/ui/button"
 
 function Header() {
   return (
@@ -47,7 +49,7 @@ function Header() {
             height={276.74}
             className="h-auto w-28 transition-opacity hover:opacity-80 active:opacity-100"
           />
-          <div className="flex gap-3">
+          <div className="flex gap-3 text-sm">
             <p>Home</p>
             <p>TV Shows</p>
             <p>Movies</p>
@@ -58,9 +60,51 @@ function Header() {
         <div className="flex items-center gap-3">
           <Search />
           <Bell />
-          <Button>Login</Button>
+          <Button className="bg-red-600 font-semibold text-white hover:bg-red-700 active:bg-red-800">
+            Sign In
+          </Button>
         </div>
       </div>
     </header>
+  )
+}
+
+import { Facebook, Instagram, Twitter, Youtube } from "lucide-react"
+
+function Footer() {
+  return (
+    <footer>
+      <div className="container border text-sm">
+        <i className="flex gap-3 py-3">
+          <Facebook />
+          <Instagram />
+          <Twitter />
+          <Youtube />
+        </i>
+        <div className="flex justify-between py-3 text-white/50">
+          <div className="space-y-3">
+            <p>Audio Description</p>
+            <p>Investor Relations</p>
+            <p>Legal Notices</p>
+          </div>
+          <div className="space-y-3">
+            <p>Help Center</p>
+            <p>Jobs</p>
+            <p>Cookie Preferences</p>
+          </div>
+          <div className="space-y-3">
+            <p>Gift Cards</p>
+            <p>Terms of Use</p>
+            <p>Corporate Information</p>
+          </div>
+          <div className="space-y-3">
+            <p>Media Center</p>
+            <p>Privacy</p>
+            <p>Contact Us</p>
+          </div>
+        </div>
+        <div className="py-3 font-semibold">Copyright © 2023 Nextflix</div>
+      </div>
+    </footer>
   )
 }

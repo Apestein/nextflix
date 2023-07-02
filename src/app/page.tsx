@@ -4,6 +4,7 @@ import { env } from "~/env.mjs"
 import { type Show } from "~/types"
 import { Button } from "~/components/ui/button"
 import { ShowsCarousel } from "~/components/show-carousel"
+import { Play } from "lucide-react"
 
 async function getNowPlaying() {
   const res = await fetch(
@@ -30,7 +31,7 @@ export default async function Home() {
   return (
     <main className="flex min-h-screen justify-center">
       <div className="container flex flex-col border">
-        <div className="max-w-lg space-y-2 pb-12 pt-24">
+        <div className="max-w-lg space-y-3 pb-12 pt-24">
           <p className="text-3xl font-bold md:text-4xl">{randomMovie.title}</p>
           <div className="flex space-x-2 text-xs font-semibold md:text-sm">
             <p className="text-green-600">
@@ -41,8 +42,11 @@ export default async function Home() {
           <p className="line-clamp-4 text-sm text-gray-300 md:text-base">
             {randomMovie.overview}
           </p>
-          <div className="space-x-3">
-            <Button>Play</Button>
+          <div className="flex items-center gap-3">
+            <Button>
+              <Play fill="black" />
+              Play
+            </Button>
             <Button variant="outline">More Info</Button>
           </div>
         </div>
