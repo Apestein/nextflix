@@ -20,32 +20,30 @@ export default async function Home() {
 
   const randomMovie = pickRandomNowPlayingShow(nowPlayingShows.results)
   return (
-    <main className="flex min-h-screen justify-center">
-      <div className="container">
-        <div className="flex min-h-[384px] max-w-lg flex-col justify-center space-y-3">
-          <p className="text-3xl font-bold md:text-4xl">{randomMovie.title}</p>
-          <div className="flex space-x-2 text-xs font-semibold md:text-sm">
-            <p className="text-green-600">
-              {(randomMovie.vote_average * 100) / 10}% Match
-            </p>
-            <p>{randomMovie.release_date}</p>
-          </div>
-          <p className="line-clamp-4 text-sm text-gray-300 md:text-base">
-            {randomMovie.overview}
+    <main className="container">
+      <div className="flex min-h-[384px] max-w-lg flex-col justify-center space-y-3">
+        <p className="text-3xl font-bold md:text-4xl">{randomMovie.title}</p>
+        <div className="flex space-x-2 text-xs font-semibold md:text-sm">
+          <p className="text-green-600">
+            {(randomMovie.vote_average * 100) / 10}% Match
           </p>
-          <div className="flex items-center gap-3">
-            <Button>
-              <Play fill="black" />
-              Play
-            </Button>
-            <Button variant="outline">More Info</Button>
-          </div>
+          <p>{randomMovie.release_date}</p>
         </div>
-        <div className="space-y-6">
-          <ShowsCarousel title="Now Playing" shows={nowPlayingShows.results} />
-          <ShowsCarousel title="Popular" shows={popularShows.results} />
-          <ShowsCarousel title="Top Rated" shows={topRatedShows.results} />
+        <p className="line-clamp-4 text-sm text-gray-300 md:text-base">
+          {randomMovie.overview}
+        </p>
+        <div className="flex items-center gap-3">
+          <Button>
+            <Play fill="black" />
+            Play
+          </Button>
+          <Button variant="outline">More Info</Button>
         </div>
+      </div>
+      <div className="space-y-6">
+        <ShowsCarousel title="Now Playing" shows={nowPlayingShows.results} />
+        <ShowsCarousel title="Popular" shows={popularShows.results} />
+        <ShowsCarousel title="Top Rated" shows={topRatedShows.results} />
       </div>
     </main>
   )
