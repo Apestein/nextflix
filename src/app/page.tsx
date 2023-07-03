@@ -11,16 +11,18 @@ export default async function Home() {
 
   const nowPlayingData = getNowPlaying()
   const popularData = getPopular()
-  const [nowPlayingShows, popularShows] = await Promise.all([
+  const topRatedData = getTopRated()
+  const [nowPlayingShows, popularShows, topRatedShows] = await Promise.all([
     nowPlayingData,
     popularData,
+    topRatedData,
   ])
 
   const randomMovie = pickRandomNowPlayingShow(nowPlayingShows.results)
   return (
     <main className="flex min-h-screen justify-center">
-      <div className="container flex flex-col border">
-        <div className="max-w-lg space-y-3 pb-12 pt-24">
+      <div className="container">
+        <div className="flex min-h-[384px] max-w-lg flex-col justify-center space-y-3">
           <p className="text-3xl font-bold md:text-4xl">{randomMovie.title}</p>
           <div className="flex space-x-2 text-xs font-semibold md:text-sm">
             <p className="text-green-600">
@@ -42,6 +44,7 @@ export default async function Home() {
         <div className="space-y-6">
           <ShowsCarousel title="Now Playing" shows={nowPlayingShows.results} />
           <ShowsCarousel title="Popular" shows={popularShows.results} />
+          <ShowsCarousel title="Top Rated" shows={topRatedShows.results} />
         </div>
       </div>
     </main>
@@ -56,7 +59,8 @@ function pickRandomNowPlayingShow(shows: Show[]) {
 
 async function getNowPlaying() {
   const res = await fetch(
-    `https://api.themoviedb.org/3/movie/now_playing?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US&page=1`
+    `https://api.themoviedb.org/3/movie/now_playing?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US&page=1`,
+    { cache: "no-store" }
   )
   if (!res.ok) {
     throw new Error("Failed to fetch data")
@@ -67,7 +71,20 @@ async function getNowPlaying() {
 
 async function getPopular() {
   const res = await fetch(
-    `https://api.themoviedb.org/3/movie/popular?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US&page=1`
+    `https://api.themoviedb.org/3/movie/popular?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US&page=1`,
+    { cache: "no-store" }
+  )
+  if (!res.ok) {
+    throw new Error("Failed to fetch data")
+  }
+
+  return res.json() as Promise<{ results: Show[] }>
+}
+
+async function getTopRated() {
+  const res = await fetch(
+    `https://api.themoviedb.org/3/movie/top_rated?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US&page=1`,
+    { cache: "no-store" }
   )
   if (!res.ok) {
     throw new Error("Failed to fetch data")

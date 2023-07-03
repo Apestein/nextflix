@@ -39,8 +39,8 @@ import { Button } from "~/components/ui/button"
 
 function Header() {
   return (
-    <header className="flex justify-center p-3">
-      <div className="container flex justify-between gap-24 border">
+    <header className="flex justify-center py-3">
+      <div className="container flex justify-between gap-24">
         <div className="flex items-center gap-12">
           <Image
             src={"netflix-logo.svg"}
@@ -73,8 +73,8 @@ import { Facebook, Instagram, Twitter, Youtube } from "lucide-react"
 
 function Footer() {
   return (
-    <footer>
-      <div className="container border text-sm">
+    <footer className="pt-12">
+      <div className="container text-sm">
         <i className="flex gap-3 py-3">
           <Facebook />
           <Instagram />
