@@ -6,7 +6,7 @@ import { Button } from "~/components/ui/button"
 import { ShowsCarousel } from "~/components/show-carousel"
 import { Play } from "lucide-react"
 
-export const revalidate = 0
+export const revalidate = 5
 
 export default async function Home() {
   // const res = await db.select().from(playingWithNeon)
