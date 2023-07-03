@@ -59,8 +59,8 @@ function pickRandomNowPlayingShow(shows: Show[]) {
 
 async function getNowPlaying() {
   const res = await fetch(
-    `https://api.themoviedb.org/3/movie/now_playing?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US&page=1`,
-    { cache: "no-store" }
+    `https://api.themoviedb.org/3/movie/now_playing?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US&page=1`
+    // { cache: "no-store" }
   )
   if (!res.ok) {
     throw new Error("Failed to fetch data")
@@ -71,8 +71,8 @@ async function getNowPlaying() {
 
 async function getPopular() {
   const res = await fetch(
-    `https://api.themoviedb.org/3/movie/popular?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US&page=1`,
-    { cache: "no-store" }
+    `https://api.themoviedb.org/3/movie/popular?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US&page=1`
+    // { cache: "no-store" }
   )
   if (!res.ok) {
     throw new Error("Failed to fetch data")
@@ -83,8 +83,8 @@ async function getPopular() {
 
 async function getTopRated() {
   const res = await fetch(
-    `https://api.themoviedb.org/3/movie/top_rated?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US&page=1`,
-    { cache: "no-store" }
+    `https://api.themoviedb.org/3/movie/top_rated?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US&page=1`
+    // { cache: "no-store" }
   )
   if (!res.ok) {
     throw new Error("Failed to fetch data")
