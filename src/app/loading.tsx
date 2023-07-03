@@ -10,9 +10,6 @@ export default function Loading() {
         <Skeleton className="h-[173px] w-full" />
         <Skeleton className="h-[173px] w-full" />
         <Skeleton className="h-[173px] w-full" />
-        {/* <Skeleton className="h-[173px] w-full" />
-        <Skeleton className="h-[173px] w-full" />
-        <Skeleton className="h-[173px] w-full" /> */}
       </div>
     </div>
   )

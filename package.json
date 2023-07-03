@@ -6,6 +6,7 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit",
     "start": "next start",
     "introspect": "drizzle-kit introspect:pg",
     "generate": "drizzle-kit generate:pg",
