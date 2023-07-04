@@ -5,6 +5,7 @@ import { type Show } from "~/types"
 import { Button } from "~/components/ui/button"
 import { ShowsCarousel } from "~/components/show-carousel"
 import { Play } from "lucide-react"
+import Image from "next/image"
 
 export default async function Home() {
   // const res = await db.select().from(playingWithNeon)
@@ -36,39 +37,56 @@ export default async function Home() {
 
   const randomMovie = pickRandomNowPlayingShow(nowPlayingShows.results)
   return (
-    <main className="container">
-      <div className="flex min-h-[384px] max-w-lg flex-col justify-center space-y-3">
-        <p className="text-3xl font-bold md:text-4xl">{randomMovie.title}</p>
-        <div className="flex space-x-2 text-xs font-semibold md:text-sm">
-          <p className="text-green-600">
-            {(randomMovie.vote_average * 100) / 10}% Match
-          </p>
-          <p>{randomMovie.release_date}</p>
-        </div>
-        <p className="line-clamp-4 text-sm text-gray-300 md:text-base">
-          {randomMovie.overview}
-        </p>
-        <div className="flex items-center gap-3">
-          <Button>
-            <Play fill="black" className="mr-1" />
-            Play
-          </Button>
-          <Button variant="outline">More Info</Button>
-        </div>
-      </div>
-      <div className="space-y-10">
-        <ShowsCarousel title="Now Playing" shows={nowPlayingShows.results} />
-        <ShowsCarousel title="Popular" shows={popularShows.results} />
-        <ShowsCarousel title="Top Rated" shows={topRatedShows.results} />
-        <ShowsCarousel
-          title="Action Thriller"
-          shows={actionTrillerShows.results}
+    <>
+      <div
+        aria-label="background"
+        className="absolute inset-0 -z-10 h-full w-full"
+      >
+        <div className="h-full w-full bg-black/60 bg-gradient-to-b from-neutral-900/0 to-neutral-900" />
+        <Image
+          src={`https://image.tmdb.org/t/p/original/${
+            randomMovie.backdrop_path ?? ""
+          }`}
+          alt={randomMovie.title ?? "backdrop"}
+          className="-z-10 object-cover"
+          fill
+          priority
         />
-        <ShowsCarousel title="Comedy" shows={comedyShows.results} />
-        <ShowsCarousel title="Horror" shows={horrorShows.results} />
-        <ShowsCarousel title="Romance" shows={romanceShows.results} />
       </div>
-    </main>
+      <main className="container">
+        <div className="flex min-h-[384px] max-w-lg flex-col justify-center space-y-3">
+          <p className="text-3xl font-bold md:text-4xl">{randomMovie.title}</p>
+          <div className="flex space-x-2 text-xs font-semibold md:text-sm">
+            <p className="text-green-600">
+              {(randomMovie.vote_average * 100) / 10}% Match
+            </p>
+            <p>{randomMovie.release_date}</p>
+          </div>
+          <p className="line-clamp-4 text-sm text-gray-300 md:text-base">
+            {randomMovie.overview}
+          </p>
+          <div className="flex items-center gap-3">
+            <Button>
+              <Play fill="black" className="mr-1" />
+              Play
+            </Button>
+            <Button variant="outline">More Info</Button>
+          </div>
+        </div>
+        <div className="space-y-10">
+          <ShowsCarousel title="Now Playing" shows={nowPlayingShows.results} />
+          <ShowsCarousel title="Popular" shows={popularShows.results} />
+          <ShowsCarousel title="Top Rated" shows={topRatedShows.results} />
+          <ShowsCarousel
+            title="Action Thriller"
+            shows={actionTrillerShows.results}
+          />
+          <ShowsCarousel title="Comedy" shows={comedyShows.results} />
+          <ShowsCarousel title="Horror" shows={horrorShows.results} />
+          <ShowsCarousel title="Romance" shows={romanceShows.results} />
+        </div>
+      </main>
+    </>
   )
 }
 
