@@ -31,6 +31,7 @@ function Header() {
             alt="netflix-logo"
             width={1024}
             height={276.74}
+            priority
             className="h-auto w-28 transition-opacity hover:opacity-80 active:opacity-100"
           />
           <div className="flex gap-6 text-sm">
