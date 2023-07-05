@@ -9,33 +9,9 @@ import Image from "next/image"
 
 export default async function Home() {
   // const res = await db.select().from(playingWithNeon)
+  const allShows = await getShows("movie")
 
-  const nowPlayingData = getNowPlaying()
-  const popularData = getPopular()
-  const topRatedData = getTopRated()
-  const actionTrillersData = getActionThrillers()
-  const comediesData = getComedies()
-  const horrorData = getHorror()
-  const romanceData = getRomance()
-  const [
-    nowPlayingShows,
-    popularShows,
-    topRatedShows,
-    actionTrillerShows,
-    comedyShows,
-    horrorShows,
-    romanceShows,
-  ] = await Promise.all([
-    nowPlayingData,
-    popularData,
-    topRatedData,
-    actionTrillersData,
-    comediesData,
-    horrorData,
-    romanceData,
-  ])
-
-  const randomMovie = pickRandomNowPlayingShow(nowPlayingShows.results)
+  const randomMovie = pickRandomNowPlayingShow(allShows.nowPlaying)
   return (
     <>
       <div
@@ -74,16 +50,16 @@ export default async function Home() {
           </div>
         </div>
         <div className="space-y-10">
-          <ShowsCarousel title="Now Playing" shows={nowPlayingShows.results} />
-          <ShowsCarousel title="Popular" shows={popularShows.results} />
-          <ShowsCarousel title="Top Rated" shows={topRatedShows.results} />
+          <ShowsCarousel title="Now Playing" shows={allShows.nowPlaying} />
+          <ShowsCarousel title="Popular" shows={allShows.popular} />
+          <ShowsCarousel title="Top Rated" shows={allShows.topRated} />
           <ShowsCarousel
             title="Action Thriller"
-            shows={actionTrillerShows.results}
+            shows={allShows.actionThriller}
           />
-          <ShowsCarousel title="Comedy" shows={comedyShows.results} />
-          <ShowsCarousel title="Horror" shows={horrorShows.results} />
-          <ShowsCarousel title="Romance" shows={romanceShows.results} />
+          <ShowsCarousel title="Comedy" shows={allShows.comedy} />
+          <ShowsCarousel title="Horror" shows={allShows.horror} />
+          <ShowsCarousel title="Romance" shows={allShows.romance} />
         </div>
       </main>
     </>
@@ -96,86 +72,75 @@ function pickRandomNowPlayingShow(shows: Show[]) {
   else throw new Error("Error getting random show.")
 }
 
-async function getNowPlaying() {
-  const res = await fetch(
-    `https://api.themoviedb.org/3/movie/now_playing?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US`,
-    { next: { revalidate: 0 } }
+async function getShows(mediaType: "movie" | "tv") {
+  const [
+    nowPlayingRes,
+    popularRes,
+    topRatedRes,
+    actionThrillerRes,
+    comedyRes,
+    horrorRes,
+    romanceRes,
+  ] = await Promise.all([
+    fetch(
+      `https://api.themoviedb.org/3/${mediaType}/now_playing?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US`
+    ),
+    fetch(
+      `https://api.themoviedb.org/3/${mediaType}/popular?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US`
+    ),
+    fetch(
+      `https://api.themoviedb.org/3/${mediaType}/top_rated?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US`
+    ),
+    fetch(
+      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=28`
+    ),
+    fetch(
+      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=35`
+    ),
+    fetch(
+      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=27`
+    ),
+    fetch(
+      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=10749`
+    ),
+  ])
+
+  const [
+    nowPlaying,
+    popular,
+    topRated,
+    actionThriller,
+    comedy,
+    horror,
+    romance,
+  ] = (await Promise.all([
+    nowPlayingRes.json(),
+    popularRes.json(),
+    topRatedRes.json(),
+    actionThrillerRes.json(),
+    comedyRes.json(),
+    horrorRes.json(),
+    romanceRes.json(),
+  ])) as { results: Show[] }[]
+
+  if (
+    !nowPlaying ||
+    !popular ||
+    !topRated ||
+    !actionThriller ||
+    !comedy ||
+    !horror ||
+    !romance
   )
-  if (!res.ok) {
-    throw new Error("Failed to fetch data")
+    throw new Error("Failed to fetch shows")
+
+  return {
+    nowPlaying: nowPlaying.results,
+    popular: popular.results,
+    topRated: topRated.results,
+    actionThriller: actionThriller.results,
+    comedy: comedy.results,
+    horror: horror.results,
+    romance: romance.results,
   }
-
-  return res.json() as Promise<{ results: Show[] }>
-}
-
-async function getPopular() {
-  const res = await fetch(
-    `https://api.themoviedb.org/3/movie/popular?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US`,
-    { next: { revalidate: 0 } }
-  )
-  if (!res.ok) {
-    throw new Error("Failed to fetch data")
-  }
-
-  return res.json() as Promise<{ results: Show[] }>
-}
-
-async function getTopRated() {
-  const res = await fetch(
-    `https://api.themoviedb.org/3/movie/top_rated?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US`,
-    { next: { revalidate: 0 } }
-  )
-  if (!res.ok) {
-    throw new Error("Failed to fetch data")
-  }
-
-  return res.json() as Promise<{ results: Show[] }>
-}
-
-async function getActionThrillers() {
-  const res = await fetch(
-    `https://api.themoviedb.org/3/discover/movie?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=28`,
-    { next: { revalidate: 0 } }
-  )
-  if (!res.ok) {
-    throw new Error("Failed to fetch data")
-  }
-
-  return res.json() as Promise<{ results: Show[] }>
-}
-
-async function getComedies() {
-  const res = await fetch(
-    `https://api.themoviedb.org/3/discover/movie?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=35`,
-    { next: { revalidate: 0 } }
-  )
-  if (!res.ok) {
-    throw new Error("Failed to fetch data")
-  }
-
-  return res.json() as Promise<{ results: Show[] }>
-}
-
-async function getHorror() {
-  const res = await fetch(
-    `https://api.themoviedb.org/3/discover/movie?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=27`,
-    { next: { revalidate: 0 } }
-  )
-  if (!res.ok) {
-    throw new Error("Failed to fetch data")
-  }
-
-  return res.json() as Promise<{ results: Show[] }>
-}
-
-async function getRomance() {
-  const res = await fetch(
-    `https://api.themoviedb.org/3/discover/movie?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=10749`,
-    { next: { revalidate: 0 } }
-  )
-  if (!res.ok) {
-    throw new Error("Failed to fetch data")
-  }
-
-  return res.json() as Promise<{ results: Show[] }>
 }

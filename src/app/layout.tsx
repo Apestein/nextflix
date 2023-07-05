@@ -2,6 +2,7 @@ import "~/styles/globals.css"
 import { Inter } from "next/font/google"
 import { cn } from "~/lib/utils"
 import { ThemeProvider } from "~/components/theme-provider"
+import { ClerkProvider, SignInButton } from "@clerk/nextjs"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -16,20 +17,22 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body
-        className={cn(
-          "min-h-screen bg-neutral-900 text-slate-50 antialiased",
-          inter.className
-        )}
-      >
-        <ThemeProvider attribute="class" defaultTheme="dark">
-          <Header />
-          {children}
-          <Footer />
-        </ThemeProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body
+          className={cn(
+            "min-h-screen bg-neutral-900 text-slate-50 antialiased",
+            inter.className
+          )}
+        >
+          <ThemeProvider attribute="class" defaultTheme="dark">
+            <Header />
+            {children}
+            <Footer />
+          </ThemeProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   )
 }
 
@@ -60,9 +63,11 @@ function Header() {
         <div className="flex items-center gap-6">
           <Search />
           <Bell />
-          <Button className="bg-red-600 font-semibold text-white hover:bg-red-700 active:bg-red-800">
-            Sign In
-          </Button>
+          <SignInButton>
+            <Button className="bg-red-600 font-semibold text-white hover:bg-red-700 active:bg-red-800">
+              Sign In
+            </Button>
+          </SignInButton>
         </div>
       </div>
     </header>

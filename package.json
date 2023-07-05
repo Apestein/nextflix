@@ -13,6 +13,7 @@
     "migrate": "tsx ./src/db/migrate.ts"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.21.13",
     "@radix-ui/react-slot": "^1.0.2",
     "@t3-oss/env-nextjs": "^0.3.1",
     "class-variance-authority": "^0.6.1",
@@ -22,6 +23,7 @@
     "lucide-react": "^0.256.0",
     "next": "^13.4.8",
     "next-themes": "^0.2.1",
+    "pg": "^8.11.1",
     "postgres": "^3.3.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
