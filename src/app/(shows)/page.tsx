@@ -16,7 +16,7 @@ export default async function Home() {
     <>
       <div
         aria-label="background"
-        className="absolute inset-0 -z-10 h-full w-full"
+        className="absolute inset-0 -z-10 h-screen w-full"
       >
         <div className="h-full w-full bg-black/60 bg-gradient-to-b from-neutral-900/0 to-neutral-900" />
         <Image
