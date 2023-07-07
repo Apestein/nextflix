@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "dfe979a6-68a0-4fd1-b1d7-4cee0427ec1e",
+  "id": "4a52f900-bbfa-4230-bdfb-de9261f5f0ca",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accounts": {
@@ -10,7 +10,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "serial",
+          "type": "varchar(256)",
           "primaryKey": true,
           "notNull": true
         },
@@ -23,7 +23,7 @@
         },
         "email": {
           "name": "email",
-          "type": "varchar(191)",
+          "type": "varchar(256)",
           "primaryKey": false,
           "notNull": true
         },
@@ -118,7 +118,7 @@
         },
         "account_id": {
           "name": "account_id",
-          "type": "integer",
+          "type": "varchar(256)",
           "primaryKey": false,
           "notNull": false
         }

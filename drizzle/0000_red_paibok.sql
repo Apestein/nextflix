@@ -5,9 +5,9 @@ EXCEPTION
 END $$;
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "accounts" (
-	"id" serial PRIMARY KEY NOT NULL,
+	"id" varchar(256) PRIMARY KEY NOT NULL,
 	"createdAt" timestamp DEFAULT now(),
-	"email" varchar(191) NOT NULL,
+	"email" varchar(256) NOT NULL,
 	"membership" "membership"
 );
 --> statement-breakpoint
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS "playing_with_neon" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "profiles" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"account_id" integer
+	"account_id" varchar(256)
 );
 --> statement-breakpoint
 DO $$ BEGIN

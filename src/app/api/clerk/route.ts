@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { db } from "~/db/client"
-import { accounts } from "~/db/schema"
+import { accounts, profiles } from "~/db/schema"
 
 type ClerkEvent = {
   data: {
@@ -15,8 +15,15 @@ type ClerkEvent = {
 export async function POST(request: Request) {
   const event = (await request.json()) as ClerkEvent
   const user = event.data
-  await db.insert(accounts).values({ email: user.primary_email_address_id })
-  return NextResponse.json({ code: 201 })
+  const accountId = await db
+    .insert(accounts)
+    .values({ id: user.id, email: user.primary_email_address_id })
+    .returning({ id: accounts.id })
+  const profileId = await db
+    .insert(profiles)
+    .values({ accountId: user.id })
+    .returning({ id: profiles.id })
+  return NextResponse.json({ accountId, profileId })
 }
 
 // example of ClerkEvent

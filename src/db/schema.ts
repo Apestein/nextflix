@@ -22,9 +22,9 @@ export const memebershipEnum = pgEnum("membership", [
   "premium",
 ])
 export const accounts = pgTable("accounts", {
-  id: serial("id").primaryKey(),
+  id: varchar("id", { length: 256 }).primaryKey(),
   createdAt: timestamp("createdAt").defaultNow(),
-  email: varchar("email", { length: 191 }).notNull(),
+  email: varchar("email", { length: 256 }).notNull(),
   membership: memebershipEnum("membership"),
 })
 export const accountsRelations = relations(accounts, ({ many }) => ({
@@ -33,7 +33,9 @@ export const accountsRelations = relations(accounts, ({ many }) => ({
 
 export const profiles = pgTable("profiles", {
   id: serial("id").primaryKey(),
-  accountId: integer("account_id").references(() => accounts.id),
+  accountId: varchar("account_id", { length: 256 }).references(
+    () => accounts.id
+  ),
 })
 export const profilesRelation = relations(profiles, ({ one, many }) => ({
   ownerAccount: one(accounts, {
