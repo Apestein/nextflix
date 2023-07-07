@@ -6,5 +6,9 @@ import "dotenv/config"
 const sql = postgres(process.env.DATABASE_URL ?? "", { max: 1 })
 const db: PostgresJsDatabase = drizzle(sql)
 
-await migrate(db, { migrationsFolder: "drizzle" })
-console.log("migration completed")
+async function main() {
+  await migrate(db, { migrationsFolder: "drizzle" })
+  console.log("migration completed")
+}
+
+void main()

@@ -5,11 +5,11 @@ import { accounts, profiles } from "~/db/schema"
 type ClerkEvent = {
   data: {
     id: string
-    primary_email_address_id: string
+    email_addresses: {
+      email_address: string
+    }[]
     username: string
     profile_image_url: string
-    first_name: string
-    last_name: string
   }
 }
 export async function POST(request: Request) {
@@ -17,13 +17,20 @@ export async function POST(request: Request) {
   const user = event.data
   const accountId = await db
     .insert(accounts)
-    .values({ id: user.id, email: user.primary_email_address_id })
+    .values({
+      id: user.id,
+      email: user.email_addresses[0]?.email_address ?? raise("No email"),
+    })
     .returning({ id: accounts.id })
   const profileId = await db
     .insert(profiles)
     .values({ accountId: user.id })
     .returning({ id: profiles.id })
   return NextResponse.json({ accountId, profileId })
+}
+
+const raise = (err: string): never => {
+  throw new Error(err)
 }
 
 // example of ClerkEvent

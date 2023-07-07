@@ -23,7 +23,7 @@ export const memebershipEnum = pgEnum("membership", [
 ])
 export const accounts = pgTable("accounts", {
   id: varchar("id", { length: 256 }).primaryKey(),
-  createdAt: timestamp("createdAt").defaultNow(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
   email: varchar("email", { length: 256 }).notNull(),
   membership: memebershipEnum("membership"),
 })
@@ -36,6 +36,9 @@ export const profiles = pgTable("profiles", {
   accountId: varchar("account_id", { length: 256 }).references(
     () => accounts.id
   ),
+  profileImgPath: varchar("profile_img_path", { length: 256 })
+    .default("/adventurerNeutral-1.svg")
+    .notNull(),
 })
 export const profilesRelation = relations(profiles, ({ one, many }) => ({
   ownerAccount: one(accounts, {

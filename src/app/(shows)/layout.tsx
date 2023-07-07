@@ -17,11 +17,9 @@ import { Search, Bell } from "lucide-react"
 import Link from "next/link"
 import { buttonVariants } from "~/components/ui/button"
 import { cn } from "~/lib/utils"
-import { UserButton, auth, SignedIn, SignedOut } from "@clerk/nextjs"
+import { UserButton, SignedIn, SignedOut } from "@clerk/nextjs"
 
 function Header() {
-  const { userId } = auth()
-
   return (
     <header className="flex h-16 justify-between">
       <div className="flex items-center gap-12">
@@ -45,7 +43,9 @@ function Header() {
         <Search />
         <Bell />
         <SignedIn>
-          <UserButton afterSignOutUrl="/" />
+          <div className="h-8 w-8">
+            <UserButton afterSignOutUrl="/" />
+          </div>
         </SignedIn>
         <SignedOut>
           <Link
