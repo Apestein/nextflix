@@ -16,11 +16,15 @@ export const playingWithNeon = pgTable("playing_with_neon", {
   value: real("value"),
 })
 
-const memebershipEnum = pgEnum("membership", ["basic", "standard", "premium"])
+export const memebershipEnum = pgEnum("membership", [
+  "basic",
+  "standard",
+  "premium",
+])
 export const accounts = pgTable("accounts", {
   id: serial("id").primaryKey(),
-  createdAt: timestamp("created_at"),
-  email: varchar("email", { length: 256 }).primaryKey(),
+  createdAt: timestamp("createdAt").defaultNow(),
+  email: varchar("email", { length: 191 }).notNull(),
   membership: memebershipEnum("membership"),
 })
 export const accountsRelations = relations(accounts, ({ many }) => ({

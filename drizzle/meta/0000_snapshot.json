@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "4d56244d-8a7d-4d9e-a7c6-bd8c4c5df5b0",
+  "id": "dfe979a6-68a0-4fd1-b1d7-4cee0427ec1e",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accounts": {
@@ -14,16 +14,17 @@
           "primaryKey": true,
           "notNull": true
         },
-        "created_at": {
-          "name": "created_at",
+        "createdAt": {
+          "name": "createdAt",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": false
+          "notNull": false,
+          "default": "now()"
         },
         "email": {
           "name": "email",
-          "type": "varchar(256)",
-          "primaryKey": true,
+          "type": "varchar(191)",
+          "primaryKey": false,
           "notNull": true
         },
         "membership": {
@@ -141,7 +142,16 @@
       "compositePrimaryKeys": {}
     }
   },
-  "enums": {},
+  "enums": {
+    "membership": {
+      "name": "membership",
+      "values": {
+        "basic": "basic",
+        "standard": "standard",
+        "premium": "premium"
+      }
+    }
+  },
   "schemas": {},
   "_meta": {
     "schemas": {},

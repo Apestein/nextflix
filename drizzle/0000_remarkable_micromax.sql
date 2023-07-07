@@ -1,7 +1,13 @@
+DO $$ BEGIN
+ CREATE TYPE "membership" AS ENUM('basic', 'standard', 'premium');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "accounts" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"created_at" timestamp,
-	"email" varchar(256) PRIMARY KEY NOT NULL,
+	"createdAt" timestamp DEFAULT now(),
+	"email" varchar(191) NOT NULL,
 	"membership" "membership"
 );
 --> statement-breakpoint
