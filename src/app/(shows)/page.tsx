@@ -1,5 +1,3 @@
-// import { db } from "~/db/client"
-// import { playingWithNeon } from "~/db/schema"
 import { env } from "~/env.mjs"
 import { type Show } from "~/types"
 import { Button } from "~/components/ui/button"
@@ -8,7 +6,6 @@ import { Play } from "lucide-react"
 import Image from "next/image"
 
 export default async function Home() {
-  // const res = await db.select().from(playingWithNeon)
   const allShows = await getShows("movie")
 
   const randomMovie = pickRandomNowPlayingShow(allShows.nowPlaying)
@@ -29,7 +26,7 @@ export default async function Home() {
           priority
         />
       </div>
-      <main className="container">
+      <main>
         <div className="flex min-h-[384px] max-w-lg flex-col justify-center space-y-3">
           <p className="text-3xl font-bold md:text-4xl">{randomMovie.title}</p>
           <div className="flex space-x-2 text-xs font-semibold md:text-sm">

@@ -12,7 +12,7 @@ export default async function AccountPage() {
     .where(eq(accounts.id, userId))
   const userAccount = accountsArray[0]
   return (
-    <main className="container">
+    <main>
       <div>Member Since: {userAccount?.createdAt?.toDateString()}</div>
       <div>Email: {userAccount?.email}</div>
       <div>
