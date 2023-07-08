@@ -15,6 +15,13 @@
       "when": 1688755564272,
       "tag": "0001_blushing_wither",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1688848778535,
+      "tag": "0002_daffy_pepper_potts",
+      "breakpoints": true
     }
   ]
 }

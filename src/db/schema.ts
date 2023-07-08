@@ -49,7 +49,11 @@ export const profilesRelation = relations(profiles, ({ one, many }) => ({
 }))
 
 export const myShows = pgTable("my_shows", {
-  id: serial("id").primaryKey(),
+  id: integer("id").primaryKey(),
+  title: varchar("title", { length: 256 }).notNull(),
+  overview: text("overview").notNull(),
+  voteAverage: real("vote_average").default(0),
+  releaseDate: varchar("release_date", { length: 256 }),
   backdropPath: varchar("back_drop_path", { length: 256 }),
   profileId: integer("profile_id").references(() => profiles.id),
 })
