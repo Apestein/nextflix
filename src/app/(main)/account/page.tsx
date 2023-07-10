@@ -14,8 +14,8 @@ export default async function AccountPage() {
   })
   if (!userAccount) throw new Error("No userAccount")
   return (
-    <main>
-      <div className="mx-auto w-1/2 space-y-5 py-10">
+    <main className="flex justify-center">
+      <div className="w-1/2 space-y-5 py-10">
         <section className="space-y-2">
           <h1 className="text-4xl">Account</h1>
           <p className="flex items-center gap-2 text-sm text-white/50">

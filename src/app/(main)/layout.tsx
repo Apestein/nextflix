@@ -4,7 +4,7 @@ export default function ShowsLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="container">
+    <div className="container flex min-h-screen flex-col">
       <Header />
       {children}
       <Footer />
@@ -67,7 +67,7 @@ import { Facebook, Instagram, Twitter, Youtube } from "lucide-react"
 
 function Footer() {
   return (
-    <footer className="pt-12 text-sm">
+    <footer className="mt-auto pb-3 pt-12 text-sm">
       <i className="flex gap-3 py-3">
         <Facebook />
         <Instagram />
@@ -96,7 +96,7 @@ function Footer() {
           <p>Contact Us</p>
         </div>
       </div>
-      <div className="py-3 font-semibold">Copyright © 2023 Nextflix</div>
+      <div className="font-semibold">Copyright © 2023 Nextflix</div>
     </footer>
   )
 }

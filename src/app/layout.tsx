@@ -21,7 +21,7 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body
           className={cn(
-            "min-h-screen bg-neutral-900 text-slate-50 antialiased",
+            "bg-neutral-900 text-slate-50 antialiased",
             inter.className
           )}
         >

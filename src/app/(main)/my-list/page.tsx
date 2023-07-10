@@ -15,7 +15,8 @@ export default async function AccountPage() {
   })
   if (!profile) throw new Error("No profile")
   return (
-    <main className="pt-12">
+    <main className="flex gap-1.5 pt-3">
+      {!profile.myShows.length && "You have no saved shows yet."}
       {profile.myShows.map((show) => (
         <Image
           key={show.id}
