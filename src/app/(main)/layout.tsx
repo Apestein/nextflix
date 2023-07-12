@@ -27,7 +27,7 @@ function Header() {
     <header className="flex h-16 justify-between">
       <div className="flex items-center gap-12">
         <Image
-          src={"netflix-logo.svg"}
+          src="/netflix-logo.svg"
           alt="netflix-logo"
           width={1024}
           height={276.74}

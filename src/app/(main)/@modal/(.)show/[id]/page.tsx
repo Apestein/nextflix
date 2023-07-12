@@ -1,3 +1,5 @@
+"use client"
+import { useRouter } from "next/navigation"
 import {
   Card,
   CardContent,
@@ -6,16 +8,21 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card"
+import { X } from "lucide-react"
 
 export default function ShowPage() {
+  const router = useRouter()
   return (
     <div
       aria-label="backdrop"
-      className="fixed inset-0 flex h-screen w-screen items-center justify-center bg-black/80 backdrop-blur-sm"
+      className="fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm"
     >
       <Card>
         <CardHeader>
-          <CardTitle>Card Title</CardTitle>
+          <CardTitle className="flex justify-between">
+            Card Title
+            <X onClick={() => router.back()} className="cursor-pointer" />
+          </CardTitle>
           <CardDescription>Card Description</CardDescription>
         </CardHeader>
         <CardContent>
