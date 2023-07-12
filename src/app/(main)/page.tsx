@@ -4,6 +4,7 @@ import { Button } from "~/components/ui/button"
 import { ShowsCarousel } from "~/components/show-carousel"
 import { Play } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 
 export default async function Home() {
   const allShows = await getShows("movie")
@@ -31,7 +32,7 @@ export default async function Home() {
           <p className="text-3xl font-bold md:text-4xl">{randomMovie.title}</p>
           <div className="flex space-x-2 text-xs font-semibold md:text-sm">
             <p className="text-green-600">
-              {(randomMovie.vote_average * 100) / 10}% Match
+              {Math.round((randomMovie.vote_average * 100) / 10)}% Match
             </p>
             <p>{randomMovie.release_date}</p>
           </div>

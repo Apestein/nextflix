@@ -6,6 +6,7 @@ import { Button } from "./ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { type Show } from "~/types"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 interface ShowsCarouselProps {
   title: string
@@ -13,6 +14,8 @@ interface ShowsCarouselProps {
 }
 
 export const ShowsCarousel = ({ title, shows }: ShowsCarouselProps) => {
+  const router = useRouter()
+
   const showsRef = React.useRef<HTMLDivElement>(null)
   const [isScrollable, setIsScrollable] = React.useState(false)
 
@@ -90,6 +93,7 @@ export const ShowsCarousel = ({ title, shows }: ShowsCarouselProps) => {
                   width={240}
                   height={135}
                   className="cursor-pointer transition-transform hover:scale-110"
+                  onClick={() => router.push(`/show/${show.id}`)}
                 />
               ))}
             </div>

@@ -1,12 +1,15 @@
 export default function ShowsLayout({
   children,
+  modal,
 }: {
   children: React.ReactNode
+  modal: React.ReactNode
 }) {
   return (
     <div className="container flex min-h-screen flex-col">
       <Header />
       {children}
+      {modal}
       <Footer />
     </div>
   )
