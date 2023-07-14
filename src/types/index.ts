@@ -11,8 +11,16 @@ export type Show = {
   release_date: string | null
   title: string | null
   video: boolean
+  videos: Videos
   vote_average: number
   vote_count: number
+}
+
+export type Videos = {
+  results: {
+    key: string
+    type: string
+  }[]
 }
 
 // "adult": false,

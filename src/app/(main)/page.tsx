@@ -4,7 +4,6 @@ import { Button } from "~/components/ui/button"
 import { ShowsCarousel } from "~/components/show-carousel"
 import { Play } from "lucide-react"
 import Image from "next/image"
-import Link from "next/link"
 
 export default async function Home() {
   const allShows = await getShows("movie")
