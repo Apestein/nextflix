@@ -2,6 +2,7 @@ export type Show = {
   adult: boolean
   backdrop_path: string | null
   genre_ids: number[]
+  genres: Genre[]
   id: number
   original_language: string
   original_title: string | null
@@ -11,16 +12,21 @@ export type Show = {
   release_date: string | null
   title: string | null
   video: boolean
-  videos: Videos
+  videos: {
+    results: Video[]
+  }
   vote_average: number
   vote_count: number
 }
 
-export type Videos = {
-  results: {
-    key: string
-    type: string
-  }[]
+type Video = {
+  key: string
+  type: string
+}
+
+type Genre = {
+  id: number
+  name: string
 }
 
 // "adult": false,
