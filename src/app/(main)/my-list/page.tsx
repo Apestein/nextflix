@@ -20,7 +20,7 @@ export default async function AccountPage() {
       {profile.myShows.map((show) => (
         <Image
           key={show.id}
-          src={`https://image.tmdb.org/t/p/w500${show.backdropPath ?? ""}`}
+          src={`https://image.tmdb.org/t/p/w500${show.backdropPath}`}
           alt="show-backdrop"
           width={240}
           height={135}

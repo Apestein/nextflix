@@ -11,12 +11,6 @@ import {
   json,
 } from "drizzle-orm/pg-core"
 
-export const playingWithNeon = pgTable("playing_with_neon", {
-  id: serial("id").primaryKey().notNull(),
-  name: text("name").notNull(),
-  value: real("value"),
-})
-
 export const memebershipEnum = pgEnum("membership", [
   "basic",
   "standard",
@@ -51,21 +45,22 @@ export const profilesRelation = relations(profiles, ({ one, many }) => ({
 
 export const myShows = pgTable("my_shows", {
   id: integer("id").primaryKey(),
-  title: varchar("title", { length: 256 }),
-  overview: text("overview"),
-  voteAverage: real("vote_average"),
-  releaseDate: varchar("release_date", { length: 256 }),
-  backdropPath: varchar("back_drop_path", { length: 256 }),
-  videos: json("videos")
-    .$type<{ results: { key: string; type: string }[] }>()
-    .default({ results: [] })
+  backdropPath: varchar("back_drop_path", { length: 256 }).notNull(),
+  profileId: integer("profile_id")
+    .references(() => profiles.id)
     .notNull(),
-  genres: json("genres")
-    .$type<{ id: number; name: string }[]>()
-    .default([])
-    .notNull(),
-
-  profileId: integer("profile_id").references(() => profiles.id),
+  // title: varchar("title", { length: 256 }),
+  // overview: text("overview"),
+  // voteAverage: real("vote_average"),
+  // releaseDate: varchar("release_date", { length: 256 }),
+  // videos: json("videos")
+  //   .$type<{ results: { key: string; type: string }[] }>()
+  //   .default({ results: [] })
+  //   .notNull(),
+  // genres: json("genres")
+  //   .$type<{ id: number; name: string }[]>()
+  //   .default([])
+  //   .notNull(),
 })
 export const myShowsRelation = relations(myShows, ({ one }) => ({
   ownerProfile: one(profiles, {
@@ -74,4 +69,4 @@ export const myShowsRelation = relations(myShows, ({ one }) => ({
   }),
 }))
 
-export type Show = InferModel<typeof myShows>
+export type myShow = InferModel<typeof myShows>
