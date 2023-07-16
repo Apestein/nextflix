@@ -1,4 +1,4 @@
-import { relations, InferModel } from "drizzle-orm"
+import { relations, type InferModel } from "drizzle-orm"
 import {
   pgTable,
   serial,
@@ -8,6 +8,7 @@ import {
   integer,
   timestamp,
   pgEnum,
+  json,
 } from "drizzle-orm/pg-core"
 
 export const playingWithNeon = pgTable("playing_with_neon", {
@@ -50,11 +51,20 @@ export const profilesRelation = relations(profiles, ({ one, many }) => ({
 
 export const myShows = pgTable("my_shows", {
   id: integer("id").primaryKey(),
-  title: varchar("title", { length: 256 }).notNull(),
-  overview: text("overview").notNull(),
-  voteAverage: real("vote_average").default(0),
+  title: varchar("title", { length: 256 }),
+  overview: text("overview"),
+  voteAverage: real("vote_average"),
   releaseDate: varchar("release_date", { length: 256 }),
   backdropPath: varchar("back_drop_path", { length: 256 }),
+  videos: json("videos")
+    .$type<{ results: { key: string; type: string }[] }>()
+    .default({ results: [] })
+    .notNull(),
+  genres: json("genres")
+    .$type<{ id: number; name: string }[]>()
+    .default([])
+    .notNull(),
+
   profileId: integer("profile_id").references(() => profiles.id),
 })
 export const myShowsRelation = relations(myShows, ({ one }) => ({
@@ -64,4 +74,4 @@ export const myShowsRelation = relations(myShows, ({ one }) => ({
   }),
 }))
 
-type Show = InferModel<typeof myShows>
+export type Show = InferModel<typeof myShows>

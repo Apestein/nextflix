@@ -1,22 +1,16 @@
 export type Show = {
-  adult: boolean
-  backdrop_path: string | null
-  genre_ids: number[]
-  genres: Genre[]
   id: number
-  original_language: string
-  original_title: string | null
-  overview: string | null
+  title: string
+  overview: string
+  backdrop_path: string
+  poster_path: string
   popularity: number
-  poster_path: string | null
-  release_date: string | null
-  title: string | null
-  video: boolean
+  release_date: string
   videos: {
     results: Video[]
   }
+  genres: Genre[]
   vote_average: number
-  vote_count: number
 }
 
 type Video = {
