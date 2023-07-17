@@ -1,14 +1,12 @@
 "use client"
-import { useRouter } from "next/navigation"
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card"
-import { X, PlusCircle } from "lucide-react"
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog"
+import { PlusCircle } from "lucide-react"
 import useSWR from "swr"
 import { type Show } from "~/types"
 import { env } from "~/env.mjs"
@@ -24,8 +22,6 @@ export default function ShowPage({ params }: PageProps) {
     (url: string) => fetch(url).then((r) => r.json())
   )
 
-  const router = useRouter()
-
   function findTrailer() {
     if (!data) return
     const trailerIndex = data.videos.results.findIndex(
@@ -37,16 +33,13 @@ export default function ShowPage({ params }: PageProps) {
   }
 
   return (
-    <div
-      aria-label="backdrop"
-      className="fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-sm"
-    >
-      <Card className="max-w-3xl">
-        <CardHeader>
-          <CardTitle className="flex justify-between">
+    <Dialog defaultOpen>
+      <DialogContent className="max-w-3xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-1.5">
             {data?.title}
-            <X onClick={() => router.back()} className="cursor-pointer" />
-          </CardTitle>
+            <PlusCircle className="h-6 w-6 cursor-pointer" strokeWidth="1.5" />
+          </DialogTitle>
           {data && (
             <div className="flex items-center gap-1.5">
               <p className="text-green-400">
@@ -58,21 +51,13 @@ export default function ShowPage({ params }: PageProps) {
               </p>
             </div>
           )}
-          <CardDescription>{data?.overview}</CardDescription>
-          {data && (
-            <p className="text-sm">
-              {data.genres.map((genre) => genre.name).join(", ")}
-            </p>
-          )}
-          <PlusCircle className="h-8 w-8 cursor-pointer" strokeWidth="1.5" />
-        </CardHeader>
-        <CardContent>
-          <iframe
-            src={`https://www.youtube.com/embed/${findTrailer() ?? ""}`}
-            className="aspect-video w-full"
-          />
-        </CardContent>
-      </Card>
-    </div>
+          <DialogDescription>{data?.overview}</DialogDescription>
+        </DialogHeader>
+        <iframe
+          src={`https://www.youtube.com/embed/${findTrailer() ?? ""}`}
+          className="aspect-video w-full"
+        />
+      </DialogContent>
+    </Dialog>
   )
 }
