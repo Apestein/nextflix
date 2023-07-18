@@ -7,7 +7,6 @@ import Image from "next/image"
 
 export default async function Home() {
   const allShows = await getShows("movie")
-  console.log(allShows)
 
   const randomMovie = pickRandomNowPlayingShow(allShows.nowPlaying)
   return (
