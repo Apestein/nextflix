@@ -6,16 +6,12 @@ import { Button } from "./ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { type Show } from "~/types"
 import Image from "next/image"
-import { useRouter } from "next/navigation"
 
-interface ShowsCarouselProps {
+type ComponentProps = {
   title: string
   shows: Show[]
 }
-
-export const ShowsCarousel = ({ title, shows }: ShowsCarouselProps) => {
-  const router = useRouter()
-
+export const ShowsCarousel = ({ title, shows }: ComponentProps) => {
   const showsRef = React.useRef<HTMLDivElement>(null)
   const [isScrollable, setIsScrollable] = React.useState(false)
 
@@ -84,22 +80,88 @@ export const ShowsCarousel = ({ title, shows }: ShowsCarouselProps) => {
             ) : null}
             <div ref={showsRef} className="flex gap-1.5 overflow-hidden">
               {shows.map((show) => (
-                <Image
-                  key={show.id}
-                  src={`https://image.tmdb.org/t/p/w500${
-                    show.backdrop_path ?? ""
-                  }`}
-                  alt="show-backdrop"
-                  width={240}
-                  height={135}
-                  className="cursor-pointer transition-transform hover:scale-110"
-                  onClick={() => router.push(`/show/${show.id}`)}
-                />
+                <ShowCard key={show.id} show={show} />
               ))}
             </div>
           </div>
         </div>
       )}
     </section>
+  )
+}
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/components/ui/dialog"
+import { PlusCircle } from "lucide-react"
+import useSWR from "swr"
+import { env } from "~/env.mjs"
+
+function ShowCard({ show }: { show: Show }) {
+  const [open, setOpen] = React.useState(false)
+
+  const { data: showWithGenreAndVideo } = useSWR<Show>(
+    open
+      ? `https://api.themoviedb.org/3/movie/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`
+      : null,
+    (url: string) => fetch(url).then((r) => r.json())
+  )
+
+  function findTrailer(show: Show | undefined) {
+    if (!show) return
+    const trailerIndex = show.videos.results.findIndex(
+      (item) => item.type === "Trailer"
+    )
+    if (trailerIndex === -1) return
+    const trailerKey = show.videos.results[trailerIndex]?.key
+    return trailerKey
+  }
+
+  return (
+    <Dialog key={show.id} onOpenChange={() => setOpen(!open)}>
+      <DialogTrigger>
+        <Image
+          src={`https://image.tmdb.org/t/p/w500${show.backdrop_path}`}
+          alt="show-backdrop"
+          width={240}
+          height={135}
+          className="min-w-[240px] cursor-pointer transition-transform hover:scale-110"
+        />
+      </DialogTrigger>
+      <DialogContent className="max-w-3xl">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-1.5">
+            {show.title}
+            <PlusCircle className="h-6 w-6 cursor-pointer" strokeWidth="1.5" />
+          </DialogTitle>
+          <div className="flex items-center gap-1.5">
+            <p className="text-green-400">
+              {Math.round((show.vote_average * 100) / 10)}% Match
+            </p>
+            <p>{show.release_date.substring(0, 4)}</p>
+            <p className="border border-neutral-500 px-1 text-xs text-white/50">
+              EN
+            </p>
+          </div>
+          <DialogDescription>{show.overview}</DialogDescription>
+          <p className="text-sm">
+            {showWithGenreAndVideo?.genres
+              .map((genre) => genre.name)
+              .join(", ")}
+          </p>
+        </DialogHeader>
+        <iframe
+          src={`https://www.youtube.com/embed/${
+            findTrailer(showWithGenreAndVideo) ?? ""
+          }`}
+          className="aspect-video w-full"
+        />
+      </DialogContent>
+    </Dialog>
   )
 }

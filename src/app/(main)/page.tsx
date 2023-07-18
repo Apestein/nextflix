@@ -7,6 +7,7 @@ import Image from "next/image"
 
 export default async function Home() {
   const allShows = await getShows("movie")
+  console.log(allShows)
 
   const randomMovie = pickRandomNowPlayingShow(allShows.nowPlaying)
   return (
@@ -80,13 +81,13 @@ async function getShows(mediaType: "movie" | "tv") {
     romanceRes,
   ] = await Promise.all([
     fetch(
-      `https://api.themoviedb.org/3/${mediaType}/now_playing?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US`
+      `https://api.themoviedb.org/3/${mediaType}/now_playing?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`
     ),
     fetch(
-      `https://api.themoviedb.org/3/${mediaType}/popular?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US`
+      `https://api.themoviedb.org/3/${mediaType}/popular?api_key=${env.NEXT_PUBLIC_TMDB_API}`
     ),
     fetch(
-      `https://api.themoviedb.org/3/${mediaType}/top_rated?api_key=${env.NEXT_PUBLIC_TMDB_API}&language=en-US`
+      `https://api.themoviedb.org/3/${mediaType}/top_rated?api_key=${env.NEXT_PUBLIC_TMDB_API}`
     ),
     fetch(
       `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=28`
