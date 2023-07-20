@@ -101,11 +101,12 @@ import {
 import { PlusCircle } from "lucide-react"
 import useSWR from "swr"
 import { env } from "~/env.mjs"
+import { Skeleton } from "./ui/skeleton"
 
 function ShowCard({ show }: { show: Show }) {
   const [open, setOpen] = React.useState(false)
 
-  const { data: showWithGenreAndVideo } = useSWR<Show>(
+  const { data: showWithGenreAndVideo, isLoading } = useSWR<Show>(
     open
       ? `https://api.themoviedb.org/3/movie/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`
       : null,
@@ -149,11 +150,15 @@ function ShowCard({ show }: { show: Show }) {
             </p>
           </div>
           <DialogDescription>{show.overview}</DialogDescription>
-          <p className="text-sm">
-            {showWithGenreAndVideo?.genres
-              .map((genre) => genre.name)
-              .join(", ")}
-          </p>
+          {isLoading ? (
+            <Skeleton className="h-5 w-full" />
+          ) : (
+            <p className="text-sm">
+              {showWithGenreAndVideo?.genres
+                .map((genre) => genre.name)
+                .join(", ")}
+            </p>
+          )}
         </DialogHeader>
         <iframe
           src={`https://www.youtube.com/embed/${
