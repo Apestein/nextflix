@@ -10,7 +10,7 @@ import {
 } from "~/components/ui/card"
 import { X, PlusCircle } from "lucide-react"
 import useSWR from "swr"
-import { type Show } from "~/types"
+import { type ShowWithVideoAndGenre } from "~/types"
 import { env } from "~/env.mjs"
 
 type PageProps = {
@@ -19,7 +19,7 @@ type PageProps = {
   }
 }
 export default function ShowPage({ params }: PageProps) {
-  const { data } = useSWR<Show>(
+  const { data } = useSWR<ShowWithVideoAndGenre>(
     `https://api.themoviedb.org/3/movie/${params.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`,
     (url: string) => fetch(url).then((r) => r.json())
   )
