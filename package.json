@@ -11,7 +11,8 @@
     "introspect": "drizzle-kit introspect:pg",
     "generate": "drizzle-kit generate:pg",
     "migrate": "tsx ./src/db/migrate.ts",
-    "push": "drizzle-kit push:pg"
+    "push": "drizzle-kit push:pg",
+    "studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.21.13",
@@ -27,6 +28,7 @@
     "lucide-react": "^0.256.0",
     "next": "^13.4.10",
     "next-themes": "^0.2.1",
+    "pg": "^8.11.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "swr": "^2.2.0",

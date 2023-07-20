@@ -1,31 +1,29 @@
 import { db } from "~/db/client"
-import { profiles } from "~/db/schema"
-import { eq, lt, gte, ne } from "drizzle-orm"
+import { accounts } from "~/db/schema"
+import { eq } from "drizzle-orm"
 import { auth } from "@clerk/nextjs"
-import Image from "next/image"
+import { ShowCard } from "~/components/show-card"
 
 export default async function AccountPage() {
   const { userId } = auth()
   if (!userId) throw new Error("No userId")
-  const profile = await db.query.profiles.findFirst({
-    where: eq(profiles.id, 3),
+  const userAccount = await db.query.accounts.findFirst({
+    where: eq(accounts.id, userId),
     with: {
-      myShows: true,
+      activeProfile: {
+        with: {
+          myShows: true,
+        },
+      },
     },
   })
-  if (!profile) throw new Error("No profile")
+  if (!userAccount) throw new Error("No Account")
+  const myShows = userAccount.activeProfile.myShows
   return (
     <main className="flex gap-1.5 pt-3">
-      {!profile.myShows.length && "You have no saved shows yet."}
-      {profile.myShows.map((show) => (
-        <Image
-          key={show.id}
-          src={`https://image.tmdb.org/t/p/w500${show.backdropPath}`}
-          alt="show-backdrop"
-          width={240}
-          height={135}
-          className="cursor-pointer transition-transform hover:scale-110"
-        />
+      {!myShows.length && "You have no saved shows yet."}
+      {myShows.map((show) => (
+        <ShowCard key={show.id} show={show} />
       ))}
     </main>
   )

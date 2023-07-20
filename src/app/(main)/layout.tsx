@@ -1,15 +1,12 @@
 export default function ShowsLayout({
   children,
-  modal,
 }: {
   children: React.ReactNode
-  modal: React.ReactNode
 }) {
   return (
     <div className="container flex min-h-screen flex-col">
       <Header />
       {children}
-      {modal}
       <Footer />
     </div>
   )
@@ -26,20 +23,24 @@ function Header() {
   return (
     <header className="flex h-16 justify-between">
       <div className="flex items-center gap-12">
-        <Image
-          src="/netflix-logo.svg"
-          alt="netflix-logo"
-          width={1024}
-          height={276.74}
-          priority
-          className="h-auto w-28 transition-opacity hover:opacity-80 active:opacity-100"
-        />
+        <Link href="/">
+          <Image
+            src="/netflix-logo.svg"
+            alt="netflix-logo"
+            width={1024}
+            height={276.74}
+            priority
+            className="h-auto w-28 transition-opacity hover:opacity-80 active:opacity-100"
+          />
+        </Link>
         <div className="flex gap-6 text-sm">
           <p>Home</p>
           <p>TV Shows</p>
           <p>Movies</p>
           <p>New & Popular</p>
-          <p>My List</p>
+          <Link href="/my-list">
+            <p>My List</p>
+          </Link>
         </div>
       </div>
       <div className="flex items-center gap-6">

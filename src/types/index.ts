@@ -1,16 +1,17 @@
-export type Show = {
+export interface Show {
   id: number
   title: string
   overview: string
   backdrop_path: string
-  poster_path: string
-  popularity: number
   release_date: string
+  vote_average: number
+}
+
+export interface ShowWithVideoAndGenre extends Show {
   videos: {
     results: Video[]
   }
   genres: Genre[]
-  vote_average: number
 }
 
 type Video = {

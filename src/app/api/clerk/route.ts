@@ -20,11 +20,12 @@ export async function POST(request: Request) {
     .values({
       id: user.id,
       email: user.email_addresses[0]?.email_address ?? raise("No email"),
+      activeProfileId: user.id + "/1",
     })
     .returning({ id: accounts.id })
   const profileId = await db
     .insert(profiles)
-    .values({ accountId: user.id })
+    .values({ id: user.id + "/1", accountId: user.id })
     .returning({ id: profiles.id })
   return NextResponse.json({ accountId, profileId })
 }
