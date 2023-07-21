@@ -1,4 +1,4 @@
-import { relations, type InferModel } from "drizzle-orm"
+import { relations } from "drizzle-orm"
 import {
   pgTable,
   serial,
@@ -77,5 +77,3 @@ export const myShowsRelation = relations(myShows, ({ one }) => ({
     references: [profiles.id],
   }),
 }))
-
-export type myShow = InferModel<typeof myShows>
