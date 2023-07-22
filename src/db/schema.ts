@@ -9,6 +9,7 @@ import {
   timestamp,
   pgEnum,
   json,
+  primaryKey,
 } from "drizzle-orm/pg-core"
 
 export const memebershipEnum = pgEnum("membership", [
@@ -45,7 +46,7 @@ export const profilesRelation = relations(profiles, ({ one, many }) => ({
     fields: [profiles.accountId],
     references: [accounts.id],
   }),
-  myShows: many(myShows),
+  profilesToMyShows: many(profilesToMyShows),
 }))
 
 export const myShows = pgTable("my_shows", {
@@ -55,9 +56,6 @@ export const myShows = pgTable("my_shows", {
   overview: text("overview").notNull(),
   vote_average: real("vote_average").notNull(),
   release_date: varchar("release_data", { length: 256 }).notNull(),
-  profileId: varchar("profile_id", { length: 256 }).references(
-    () => profiles.id
-  ),
   // title: varchar("title", { length: 256 }),
   // overview: text("overview"),
   // voteAverage: real("vote_average"),
@@ -71,9 +69,32 @@ export const myShows = pgTable("my_shows", {
   //   .default([])
   //   .notNull(),
 })
-export const myShowsRelation = relations(myShows, ({ one }) => ({
-  ownerProfile: one(profiles, {
-    fields: [myShows.profileId],
-    references: [profiles.id],
-  }),
+export const myShowsRelation = relations(myShows, ({ many }) => ({
+  profilesToMyShows: many(profilesToMyShows),
 }))
+
+export const profilesToMyShows = pgTable(
+  "profiles_to_my_shows",
+  {
+    profileId: varchar("profile_id", { length: 256 })
+      .references(() => profiles.id)
+      .notNull(),
+    myShowId: integer("my_show_id")
+      .references(() => myShows.id)
+      .notNull(),
+  },
+  (t) => ({ pk: primaryKey(t.myShowId, t.profileId) })
+)
+export const profilesToMyShowsRelations = relations(
+  profilesToMyShows,
+  ({ one }) => ({
+    profile: one(profiles, {
+      fields: [profilesToMyShows.profileId],
+      references: [profiles.id],
+    }),
+    myShow: one(myShows, {
+      fields: [profilesToMyShows.myShowId],
+      references: [myShows.id],
+    }),
+  })
+)

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { db } from "~/db/client"
 import { accounts, profiles } from "~/db/schema"
+import { raise } from "~/lib/utils"
 
 type ClerkEvent = {
   data: {
@@ -28,10 +29,6 @@ export async function POST(request: Request) {
     .values({ id: user.id + "/1", accountId: user.id })
     .returning({ id: profiles.id })
   return NextResponse.json({ accountId, profileId })
-}
-
-const raise = (err: string): never => {
-  throw new Error(err)
 }
 
 // example of ClerkEvent

@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1690015841306,
+      "tag": "0000_clever_mariko_yashida",
+      "breakpoints": true
+    }
+  ]
+}

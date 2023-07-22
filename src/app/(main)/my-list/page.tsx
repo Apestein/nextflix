@@ -12,18 +12,22 @@ export default async function AccountPage() {
     with: {
       activeProfile: {
         with: {
-          myShows: true,
+          profilesToMyShows: {
+            with: {
+              myShow: true,
+            },
+          },
         },
       },
     },
   })
   if (!userAccount) throw new Error("No Account")
-  const myShows = userAccount.activeProfile.myShows
+  const savedShows = userAccount.activeProfile.profilesToMyShows
   return (
     <main className="flex gap-1.5 pt-3">
-      {!myShows.length && "You have no saved shows yet."}
-      {myShows.map((show) => (
-        <ShowCard key={show.id} show={show} />
+      {!savedShows.length && "You have no saved shows yet."}
+      {savedShows.map((el) => (
+        <ShowCard key={el.myShowId} show={el.myShow} />
       ))}
     </main>
   )
