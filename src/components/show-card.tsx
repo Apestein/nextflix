@@ -27,7 +27,7 @@ export function ShowCard({ show }: { show: Show }) {
       (url: string) => fetch(url).then((r) => r.json()),
     )
 
-  const { data: isSaved } = useSWR<boolean>(open ? `/my-list/${show.id}` : null)
+  const { data: isSaved } = useSWR<boolean>(open ? `/api/my-list` : null)
   console.log({ isSaved, showWithGenreAndVideo })
 
   function findTrailer(show: ShowWithVideoAndGenre | undefined) {
