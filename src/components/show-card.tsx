@@ -24,13 +24,16 @@ export function ShowCard({ show }: { show: Show }) {
       open
         ? `https://api.themoviedb.org/3/movie/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`
         : null,
-      (url: string) => fetch(url).then((r) => r.json())
+      (url: string) => fetch(url).then((r) => r.json()),
     )
+
+  const { data: isSaved } = useSWR<boolean>(open ? `/my-list/${show.id}` : null)
+  console.log({ isSaved, showWithGenreAndVideo })
 
   function findTrailer(show: ShowWithVideoAndGenre | undefined) {
     if (!show) return
     const trailerIndex = show.videos?.results.findIndex(
-      (item) => item.type === "Trailer"
+      (item) => item.type === "Trailer",
     )
     if (trailerIndex === -1 || !trailerIndex) return
     const trailerKey = show.videos?.results[trailerIndex]?.key
