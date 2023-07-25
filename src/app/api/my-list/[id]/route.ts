@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import { db } from "~/db/client"
-import { accounts, profilesToMyShows } from "~/db/schema"
+import { accounts, myShows } from "~/db/schema"
 import { eq } from "drizzle-orm"
 import { auth } from "@clerk/nextjs"
 
@@ -15,14 +15,14 @@ export async function GET(
     with: {
       activeProfile: {
         with: {
-          profilesToMyShows: {
-            where: eq(profilesToMyShows.myShowId, +params.id),
+          savedShows: {
+            where: eq(myShows.id, +params.id),
           },
         },
       },
     },
   })
-  const savedShow = userAccount?.activeProfile.profilesToMyShows
+  const savedShow = userAccount?.activeProfile.savedShows
   if (savedShow?.length) return NextResponse.json(true)
   else return NextResponse.json(false)
 }
