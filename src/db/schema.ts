@@ -46,51 +46,18 @@ export const profilesRelation = relations(profiles, ({ one, many }) => ({
     fields: [profiles.accountId],
     references: [accounts.id],
   }),
-  profilesToMyShows: many(profilesToMyShows),
+  savedShows: many(myShows),
 }))
 
 export const myShows = pgTable("my_shows", {
   id: integer("id").primaryKey(),
-  backdrop_path: varchar("back_drop_path", { length: 256 }).notNull(),
-  title: varchar("title", { length: 256 }).notNull(),
-  overview: text("overview").notNull(),
-  vote_average: real("vote_average").notNull(),
-  release_date: varchar("release_data", { length: 256 }).notNull(),
-  // title: varchar("title", { length: 256 }),
-  // overview: text("overview"),
-  // voteAverage: real("vote_average"),
-  // releaseDate: varchar("release_date", { length: 256 }),
-  // videos: json("videos")
-  //   .$type<{ results: { key: string; type: string }[] }>()
-  //   .default({ results: [] })
-  //   .notNull(),
-  // genres: json("genres")
-  //   .$type<{ id: number; name: string }[]>()
-  //   .default([])
-  //   .notNull(),
+  profileId: varchar("profile_id", { length: 256 })
+    .references(() => profiles.id)
+    .notNull(),
 })
-export const myShowsRelation = relations(myShows, ({ many }) => ({
-  profilesToMyShows: many(profilesToMyShows),
-}))
-
-export const profilesToMyShows = pgTable(
-  "profiles_to_my_shows",
-  {
-    profileId: varchar("profile_id", { length: 256 }).notNull(),
-    myShowId: integer("my_show_id").notNull(),
-  },
-  (t) => ({ pk: primaryKey(t.myShowId, t.profileId) }),
-)
-export const profilesToMyShowsRelations = relations(
-  profilesToMyShows,
-  ({ one }) => ({
-    profile: one(profiles, {
-      fields: [profilesToMyShows.profileId],
-      references: [profiles.id],
-    }),
-    myShow: one(myShows, {
-      fields: [profilesToMyShows.myShowId],
-      references: [myShows.id],
-    }),
+export const myShowsRelation = relations(myShows, ({ one }) => ({
+  profile: one(profiles, {
+    fields: [myShows.profileId],
+    references: [profiles.id],
   }),
-)
+}))
