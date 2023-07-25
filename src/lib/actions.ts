@@ -7,7 +7,7 @@ import { auth } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
 import { accounts } from "~/db/schema"
 
-export async function addMyShow(show: Show) {
+export async function toggleMyShow(show: Show) {
   const userId = auth().userId
   if (!userId) throw new Error("Unauthorized")
   const userAccount = await db.query.accounts.findFirst({

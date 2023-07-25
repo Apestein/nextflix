@@ -10,16 +10,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog"
-import { PlusCircle, Check } from "lucide-react"
+import { PlusCircle, CheckCircle } from "lucide-react"
 import useSWR from "swr"
 import { env } from "~/env.mjs"
 import { Skeleton } from "./ui/skeleton"
-import { addMyShow } from "~/lib/actions"
+import { toggleMyShow } from "~/lib/actions"
 
 export function ShowCard({ show }: { show: Show }) {
   const [open, setOpen] = React.useState(false)
 
-  const { data: showWithGenreAndVideo, isLoading } =
+  const { data: showWithGenreAndVideo, isLoading: showLoading } =
     useSWR<ShowWithVideoAndGenre>(
       open
         ? `https://api.themoviedb.org/3/movie/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`
@@ -27,8 +27,10 @@ export function ShowCard({ show }: { show: Show }) {
       (url: string) => fetch(url).then((r) => r.json()),
     )
 
-  const { data: isSaved } = useSWR<boolean>(open ? `/api/my-list` : null)
-  console.log({ isSaved, showWithGenreAndVideo })
+  const { data: isSaved, isLoading: savedLoading } = useSWR<boolean>(
+    open ? `/api/my-list/${show.id}` : null,
+    (url: string) => fetch(url).then((r) => r.json()),
+  )
 
   function findTrailer(show: ShowWithVideoAndGenre | undefined) {
     if (!show) return
@@ -55,14 +57,29 @@ export function ShowCard({ show }: { show: Show }) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5">
             {show.title}
-            <button
-              onClick={() => React.startTransition(() => void addMyShow(show))}
-            >
-              <PlusCircle
-                className="h-6 w-6 cursor-pointer"
-                strokeWidth="1.5"
-              />
-            </button>
+            {isSaved ? (
+              <button
+                onClick={() =>
+                  React.startTransition(() => void toggleMyShow(show))
+                }
+              >
+                <PlusCircle
+                  className="h-6 w-6 cursor-pointer"
+                  strokeWidth="1.5"
+                />
+              </button>
+            ) : (
+              <button
+                onClick={() =>
+                  React.startTransition(() => void toggleMyShow(show))
+                }
+              >
+                <CheckCircle
+                  className="h-6 w-6 cursor-pointer"
+                  strokeWidth="1.5"
+                />
+              </button>
+            )}
           </DialogTitle>
           <div className="flex items-center gap-1.5">
             <p className="text-green-400">
@@ -74,7 +91,7 @@ export function ShowCard({ show }: { show: Show }) {
             </p>
           </div>
           <DialogDescription>{show.overview}</DialogDescription>
-          {isLoading ? (
+          {showLoading ? (
             <Skeleton className="h-5 w-full" />
           ) : (
             <p className="text-sm">
