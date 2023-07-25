@@ -52,7 +52,7 @@ export const profilesRelation = relations(profiles, ({ one, many }) => ({
 export const myShows = pgTable(
   "my_shows",
   {
-    id: integer("id"),
+    id: integer("id").notNull(),
     profileId: varchar("profile_id", { length: 256 })
       .references(() => profiles.id)
       .notNull(),
