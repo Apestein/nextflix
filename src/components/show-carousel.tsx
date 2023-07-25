@@ -1,6 +1,6 @@
 "use client"
 
-import * as React from "react"
+import { useState, useRef } from "react"
 import { cn } from "~/lib/utils"
 import { Button } from "./ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
@@ -12,8 +12,8 @@ type ComponentProps = {
   shows: Show[]
 }
 export const ShowsCarousel = ({ title, shows }: ComponentProps) => {
-  const showsRef = React.useRef<HTMLDivElement>(null)
-  const [isScrollable, setIsScrollable] = React.useState(false)
+  const showsRef = useRef<HTMLDivElement>(null)
+  const [isScrollable, setIsScrollable] = useState(false)
 
   // handle scroll to left and right
   const scrollToDirection = (direction: "left" | "right") => {
@@ -56,7 +56,7 @@ export const ShowsCarousel = ({ title, shows }: ComponentProps) => {
                   variant="ghost"
                   className={cn(
                     "absolute left-0 top-0 z-10 h-[8.5rem] rounded-none rounded-r bg-slate-950/50 px-2 py-0 opacity-0 hover:bg-slate-950/50 active:scale-100 group-hover:opacity-100 dark:hover:bg-slate-950/50",
-                    isScrollable ? "block" : "hidden"
+                    isScrollable ? "block" : "hidden",
                   )}
                   onClick={() => scrollToDirection("left")}
                 >

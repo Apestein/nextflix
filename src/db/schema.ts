@@ -49,12 +49,16 @@ export const profilesRelation = relations(profiles, ({ one, many }) => ({
   savedShows: many(myShows),
 }))
 
-export const myShows = pgTable("my_shows", {
-  id: integer("id").primaryKey(),
-  profileId: varchar("profile_id", { length: 256 })
-    .references(() => profiles.id)
-    .notNull(),
-})
+export const myShows = pgTable(
+  "my_shows",
+  {
+    id: integer("id"),
+    profileId: varchar("profile_id", { length: 256 })
+      .references(() => profiles.id)
+      .notNull(),
+  },
+  (t) => ({ pk: primaryKey(t.id, t.profileId) }),
+)
 export const myShowsRelation = relations(myShows, ({ one }) => ({
   profile: one(profiles, {
     fields: [myShows.profileId],
