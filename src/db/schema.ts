@@ -35,7 +35,7 @@ export const accountsRelations = relations(accounts, ({ many, one }) => ({
 export const profiles = pgTable("profiles", {
   id: varchar("id", { length: 256 }).primaryKey(),
   accountId: varchar("account_id", { length: 256 }).references(
-    () => accounts.id
+    () => accounts.id,
   ),
   profileImgPath: varchar("profile_img_path", { length: 256 })
     .default("/adventurerNeutral-1.svg")
@@ -76,14 +76,10 @@ export const myShowsRelation = relations(myShows, ({ many }) => ({
 export const profilesToMyShows = pgTable(
   "profiles_to_my_shows",
   {
-    profileId: varchar("profile_id", { length: 256 })
-      .references(() => profiles.id)
-      .notNull(),
-    myShowId: integer("my_show_id")
-      .references(() => myShows.id)
-      .notNull(),
+    profileId: varchar("profile_id", { length: 256 }).notNull(),
+    myShowId: integer("my_show_id").notNull(),
   },
-  (t) => ({ pk: primaryKey(t.myShowId, t.profileId) })
+  (t) => ({ pk: primaryKey(t.myShowId, t.profileId) }),
 )
 export const profilesToMyShowsRelations = relations(
   profilesToMyShows,
@@ -96,5 +92,5 @@ export const profilesToMyShowsRelations = relations(
       fields: [profilesToMyShows.myShowId],
       references: [myShows.id],
     }),
-  })
+  }),
 )

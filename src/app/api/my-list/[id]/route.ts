@@ -4,7 +4,10 @@ import { accounts, profilesToMyShows } from "~/db/schema"
 import { eq } from "drizzle-orm"
 import { auth } from "@clerk/nextjs"
 
-export async function GET({ params }: { params: { id: string } }) {
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } },
+) {
   const { userId } = auth()
   if (!userId) return NextResponse.json("Unauthorized", { status: 401 })
   const userAccount = await db.query.accounts.findFirst({

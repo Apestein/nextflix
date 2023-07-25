@@ -14,22 +14,25 @@ export async function toggleMyShow(show: Show) {
     where: eq(accounts.id, userId),
   })
   if (!userAccount) throw new Error("Could not find user account")
-  await db
-    .insert(myShows)
-    .values({
-      id: show.id,
-      backdrop_path: show.backdrop_path,
-      title: show.title,
-      overview: show.overview,
-      vote_average: show.vote_average,
-      release_date: show.release_date,
-    })
-    .onConflictDoNothing()
-  await db
-    .insert(profilesToMyShows)
-    .values({
-      myShowId: show.id,
-      profileId: userAccount.activeProfileId,
-    })
-    .onConflictDoNothing()
+
+  await Promise.all([
+    db
+      .insert(myShows)
+      .values({
+        id: show.id,
+        backdrop_path: show.backdrop_path,
+        title: show.title,
+        overview: show.overview,
+        vote_average: show.vote_average,
+        release_date: show.release_date,
+      })
+      .onConflictDoNothing(),
+    db
+      .insert(profilesToMyShows)
+      .values({
+        myShowId: show.id,
+        profileId: userAccount.activeProfileId,
+      })
+      .onConflictDoNothing(),
+  ])
 }

@@ -63,7 +63,7 @@ export function ShowCard({ show }: { show: Show }) {
                   React.startTransition(() => void toggleMyShow(show))
                 }
               >
-                <PlusCircle
+                <CheckCircle
                   className="h-6 w-6 cursor-pointer"
                   strokeWidth="1.5"
                 />
@@ -74,7 +74,7 @@ export function ShowCard({ show }: { show: Show }) {
                   React.startTransition(() => void toggleMyShow(show))
                 }
               >
-                <CheckCircle
+                <PlusCircle
                   className="h-6 w-6 cursor-pointer"
                   strokeWidth="1.5"
                 />
