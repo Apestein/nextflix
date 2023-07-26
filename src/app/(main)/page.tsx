@@ -76,7 +76,7 @@ async function getShows(mediaType: "movie" | "tv") {
     comedy,
     horror,
     romance,
-  ] = (await Promise.all([
+  ] = await Promise.all<{ results: Show[] }>([
     fetch(
       `https://api.themoviedb.org/3/${mediaType}/now_playing?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`,
     ).then((r) => r.json()),
@@ -98,7 +98,7 @@ async function getShows(mediaType: "movie" | "tv") {
     fetch(
       `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=10749`,
     ).then((r) => r.json()),
-  ])) as { results: Show[] }[]
+  ])
 
   if (
     !nowPlaying ||
