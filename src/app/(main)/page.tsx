@@ -17,10 +17,8 @@ export default async function Home() {
       >
         <div className="h-full w-full bg-black/60 bg-gradient-to-b from-neutral-900/0 to-neutral-900" />
         <Image
-          src={`https://image.tmdb.org/t/p/original/${
-            randomMovie.backdrop_path ?? ""
-          }`}
-          alt={randomMovie.title ?? "backdrop"}
+          src={`https://image.tmdb.org/t/p/original/${randomMovie.backdrop_path}`}
+          alt={randomMovie.title}
           className="-z-10 object-cover"
           fill
           priority
@@ -71,38 +69,6 @@ function pickRandomNowPlayingShow(shows: Show[]) {
 
 async function getShows(mediaType: "movie" | "tv") {
   const [
-    nowPlayingRes,
-    popularRes,
-    topRatedRes,
-    actionThrillerRes,
-    comedyRes,
-    horrorRes,
-    romanceRes,
-  ] = await Promise.all([
-    fetch(
-      `https://api.themoviedb.org/3/${mediaType}/now_playing?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`
-    ),
-    fetch(
-      `https://api.themoviedb.org/3/${mediaType}/popular?api_key=${env.NEXT_PUBLIC_TMDB_API}`
-    ),
-    fetch(
-      `https://api.themoviedb.org/3/${mediaType}/top_rated?api_key=${env.NEXT_PUBLIC_TMDB_API}`
-    ),
-    fetch(
-      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=28`
-    ),
-    fetch(
-      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=35`
-    ),
-    fetch(
-      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=27`
-    ),
-    fetch(
-      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=10749`
-    ),
-  ])
-
-  const [
     nowPlaying,
     popular,
     topRated,
@@ -111,13 +77,27 @@ async function getShows(mediaType: "movie" | "tv") {
     horror,
     romance,
   ] = (await Promise.all([
-    nowPlayingRes.json(),
-    popularRes.json(),
-    topRatedRes.json(),
-    actionThrillerRes.json(),
-    comedyRes.json(),
-    horrorRes.json(),
-    romanceRes.json(),
+    fetch(
+      `https://api.themoviedb.org/3/${mediaType}/now_playing?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`,
+    ).then((r) => r.json()),
+    fetch(
+      `https://api.themoviedb.org/3/${mediaType}/popular?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
+    ).then((r) => r.json()),
+    fetch(
+      `https://api.themoviedb.org/3/${mediaType}/top_rated?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
+    ).then((r) => r.json()),
+    fetch(
+      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=28`,
+    ).then((r) => r.json()),
+    fetch(
+      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=35`,
+    ).then((r) => r.json()),
+    fetch(
+      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=27`,
+    ).then((r) => r.json()),
+    fetch(
+      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=10749`,
+    ).then((r) => r.json()),
   ])) as { results: Show[] }[]
 
   if (

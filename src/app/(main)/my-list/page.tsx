@@ -38,8 +38,8 @@ async function getMyShows(shows: myShow[]) {
     shows.map((show) =>
       fetch(
         `https://api.themoviedb.org/3/movie/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
-      ).then((r) => r.json()),
+      ).then((r) => r.json() as Promise<Show>),
     ),
   )
-  return data as Show[]
+  return data
 }

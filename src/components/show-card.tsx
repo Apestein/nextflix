@@ -19,11 +19,18 @@ export function ShowCard({ show }: { show: Show }) {
   const [open, setOpen] = useState(false)
   const { userId } = useAuth()
 
+  const swrOptions = {
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  }
+
   const { data: showWithGenreAndVideo } = useSWR<ShowWithVideoAndGenre>(
     open
       ? `https://api.themoviedb.org/3/movie/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`
       : null,
     (url: string) => fetch(url).then((r) => r.json()),
+    swrOptions,
   )
 
   const {
@@ -33,11 +40,7 @@ export function ShowCard({ show }: { show: Show }) {
   } = useSWR<boolean>(
     open && userId ? `/api/my-list/${show.id}` : null,
     (url: string) => fetch(url).then((r) => r.json()),
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    },
+    swrOptions,
   )
 
   function findTrailer(show: ShowWithVideoAndGenre | undefined) {
