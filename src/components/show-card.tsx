@@ -13,9 +13,11 @@ import {
 } from "~/components/ui/dialog"
 import useSWR from "swr"
 import { env } from "~/env.mjs"
+import { useAuth } from "@clerk/nextjs"
 
 export function ShowCard({ show }: { show: Show }) {
   const [open, setOpen] = useState(false)
+  const { userId } = useAuth()
 
   const { data: showWithGenreAndVideo } = useSWR<ShowWithVideoAndGenre>(
     open
@@ -24,8 +26,12 @@ export function ShowCard({ show }: { show: Show }) {
     (url: string) => fetch(url).then((r) => r.json()),
   )
 
-  const { data: isSaved, isValidating } = useSWR<boolean>(
-    open ? `/api/my-list/${show.id}` : null,
+  const {
+    data: isSaved,
+    isLoading,
+    isValidating,
+  } = useSWR<boolean>(
+    open && userId ? `/api/my-list/${show.id}` : null,
     (url: string) => fetch(url).then((r) => r.json()),
     {
       revalidateIfStale: false,
@@ -62,6 +68,7 @@ export function ShowCard({ show }: { show: Show }) {
             <SaveOrUnsave
               isSaved={isSaved}
               showId={show.id}
+              isLoading={isLoading}
               isValidating={isValidating}
             />
           </DialogTitle>
@@ -97,46 +104,47 @@ import { toggleMyShow } from "~/lib/actions"
 function SaveOrUnsave({
   isSaved,
   showId,
+  isLoading,
   isValidating,
 }: {
   isSaved: boolean | undefined
   showId: number
+  isLoading: boolean
   isValidating: boolean
 }) {
   const { mutate } = useSWRConfig()
   const [isPending, startTransition] = useTransition()
 
-  if (isSaved === undefined)
-    return <Skeleton className="h-6 w-6 rounded-full" />
+  if (isSaved === undefined && !isLoading) return
+  if (isLoading) return <Skeleton className="h-6 w-6 rounded-full" />
   if (isPending || isValidating)
     return <SVG.spinner className="h-6 w-6 animate-spin" />
-  return (
-    <>
-      {isSaved ? (
-        <button
-          onClick={() =>
-            startTransition(async () => {
-              await toggleMyShow(showId)
-              void mutate(`/api/my-list/${showId}`)
-            })
-          }
-        >
-          <CheckCircle className="h-6 w-6 cursor-pointer" strokeWidth="1.5" />
-        </button>
-      ) : (
-        <button
-          onClick={() =>
-            startTransition(async () => {
-              await toggleMyShow(showId)
-              void mutate(`/api/my-list/${showId}`)
-            })
-          }
-        >
-          <PlusCircle className="h-6 w-6 cursor-pointer" strokeWidth="1.5" />
-        </button>
-      )}
-    </>
-  )
+  if (isSaved)
+    return (
+      <button
+        onClick={() =>
+          startTransition(async () => {
+            await toggleMyShow(showId)
+            void mutate(`/api/my-list/${showId}`)
+          })
+        }
+      >
+        <CheckCircle className="h-6 w-6 cursor-pointer" strokeWidth="1.5" />
+      </button>
+    )
+  if (!isSaved)
+    return (
+      <button
+        onClick={() =>
+          startTransition(async () => {
+            await toggleMyShow(showId)
+            void mutate(`/api/my-list/${showId}`)
+          })
+        }
+      >
+        <PlusCircle className="h-6 w-6 cursor-pointer" strokeWidth="1.5" />
+      </button>
+    )
 }
 
 function ShowGenres({ show }: { show: ShowWithVideoAndGenre | undefined }) {
