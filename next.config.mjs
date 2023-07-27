@@ -7,7 +7,7 @@ await import("./src/env.mjs")
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    domains: ["image.tmdb.org"],
+    domains: ["image.tmdb.org", "img.clerk.com"],
   },
   experimental: {
     serverActions: true,

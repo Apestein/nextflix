@@ -1,6 +1,6 @@
 import { db } from "~/db/client"
 import { accounts } from "~/db/schema"
-import { eq, lt, gte, ne } from "drizzle-orm"
+import { eq } from "drizzle-orm"
 import { auth } from "@clerk/nextjs"
 import Image from "next/image"
 import { CreditCard, ChevronRight } from "lucide-react"
@@ -15,7 +15,7 @@ export default async function AccountPage() {
   if (!userAccount) throw new Error("No userAccount")
   return (
     <main className="flex justify-center">
-      <div className="w-1/2 space-y-5 py-10">
+      <div className="w-1/2 max-w-xl space-y-5 py-12">
         <section className="space-y-2">
           <h1 className="text-4xl">Account</h1>
           <p className="flex items-center gap-2 text-sm text-white/50">
@@ -26,7 +26,7 @@ export default async function AccountPage() {
         <div aria-label="divider" className="h-px w-full bg-white/50" />
         <p className="text-2xl text-white/50">MEMBERSHIP & BILLING</p>
         <p className="flex cursor-pointer justify-between">
-          Email: {userAccount.email}
+          {userAccount.email}
           <ChevronRight stroke="white" opacity="0.5" />
         </p>
         <div aria-label="divider" className="h-px w-full bg-white/50" />
@@ -35,10 +35,13 @@ export default async function AccountPage() {
           <ChevronRight stroke="white" opacity="0.5" />
         </p>
         <div aria-label="divider" className="h-px w-full bg-white/50" />
-        <p>You are currently not subsribed to any plan.</p>
+        <p>
+          {userAccount.membership ??
+            " You are currently not subsribed to any plan."}
+        </p>
         <div aria-label="divider" className="h-px w-full bg-white/50" />
         <p className="text-2xl text-white/50">Plan Details</p>
-        <p>{userAccount.membership ? userAccount.membership : "N/A"}</p>
+        <p>{userAccount.membership ? userAccount.membership : "None Member"}</p>
         <div aria-label="divider" className="h-px w-full bg-white/50" />
         <p className="flex cursor-pointer justify-between">
           Change plan

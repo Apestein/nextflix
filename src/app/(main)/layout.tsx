@@ -17,7 +17,7 @@ import { Search, Bell } from "lucide-react"
 import Link from "next/link"
 import { buttonVariants } from "~/components/ui/button"
 import { cn } from "~/lib/utils"
-import { UserButton, SignedIn, SignedOut } from "@clerk/nextjs"
+import { SignedOut } from "@clerk/nextjs"
 
 function Header() {
   return (
@@ -46,17 +46,13 @@ function Header() {
       <div className="flex items-center gap-6">
         <Search />
         <Bell />
-        <SignedIn>
-          <div className="h-8 w-8">
-            <UserButton afterSignOutUrl="/" />
-          </div>
-        </SignedIn>
+        <CustomeUserButton />
         <SignedOut>
           <Link
             href="/sign-in"
             className={cn(
               buttonVariants({ variant: "default" }),
-              "bg-red-600 font-semibold text-white hover:bg-red-700 active:bg-red-800"
+              "bg-red-600 font-semibold text-white hover:bg-red-700 active:bg-red-800",
             )}
           >
             Sign In
@@ -64,6 +60,47 @@ function Header() {
         </SignedOut>
       </div>
     </header>
+  )
+}
+
+import { currentUser, SignOutButton } from "@clerk/nextjs"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu"
+
+async function CustomeUserButton() {
+  const user = await currentUser()
+  if (!user) return
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        <Image
+          src={user.imageUrl}
+          alt="user-image"
+          height="32"
+          width="32"
+          className="rounded-full"
+        />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>{user.username}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>Manage Profile</DropdownMenuItem>
+        <DropdownMenuItem>Switch Profile</DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href="/account">Account</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>Subscription</DropdownMenuItem>
+        <DropdownMenuItem className="flex justify-center border">
+          <SignOutButton />
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 
