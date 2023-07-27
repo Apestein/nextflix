@@ -90,7 +90,9 @@ async function CustomeUserButton() {
       <DropdownMenuContent>
         <DropdownMenuLabel>{user.username}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Manage Profile</DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href="/manage-profile">Manage Profile</Link>
+        </DropdownMenuItem>
         <DropdownMenuItem>Switch Profile</DropdownMenuItem>
         <DropdownMenuItem>
           <Link href="/account">Account</Link>

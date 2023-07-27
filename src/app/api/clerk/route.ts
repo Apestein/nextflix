@@ -26,7 +26,14 @@ export async function POST(request: Request) {
     .returning({ id: accounts.id })
   const profileId = await db
     .insert(profiles)
-    .values({ id: user.id + "/1", accountId: user.id })
+    .values({
+      id: user.id + "/1",
+      accountId: user.id,
+      profileImgPath: `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${
+        user.username ?? "John Doe"
+      }`,
+      name: user.username ?? "John Doe",
+    })
     .returning({ id: profiles.id })
   return NextResponse.json({ accountId, profileId })
 }
