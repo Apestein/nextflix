@@ -1,34 +1,18 @@
-/* eslint-disable @next/next/no-img-element */
-import { db } from "~/db/client"
-import { accounts, profiles } from "~/db/schema"
-import { eq } from "drizzle-orm"
-import { auth } from "@clerk/nextjs"
+"use client"
 import { Button } from "~/components/ui/button"
-import Link from "next/link"
+import { addProfile } from "~/lib/actions"
+import { useZact } from "zact/client"
+import { useState } from "react"
+import { useDebouncedCallback } from "use-debounce"
+import { useRouter } from "next/navigation"
 
-export default async function AddProfilePage() {
-  const { userId } = auth()
-  if (!userId) throw new Error("No userId")
-  const userAccount = await db.query.accounts.findFirst({
-    where: eq(accounts.id, userId),
-    with: { profiles: true },
-  })
-  if (!userAccount) throw new Error("No userAccount")
-
-  async function addProfile(data: FormData) {
-    "use server"
-    if (!userAccount) throw new Error("No userAccount")
-    const name = data.get("name") as string
-    const profileImage = data.get("avatar") as string
-    if (!name || !profileImage) return
-    if (userAccount.profiles.length === 4) return
-    await db.insert(profiles).values({
-      id: `${userAccount.id}/${userAccount.profiles.length + 1}`,
-      accountId: userAccount.id,
-      name: name,
-      profileImgPath: `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${profileImage}`,
-    })
-  }
+export default function AddProfilePage() {
+  const [name, setName] = useState("")
+  const { mutate, data, isLoading, error } = useZact(addProfile)
+  const debounced = useDebouncedCallback((value: string) => {
+    setName(value)
+  }, 500)
+  const router = useRouter()
 
   return (
     <main className="flex flex-col items-center gap-12 ">
@@ -38,99 +22,28 @@ export default async function AddProfilePage() {
           Add a profile for another person watching Netflix.
         </p>
       </div>
-      <div>
-        <form
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          action={addProfile}
-          id="add-profile-form"
-          className="space-y-8"
-        >
-          <section className="flex gap-8">
-            <label className="outline-2 [&:has(input:checked)]:outline">
-              <img
-                src={`https://api.dicebear.com/6.x/bottts-neutral/svg?seed=Mimi`}
-                alt="profile-image"
-                width="96"
-                height="96"
-              />
-              <input
-                type="radio"
-                name="avatar"
-                value="Mimi"
-                className="hidden"
-              />
-            </label>
-            <label className="outline-2 [&:has(input:checked)]:outline">
-              <img
-                src={`https://api.dicebear.com/6.x/bottts-neutral/svg?seed=Lucky`}
-                alt="profile-image"
-                width="96"
-                height="96"
-              />
-              <input
-                type="radio"
-                name="avatar"
-                value="Mimi"
-                className="hidden"
-              />
-            </label>
-            <label className="outline-2 [&:has(input:checked)]:outline">
-              <img
-                src={`https://api.dicebear.com/6.x/bottts-neutral/svg?seed=Salem`}
-                alt="profile-image"
-                width="96"
-                height="96"
-              />
-              <input
-                type="radio"
-                name="avatar"
-                value="Mimi"
-                className="hidden"
-              />
-            </label>
-            <label className="outline-2 [&:has(input:checked)]:outline">
-              <img
-                src={`https://api.dicebear.com/6.x/bottts-neutral/svg?seed=Tinkerbell`}
-                alt="profile-image"
-                width="96"
-                height="96"
-              />
-              <input
-                type="radio"
-                name="avatar"
-                value="Mimi"
-                className="hidden"
-              />
-            </label>
-            <label className="outline-2 [&:has(input:checked)]:outline">
-              <img
-                src={`https://api.dicebear.com/6.x/bottts-neutral/svg?seed=Casper`}
-                alt="profile-image"
-                width="96"
-                height="96"
-              />
-              <input
-                type="radio"
-                name="avatar"
-                value="Mimi"
-                className="hidden"
-              />
-            </label>
-          </section>
-          <input
-            type="text"
-            name="name"
-            placeholder="name"
-            className="w-full border border-white/40 p-1"
-          />
-        </form>
-      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={`https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${name}`}
+        alt="profile-image"
+        width="240"
+        height="135"
+      />
+      <input
+        type="text"
+        name="name"
+        placeholder="name"
+        className="w-full border border-white/40 p-1"
+        onChange={(e) => debounced(e.target.value)}
+      />
       <section className="space-x-8">
-        <Button form="add-profile-form" type="submit">
-          Submit
-        </Button>
-        <Button variant="secondary" asChild>
-          <Link href="/manage-profile">Done</Link>
+        <Button
+          onClick={() => {
+            void mutate({ name })
+            void router.push("/manage-profile")
+          }}
+        >
+          Save
         </Button>
       </section>
     </main>

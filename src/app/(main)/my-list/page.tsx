@@ -33,7 +33,7 @@ export default async function AccountPage() {
           </p>
         </div>
       )}
-      <div className="grid grid-cols-autofit gap-y-5">
+      <div className="grid grid-cols-[repeat(auto-fit,_minmax(240px,_1fr))] gap-y-5">
         {shows.map((show) => (
           <ShowCard key={show.id} show={show} />
         ))}

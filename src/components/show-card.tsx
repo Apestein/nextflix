@@ -129,7 +129,7 @@ function SaveOrUnsave({
       <button
         onClick={() =>
           startTransition(async () => {
-            await toggleMyShow(showId)
+            await toggleMyShow({ id: showId })
             void mutate(`/api/my-list/${showId}`)
           })
         }
@@ -142,7 +142,7 @@ function SaveOrUnsave({
       <button
         onClick={() =>
           startTransition(async () => {
-            await toggleMyShow(showId)
+            await toggleMyShow({ id: showId })
             void mutate(`/api/my-list/${showId}`)
           })
         }
