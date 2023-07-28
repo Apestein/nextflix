@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 export default function ShowsLayout({
   children,
 }: {
@@ -18,7 +17,7 @@ import { Search, Bell } from "lucide-react"
 import Link from "next/link"
 import { buttonVariants } from "~/components/ui/button"
 import { cn } from "~/lib/utils"
-import { SignedOut } from "@clerk/nextjs"
+import { SignedOut, SignedIn } from "@clerk/nextjs"
 
 function Header() {
   return (
@@ -47,7 +46,9 @@ function Header() {
       <div className="flex items-center gap-6">
         <Search />
         <Bell />
-        <CustomeUserButton />
+        <SignedIn>
+          <CustomeUserButton />
+        </SignedIn>
         <SignedOut>
           <Link
             href="/sign-in"
@@ -88,6 +89,7 @@ async function CustomeUserButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={userAccount.activeProfile.profileImgPath}
           alt="user-image"
