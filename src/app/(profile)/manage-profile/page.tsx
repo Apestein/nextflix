@@ -30,7 +30,7 @@ export default async function ManageProfilePage() {
         ))}
         <Link href="/manage-profile/add">
           <PlusCircle
-            className="h-24 w-24 border bg-neutral-800 p-3"
+            className="h-24 w-24 bg-neutral-800 p-3 outline-1 hover:outline"
             strokeWidth={1}
           />
         </Link>

@@ -24,11 +24,20 @@ export default async function AccountPage() {
 
   const shows = await getMyShows(myShows)
   return (
-    <main className="flex gap-1.5 pt-3">
-      {!shows.length && "You have no saved shows yet."}
-      {shows.map((show) => (
-        <ShowCard key={show.id} show={show} />
-      ))}
+    <main className="h-full pt-12">
+      {!shows.length && (
+        <div className="space-y-3">
+          <p className="text-3xl font-semibold">Your list is empty</p>
+          <p className="text-white/60">
+            Add shows and movies to your list to watch them later
+          </p>
+        </div>
+      )}
+      <div className="grid grid-cols-autofit gap-y-5">
+        {shows.map((show) => (
+          <ShowCard key={show.id} show={show} />
+        ))}
+      </div>
     </main>
   )
 }
