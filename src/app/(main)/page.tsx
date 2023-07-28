@@ -46,7 +46,6 @@ export default async function Home() {
         </div>
         <div className="space-y-10">
           <ShowsCarousel title="Now Playing" shows={allShows.nowPlaying} />
-          <ShowsCarousel title="Popular" shows={allShows.popular} />
           <ShowsCarousel title="Top Rated" shows={allShows.topRated} />
           <ShowsCarousel
             title="Action Thriller"
@@ -55,6 +54,7 @@ export default async function Home() {
           <ShowsCarousel title="Comedy" shows={allShows.comedy} />
           <ShowsCarousel title="Horror" shows={allShows.horror} />
           <ShowsCarousel title="Romance" shows={allShows.romance} />
+          <ShowsCarousel title="Documentary" shows={allShows.documentary} />
         </div>
       </main>
     </>
@@ -70,18 +70,15 @@ function pickRandomNowPlayingShow(shows: Show[]) {
 async function getShows(mediaType: "movie" | "tv") {
   const [
     nowPlaying,
-    popular,
     topRated,
     actionThriller,
     comedy,
     horror,
     romance,
+    documentary,
   ] = await Promise.all<{ results: Show[] }>([
     fetch(
       `https://api.themoviedb.org/3/${mediaType}/now_playing?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`,
-    ).then((r) => r.json()),
-    fetch(
-      `https://api.themoviedb.org/3/${mediaType}/popular?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
     ).then((r) => r.json()),
     fetch(
       `https://api.themoviedb.org/3/${mediaType}/top_rated?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
@@ -98,26 +95,29 @@ async function getShows(mediaType: "movie" | "tv") {
     fetch(
       `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=10749`,
     ).then((r) => r.json()),
+    fetch(
+      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=99`,
+    ).then((r) => r.json()),
   ])
 
   if (
     !nowPlaying ||
-    !popular ||
     !topRated ||
     !actionThriller ||
     !comedy ||
     !horror ||
-    !romance
+    !romance ||
+    !documentary
   )
     throw new Error("Failed to fetch shows")
 
   return {
     nowPlaying: nowPlaying.results,
-    popular: popular.results,
     topRated: topRated.results,
     actionThriller: actionThriller.results,
     comedy: comedy.results,
     horror: horror.results,
     romance: romance.results,
+    documentary: documentary.results,
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 export default function ShowsLayout({
   children,
 }: {
@@ -63,7 +64,7 @@ function Header() {
   )
 }
 
-import { currentUser, SignOutButton } from "@clerk/nextjs"
+import { auth, SignOutButton } from "@clerk/nextjs"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -72,23 +73,31 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
+import { db } from "~/db/client"
+import { eq } from "drizzle-orm"
+import { accounts } from "~/db/schema"
 
 async function CustomeUserButton() {
-  const user = await currentUser()
-  if (!user) return
+  const { userId } = auth()
+  if (!userId) throw new Error("No userId")
+  const userAccount = await db.query.accounts.findFirst({
+    where: eq(accounts.id, userId),
+    with: { activeProfile: true },
+  })
+  if (!userAccount) throw new Error("No userAccount")
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Image
-          src={user.imageUrl}
+        <img
+          src={userAccount.activeProfile.profileImgPath}
           alt="user-image"
           height="32"
           width="32"
-          className="rounded-full"
+          className="rounded-sm"
         />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>{user.username}</DropdownMenuLabel>
+        <DropdownMenuLabel>{userAccount.activeProfile.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Link href="/manage-profile">Manage Profile</Link>

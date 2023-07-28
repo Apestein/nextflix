@@ -6,6 +6,7 @@ export type myShow = InferModel<typeof myShows>
 export interface Show {
   id: number
   backdrop_path: string
+  poster_path: string
   title: string
   overview: string
   vote_average: number

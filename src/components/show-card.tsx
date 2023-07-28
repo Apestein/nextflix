@@ -57,11 +57,13 @@ export function ShowCard({ show }: { show: Show }) {
     <Dialog onOpenChange={() => setOpen(!open)}>
       <DialogTrigger>
         <Image
-          src={`https://image.tmdb.org/t/p/w500${show.backdrop_path}`}
+          src={`https://image.tmdb.org/t/p/w500${
+            show.backdrop_path ?? show.poster_path
+          }`}
           alt="show-backdrop"
           width={240}
           height={135}
-          className="min-w-[240px] cursor-pointer transition-transform hover:scale-110"
+          className="h-[135px] min-w-[240px] cursor-pointer object-cover transition-transform hover:scale-110"
         />
       </DialogTrigger>
       <DialogContent className="max-w-3xl">
