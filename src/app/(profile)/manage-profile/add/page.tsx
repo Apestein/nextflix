@@ -38,7 +38,6 @@ export default function AddProfilePage() {
       />
       <section className="space-x-8">
         <Button
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={() => {
             void mutate({ name })
             router.replace("/manage-profile")

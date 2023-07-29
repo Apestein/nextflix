@@ -21,7 +21,7 @@ export default async function ManageProfilePage() {
         {userAccount.profiles.map((profile) => (
           <Link
             key={profile.id}
-            href={`/manage-profile/${profile.id}`}
+            href={`/manage-profile/${profile.name}?profileId=${profile.id}`}
             className="outline-1 hover:outline"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}

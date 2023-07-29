@@ -1,15 +1,21 @@
 "use client"
 import { Button } from "~/components/ui/button"
-import { addProfile } from "~/lib/actions"
+import * as sa from "~/lib/actions"
 import { useZact } from "zact/client"
 import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { useRouter } from "next/navigation"
+import { raise } from "~/lib/utils"
 
-export default function ProfilePage({ params }: { params: string[] }) {
-  console.log(params)
-  const [name, setName] = useState("")
-  const { mutate } = useZact(addProfile)
+export default function ProfilePage({
+  params,
+  searchParams,
+}: {
+  params: { slug: string[] }
+  searchParams: { profileId: string }
+}) {
+  const [name, setName] = useState(params.slug[0] ?? raise("No params"))
+  const { mutate } = useZact(sa.updateProfile)
   const debounced = useDebouncedCallback((value: string) => {
     setName(value)
   }, 500)
@@ -33,20 +39,20 @@ export default function ProfilePage({ params }: { params: string[] }) {
       <input
         type="text"
         name="name"
-        placeholder="name"
+        value={name}
         className="w-full border border-white/40 p-1"
         onChange={(e) => debounced(e.target.value)}
       />
       <section className="space-x-8">
         <Button
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onClick={() => {
-            void mutate({ name })
-            router.replace("/manage-profile")
-            router.refresh()
-          }}
+          onClick={() =>
+            void mutate({
+              name: name,
+              profileId: searchParams.profileId,
+            })
+          }
         >
-          Save
+          Update
         </Button>
       </section>
     </main>

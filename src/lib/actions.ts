@@ -31,6 +31,42 @@ export const addProfile = zact(z.object({ name: z.string().min(3) }))(async (
   return { message: `Profile ${input.name} created` }
 })
 
+export const updateProfile = zact(
+  z.object({ profileId: z.string(), name: z.string().min(3) }),
+)(async (input) => {
+  const userId = auth().userId
+  if (!userId) throw new Error("Unauthorized")
+  const profile = await db.query.profiles.findFirst({
+    where: eq(accounts.id, input.profileId),
+  })
+  if (!profile) throw new Error("Failed to find profile")
+  if (userId !== profile.accountId)
+    throw new Error("Unauthorized, not profile owner")
+  await db
+    .update(profiles)
+    .set({
+      name: input.name,
+      profileImgPath: `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${input.name}`,
+    })
+    .where(eq(profiles.id, input.profileId))
+  return { message: "Profile Updated" }
+})
+
+export const deleteProfile = zact(z.object({ profileId: z.string() }))(async (
+  input,
+) => {
+  const userId = auth().userId
+  if (!userId) throw new Error("Unauthorized")
+  const profile = await db.query.profiles.findFirst({
+    where: eq(accounts.id, input.profileId),
+  })
+  if (!profile) throw new Error("Failed to find profile")
+  if (userId !== profile.accountId)
+    throw new Error("Unauthorized, not profile owner")
+  await db.delete(profiles).where(eq(profiles.id, input.profileId))
+  return { message: "Profile Deleted" }
+})
+
 export const toggleMyShow = zact(z.object({ id: z.number() }))(async (
   input,
 ) => {
