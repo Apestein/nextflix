@@ -19,14 +19,19 @@ export default async function ManageProfilePage() {
       <h1 className="text-5xl">Manage Profiles</h1>
       <ul className="flex gap-4">
         {userAccount.profiles.map((profile) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <Link
             key={profile.id}
-            src={profile.profileImgPath}
-            alt="profile-image"
-            width="96"
-            height="96"
-          />
+            href={`/manage-profile/${profile.id}`}
+            className="outline-1 hover:outline"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={profile.profileImgPath}
+              alt="profile-image"
+              width="96"
+              height="96"
+            />
+          </Link>
         ))}
         <Link href="/manage-profile/add">
           <PlusCircle
@@ -35,7 +40,9 @@ export default async function ManageProfilePage() {
           />
         </Link>
       </ul>
-      <Button>Done</Button>
+      <Button asChild>
+        <Link href="/">Done</Link>
+      </Button>
     </main>
   )
 }

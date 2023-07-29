@@ -15,8 +15,7 @@ export default function ShowsLayout({
 import Image from "next/image"
 import { Search, Bell } from "lucide-react"
 import Link from "next/link"
-import { buttonVariants } from "~/components/ui/button"
-import { cn } from "~/lib/utils"
+import { Button } from "~/components/ui/button"
 import { SignedOut, SignedIn } from "@clerk/nextjs"
 
 function Header() {
@@ -50,15 +49,12 @@ function Header() {
           <CustomeUserButton />
         </SignedIn>
         <SignedOut>
-          <Link
-            href="/sign-in"
-            className={cn(
-              buttonVariants({ variant: "default" }),
-              "bg-red-600 font-semibold text-white hover:bg-red-700 active:bg-red-800",
-            )}
+          <Button
+            asChild
+            className="bg-red-600 font-semibold text-white hover:bg-red-700 active:bg-red-800"
           >
-            Sign In
-          </Link>
+            <Link href="/sign-in">Sign In</Link>
+          </Button>
         </SignedOut>
       </div>
     </header>

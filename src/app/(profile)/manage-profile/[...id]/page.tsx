@@ -6,7 +6,8 @@ import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { useRouter } from "next/navigation"
 
-export default function AddProfilePage() {
+export default function ProfilePage({ params }: { params: string[] }) {
+  console.log(params)
   const [name, setName] = useState("")
   const { mutate } = useZact(addProfile)
   const debounced = useDebouncedCallback((value: string) => {

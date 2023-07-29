@@ -49,7 +49,6 @@ export const toggleMyShow = zact(z.object({ id: z.number() }))(async (
     .onConflictDoNothing()
 
   if (!res.rowCount) await db.delete(myShows).where(eq(myShows.id, input.id))
-  console.log(res)
 })
 
 // export async function toggleMyShow(showId: number) {
