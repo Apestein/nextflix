@@ -3,6 +3,7 @@ import { Inter } from "next/font/google"
 import { cn } from "~/lib/utils"
 import { ThemeProvider } from "~/components/theme-provider"
 import { ClerkProvider } from "@clerk/nextjs"
+import { Toaster } from "~/components/ui/toaster"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -22,12 +23,13 @@ export default function RootLayout({
         <body
           className={cn(
             "bg-neutral-900 text-slate-50 antialiased",
-            inter.className
+            inter.className,
           )}
         >
           <ThemeProvider attribute="class" defaultTheme="dark">
             {children}
           </ThemeProvider>
+          <Toaster />
         </body>
       </html>
     </ClerkProvider>

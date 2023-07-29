@@ -6,6 +6,7 @@ import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { useRouter } from "next/navigation"
 import { raise } from "~/lib/utils"
+import { useToast } from "~/components/ui/use-toast"
 
 export default function ProfilePage({
   params,
@@ -21,6 +22,7 @@ export default function ProfilePage({
     setName(value)
   }, 500)
   const router = useRouter()
+  const { toast } = useToast()
 
   return (
     <main className="flex flex-col items-center gap-12 ">
@@ -53,6 +55,7 @@ export default function ProfilePage({
             })
             router.replace("/manage-profile")
             router.refresh()
+            toast({ title: "Action Completed", description: "Updated profile" })
           }}
         >
           Update
@@ -65,6 +68,7 @@ export default function ProfilePage({
             })
             router.replace("/manage-profile")
             router.refresh()
+            toast({ title: "Action Completed", description: "Deleted profile" })
           }}
         >
           Delete
