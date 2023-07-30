@@ -125,32 +125,22 @@ function SaveOrUnsave({
   if (isLoading) return <Skeleton className="h-6 w-6 rounded-full" />
   if (isPending || isValidating)
     return <Icons.spinner className="h-6 w-6 animate-spin" />
-  if (isSaved)
-    return (
-      <button
-        onClick={() =>
-          startTransition(async () => {
-            await toggleMyShow({ id: showId })
-            void mutate(`/api/my-list/${showId}`)
-          })
-        }
-      >
+  return (
+    <button
+      onClick={() =>
+        startTransition(async () => {
+          await toggleMyShow({ id: showId })
+          void mutate(`/api/my-list/${showId}`)
+        })
+      }
+    >
+      {isSaved ? (
         <CheckCircle className="h-6 w-6 cursor-pointer" strokeWidth="1.5" />
-      </button>
-    )
-  if (!isSaved)
-    return (
-      <button
-        onClick={() =>
-          startTransition(async () => {
-            await toggleMyShow({ id: showId })
-            void mutate(`/api/my-list/${showId}`)
-          })
-        }
-      >
+      ) : (
         <PlusCircle className="h-6 w-6 cursor-pointer" strokeWidth="1.5" />
-      </button>
-    )
+      )}
+    </button>
+  )
 }
 
 function ShowGenres({ show }: { show: ShowWithVideoAndGenre | undefined }) {

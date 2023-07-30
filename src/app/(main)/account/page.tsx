@@ -2,7 +2,6 @@ import { db } from "~/db/client"
 import { accounts } from "~/db/schema"
 import { eq } from "drizzle-orm"
 import { auth } from "@clerk/nextjs"
-import Image from "next/image"
 import { CreditCard, ChevronRight } from "lucide-react"
 import { errors } from "~/lib/utils"
 
