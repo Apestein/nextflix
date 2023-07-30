@@ -5,15 +5,16 @@ import { auth } from "@clerk/nextjs"
 import { Button } from "~/components/ui/button"
 import { PlusCircle } from "lucide-react"
 import Link from "next/link"
+import { errors } from "~/lib/utils"
 
 export default async function ManageProfilePage() {
   const { userId } = auth()
-  if (!userId) throw new Error("No userId")
+  if (!userId) throw new Error(errors.unauthenticated)
   const userAccount = await db.query.accounts.findFirst({
     where: eq(accounts.id, userId),
     with: { profiles: true },
   })
-  if (!userAccount) throw new Error("No userAccount")
+  if (!userAccount) throw new Error(errors.db)
   return (
     <main className="flex flex-col items-center gap-12 ">
       <h1 className="text-5xl">Manage Profiles</h1>

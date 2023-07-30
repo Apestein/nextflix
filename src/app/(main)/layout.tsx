@@ -73,15 +73,16 @@ import {
 import { db } from "~/db/client"
 import { eq } from "drizzle-orm"
 import { accounts } from "~/db/schema"
+import { errors } from "~/lib/utils"
 
 async function CustomeUserButton() {
   const { userId } = auth()
-  if (!userId) throw new Error("No userId")
+  if (!userId) throw new Error(errors.unauthenticated)
   const userAccount = await db.query.accounts.findFirst({
     where: eq(accounts.id, userId),
     with: { activeProfile: true },
   })
-  if (!userAccount) throw new Error("No userAccount")
+  if (!userAccount) throw new Error(errors.db)
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>

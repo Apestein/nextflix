@@ -5,7 +5,7 @@ import { useZact } from "zact/client"
 import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { useRouter } from "next/navigation"
-import { raise } from "~/lib/utils"
+import { raise, errors } from "~/lib/utils"
 import { useToast } from "~/components/ui/use-toast"
 
 export default function ProfilePage({
@@ -15,7 +15,7 @@ export default function ProfilePage({
   params: { slug: string[] }
   searchParams: { profileId: string }
 }) {
-  const [name, setName] = useState(params.slug[0] ?? raise("No params"))
+  const [name, setName] = useState(params.slug[0] ?? raise(errors.undefined))
   const { mutate: mutateUpdate } = useZact(sa.updateProfile)
   const { mutate: mutateDelete } = useZact(sa.deleteProfile)
   const debounced = useDebouncedCallback((value: string) => {

@@ -4,15 +4,16 @@ import { eq } from "drizzle-orm"
 import { auth } from "@clerk/nextjs"
 import Image from "next/image"
 import { CreditCard, ChevronRight } from "lucide-react"
+import { errors } from "~/lib/utils"
 
 export default async function AccountPage() {
   const { userId } = auth()
-  if (!userId) throw new Error("No userId")
+  if (!userId) throw new Error(errors.unauthenticated)
   const userAccount = await db.query.accounts.findFirst({
     where: eq(accounts.id, userId),
     with: { profiles: true },
   })
-  if (!userAccount) throw new Error("No userAccount")
+  if (!userAccount) throw new Error(errors.db)
   return (
     <main className="flex justify-center">
       <div className="w-1/2 max-w-xl space-y-5 py-12">
@@ -51,11 +52,12 @@ export default async function AccountPage() {
         <p className="text-2xl text-white/50">Profiles</p>
         <div className="flex gap-5">
           {userAccount.profiles.map((profile) => (
-            <Image
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
               key={profile.id}
               src={profile.profileImgPath}
-              width={100}
-              height={100}
+              width="100"
+              height="100"
               alt="profile-img"
               className="rounded-lg"
             />

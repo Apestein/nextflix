@@ -5,10 +5,11 @@ import { auth } from "@clerk/nextjs"
 import { ShowCard } from "~/components/show-card"
 import type { myShow, Show } from "~/types"
 import { env } from "~/env.mjs"
+import { errors } from "~/lib/utils"
 
 export default async function AccountPage() {
   const { userId } = auth()
-  if (!userId) throw new Error("No userId")
+  if (!userId) throw new Error(errors.unauthenticated)
   const userAccount = await db.query.accounts.findFirst({
     where: eq(accounts.id, userId),
     with: {
@@ -19,7 +20,7 @@ export default async function AccountPage() {
       },
     },
   })
-  if (!userAccount) throw new Error("No Account")
+  if (!userAccount) throw new Error(errors.db)
   const myShows = userAccount.activeProfile.savedShows
 
   const shows = await getMyShows(myShows)
@@ -47,7 +48,10 @@ async function getMyShows(shows: myShow[]) {
     shows.map((show) =>
       fetch(
         `https://api.themoviedb.org/3/movie/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
-      ).then((r) => r.json()),
+      ).then((r) => {
+        if (!r.ok) throw new Error(errors.fetch)
+        return r.json()
+      }),
     ),
   )
   return data

@@ -4,6 +4,7 @@ import { Button } from "~/components/ui/button"
 import { ShowsCarousel } from "~/components/show-carousel"
 import { Play } from "lucide-react"
 import Image from "next/image"
+import { errors } from "~/lib/utils"
 
 export default async function Home() {
   const allShows = await getShows("movie")
@@ -64,7 +65,7 @@ export default async function Home() {
 function pickRandomNowPlayingShow(shows: Show[]) {
   const show = shows[Math.floor(Math.random() * shows.length)]
   if (show) return show
-  else throw new Error("Error getting random show.")
+  else throw new Error(errors.undefined)
 }
 
 async function getShows(mediaType: "movie" | "tv") {
@@ -109,7 +110,7 @@ async function getShows(mediaType: "movie" | "tv") {
     !romance ||
     !documentary
   )
-    throw new Error("Failed to fetch shows")
+    throw new Error(errors.fetch)
 
   return {
     nowPlaying: nowPlaying.results,
