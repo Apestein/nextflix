@@ -43,16 +43,6 @@ export function ShowCard({ show }: { show: Show }) {
     swrOptions,
   )
 
-  function findTrailer(show: ShowWithVideoAndGenre | undefined) {
-    if (!show) return
-    const trailerIndex = show.videos?.results.findIndex(
-      (item) => item.type === "Trailer",
-    )
-    if (trailerIndex === -1 || !trailerIndex) return
-    const trailerKey = show.videos?.results[trailerIndex]?.key
-    return trailerKey
-  }
-
   return (
     <Dialog onOpenChange={() => setOpen(!open)}>
       <DialogTrigger>
@@ -89,12 +79,7 @@ export function ShowCard({ show }: { show: Show }) {
           <DialogDescription>{show.overview}</DialogDescription>
           <ShowGenres show={showWithGenreAndVideo} />
         </DialogHeader>
-        <iframe
-          src={`https://www.youtube.com/embed/${
-            findTrailer(showWithGenreAndVideo) ?? ""
-          }`}
-          className="aspect-video w-full"
-        />
+        <ShowTrailer show={showWithGenreAndVideo} />
       </DialogContent>
     </Dialog>
   )
@@ -150,4 +135,23 @@ function ShowGenres({ show }: { show: ShowWithVideoAndGenre | undefined }) {
       {show.genres.map((genre) => genre.name).join(", ")}
     </p>
   )
+}
+
+function ShowTrailer({ show }: { show: ShowWithVideoAndGenre | undefined }) {
+  if (show === undefined) return <Skeleton className="aspect-video w-full" />
+  return (
+    <iframe
+      src={`https://www.youtube.com/embed/${findTrailer(show)}`}
+      className="aspect-video w-full"
+    />
+  )
+}
+
+function findTrailer(show: ShowWithVideoAndGenre) {
+  const trailerIndex = show.videos.results.findIndex(
+    (item) => item.type === "Trailer",
+  )
+  if (trailerIndex === -1) return ""
+  const trailerKey = show.videos.results[trailerIndex]?.key
+  return trailerKey ?? ""
 }
