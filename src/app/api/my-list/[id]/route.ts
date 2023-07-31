@@ -3,14 +3,14 @@ import { db } from "~/db/client"
 import { accounts, myShows } from "~/db/schema"
 import { eq } from "drizzle-orm"
 import { auth } from "@clerk/nextjs"
-import { errors } from "~/lib/utils"
+import { ERR } from "~/lib/utils"
 
 export async function GET(
   req: Request,
   { params }: { params: { id: string } },
 ) {
   const { userId } = auth()
-  if (!userId) return NextResponse.json(errors.unauthenticated, { status: 401 })
+  if (!userId) return NextResponse.json(ERR.unauthenticated, { status: 401 })
   const userAccount = await db.query.accounts.findFirst({
     where: eq(accounts.id, userId),
     with: {
@@ -23,7 +23,7 @@ export async function GET(
       },
     },
   })
-  if (!userAccount) throw new Error(errors.db)
+  if (!userAccount) throw new Error(ERR.db)
   const savedShow = userAccount.activeProfile.savedShows
   if (savedShow.length) return NextResponse.json(true)
   else return NextResponse.json(false)

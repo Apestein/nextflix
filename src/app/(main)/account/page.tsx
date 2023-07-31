@@ -3,16 +3,16 @@ import { accounts } from "~/db/schema"
 import { eq } from "drizzle-orm"
 import { auth } from "@clerk/nextjs"
 import { CreditCard, ChevronRight } from "lucide-react"
-import { errors } from "~/lib/utils"
+import { ERR } from "~/lib/utils"
 
 export default async function AccountPage() {
   const { userId } = auth()
-  if (!userId) throw new Error(errors.unauthenticated)
+  if (!userId) throw new Error(ERR.unauthenticated)
   const userAccount = await db.query.accounts.findFirst({
     where: eq(accounts.id, userId),
     with: { profiles: true },
   })
-  if (!userAccount) throw new Error(errors.db)
+  if (!userAccount) throw new Error(ERR.db)
   return (
     <main className="flex justify-center">
       <div className="w-1/2 max-w-xl space-y-5 py-12">

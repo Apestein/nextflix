@@ -1,12 +1,14 @@
 "use client"
 import { Button } from "~/components/ui/button"
 import * as sa from "~/lib/actions"
-import { useZact } from "zact/client"
+import { useZact } from "~/lib/zact/client"
 import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { useRouter } from "next/navigation"
-import { raise, errors } from "~/lib/utils"
+import { raise, ERR } from "~/lib/utils"
 import { useToast } from "~/components/ui/use-toast"
+import { ArrowLeft } from "lucide-react"
+import Link from "next/link"
 
 export default function ProfilePage({
   params,
@@ -15,9 +17,9 @@ export default function ProfilePage({
   params: { slug: string[] }
   searchParams: { profileId: string }
 }) {
-  const [name, setName] = useState(params.slug[0] ?? raise(errors.undefined))
-  const { mutate: mutateUpdate } = useZact(sa.updateProfile)
-  const { mutate: mutateDelete } = useZact(sa.deleteProfile)
+  const [name, setName] = useState(params.slug[0] ?? raise(ERR.undefined))
+  const { execute: executeUpdate } = useZact(sa.updateProfile)
+  const { execute: executeDelete } = useZact(sa.deleteProfile)
   const debounced = useDebouncedCallback((value: string) => {
     setName(value)
   }, 500)
@@ -47,9 +49,15 @@ export default function ProfilePage({
         onChange={(e) => debounced(e.target.value)}
       />
       <section className="space-x-8">
+        <Button variant="outline" asChild>
+          <Link href="/manage-profile">
+            <ArrowLeft />
+          </Link>
+        </Button>
         <Button
+          className="bg-green-600 font-semibold text-white hover:bg-green-700 active:bg-green-800"
           onClick={() => {
-            void mutateUpdate({
+            void executeUpdate({
               name: name,
               profileId: searchParams.profileId,
             })
@@ -61,9 +69,9 @@ export default function ProfilePage({
           Update
         </Button>
         <Button
-          variant="destructive"
+          className="bg-red-600 font-semibold text-white hover:bg-red-700 active:bg-red-800"
           onClick={() => {
-            void mutateDelete({
+            void executeDelete({
               profileId: searchParams.profileId,
             })
             router.replace("/manage-profile")

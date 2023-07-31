@@ -14,47 +14,33 @@ export function useZact<
 
   const [data, setData] = useState<ResponseType | null>(null)
 
-  const [isRunning, setIsLoading] = useState(false)
+  const [isRunning, setRunning] = useState(false)
   const [err, setErr] = useState<Error | null>(null)
 
-  const mutate = useMemo(
+  const execute = useMemo(
     () => async (input: z.infer<InputType>) => {
-      setIsLoading(true)
+      setRunning(true)
       setErr(null)
       setData(null)
       try {
         const result = await doAction.current(input)
         setData(result)
-        setIsLoading(false)
+        setRunning(false)
       } catch (e) {
         console.log(e)
         setErr(e as Error)
-        setIsLoading(false)
+        setRunning(false)
       }
     },
     [],
   )
 
   useEffect(() => {
-    const executeQuery = async (input: z.infer<InputType>) => {
-      setIsLoading(true)
-      setErr(null)
-      setData(null)
-      try {
-        const result = await doAction.current(input)
-        setData(result)
-        setIsLoading(false)
-      } catch (e) {
-        console.log(e)
-        setErr(e as Error)
-        setIsLoading(false)
-      }
-    }
-    if (query) void executeQuery(query)
-  }, [query])
+    if (query) void execute(query)
+  }, [])
 
   return {
-    mutate,
+    execute,
     data,
     isRunning,
     error: err,

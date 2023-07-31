@@ -6,21 +6,21 @@ import { auth } from "@clerk/nextjs"
 import { eq } from "drizzle-orm"
 import { accounts, profiles } from "~/db/schema"
 import { z } from "zod"
-import { zact } from "zact/server"
-import { errors } from "./utils"
+import { zact } from "./zact/server"
+import { ERR } from "./utils"
 
 export const addProfile = zact(z.object({ name: z.string().min(3) }))(async (
   input,
 ) => {
   const userId = auth().userId
-  if (!userId) throw new Error(errors.unauthenticated)
+  if (!userId) throw new Error(ERR.unauthenticated)
   const userAccount = await db.query.accounts.findFirst({
     where: eq(accounts.id, userId),
     with: {
       profiles: true,
     },
   })
-  if (!userAccount) throw new Error(errors.db)
+  if (!userAccount) throw new Error(ERR.db)
   if (userAccount.profiles.length === 4) return
   await db.insert(profiles).values({
     id: `${userAccount.id}/${userAccount.profiles.length + 1}`,
@@ -35,12 +35,12 @@ export const updateProfile = zact(
   z.object({ profileId: z.string(), name: z.string().min(3) }),
 )(async (input) => {
   const userId = auth().userId
-  if (!userId) throw new Error(errors.unauthenticated)
+  if (!userId) throw new Error(ERR.unauthenticated)
   const profile = await db.query.profiles.findFirst({
     where: eq(accounts.id, input.profileId),
   })
-  if (!profile) throw new Error(errors.db)
-  if (userId !== profile.accountId) throw new Error(errors.unauthorized)
+  if (!profile) throw new Error(ERR.db)
+  if (userId !== profile.accountId) throw new Error(ERR.unauthorized)
   await db
     .update(profiles)
     .set({
@@ -55,12 +55,12 @@ export const deleteProfile = zact(z.object({ profileId: z.string() }))(async (
   input,
 ) => {
   const userId = auth().userId
-  if (!userId) throw new Error(errors.unauthenticated)
+  if (!userId) throw new Error(ERR.unauthenticated)
   const profile = await db.query.profiles.findFirst({
     where: eq(accounts.id, input.profileId),
   })
-  if (!profile) throw new Error(errors.db)
-  if (userId !== profile.accountId) throw new Error(errors.unauthorized)
+  if (!profile) throw new Error(ERR.db)
+  if (userId !== profile.accountId) throw new Error(ERR.unauthorized)
   await db.delete(profiles).where(eq(profiles.id, input.profileId))
   return { message: "Profile Deleted" }
 })
@@ -69,11 +69,11 @@ export const toggleMyShow = zact(z.object({ id: z.number() }))(async (
   input,
 ) => {
   const userId = auth().userId
-  if (!userId) throw new Error(errors.unauthenticated)
+  if (!userId) throw new Error(ERR.unauthenticated)
   const userAccount = await db.query.accounts.findFirst({
     where: eq(accounts.id, userId),
   })
-  if (!userAccount) throw new Error(errors.db)
+  if (!userAccount) throw new Error(ERR.db)
   const res = await db
     .insert(myShows)
     .values({
@@ -83,4 +83,18 @@ export const toggleMyShow = zact(z.object({ id: z.number() }))(async (
     .onConflictDoNothing()
 
   if (!res.rowCount) await db.delete(myShows).where(eq(myShows.id, input.id))
+})
+
+export const testAction = zact(z.object({ id: z.string() }))(async (input) => {
+  const res = await fetch(
+    `https://jsonplaceholder.typicode.com/todos/${input.id}`,
+  )
+  if (!res.ok) throw new Error()
+  const data = (await res.json()) as {
+    userId: number
+    id: number
+    title: string
+    body: string
+  }
+  return data
 })

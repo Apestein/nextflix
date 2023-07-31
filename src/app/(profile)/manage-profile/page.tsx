@@ -3,18 +3,18 @@ import { accounts } from "~/db/schema"
 import { eq } from "drizzle-orm"
 import { auth } from "@clerk/nextjs"
 import { Button } from "~/components/ui/button"
-import { PlusCircle } from "lucide-react"
+import { PlusCircle, ArrowLeft } from "lucide-react"
 import Link from "next/link"
-import { errors } from "~/lib/utils"
+import { ERR } from "~/lib/utils"
 
 export default async function ManageProfilePage() {
   const { userId } = auth()
-  if (!userId) throw new Error(errors.unauthenticated)
+  if (!userId) throw new Error(ERR.unauthenticated)
   const userAccount = await db.query.accounts.findFirst({
     where: eq(accounts.id, userId),
     with: { profiles: true },
   })
-  if (!userAccount) throw new Error(errors.db)
+  if (!userAccount) throw new Error(ERR.db)
   return (
     <main className="flex flex-col items-center gap-12 ">
       <h1 className="text-5xl">Manage Profiles</h1>
@@ -41,8 +41,10 @@ export default async function ManageProfilePage() {
           />
         </Link>
       </ul>
-      <Button asChild>
-        <Link href="/">Done</Link>
+      <Button variant="outline" asChild>
+        <Link href="/">
+          <ArrowLeft />
+        </Link>
       </Button>
     </main>
   )

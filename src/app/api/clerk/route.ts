@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { db } from "~/db/client"
 import { accounts, profiles } from "~/db/schema"
-import { raise, errors } from "~/lib/utils"
+import { raise, ERR } from "~/lib/utils"
 
 type ClerkEvent = {
   data: {
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     .insert(accounts)
     .values({
       id: user.id,
-      email: user.email_addresses[0]?.email_address ?? raise(errors.undefined),
+      email: user.email_addresses[0]?.email_address ?? raise(ERR.undefined),
       activeProfileId: user.id + "/1",
     })
     .returning({ id: accounts.id })

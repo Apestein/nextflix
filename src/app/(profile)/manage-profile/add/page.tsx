@@ -1,14 +1,14 @@
 "use client"
 import { Button } from "~/components/ui/button"
 import { addProfile } from "~/lib/actions"
-import { useZact } from "zact/client"
+import { useZact } from "~/lib/zact/client"
 import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { useRouter } from "next/navigation"
 
 export default function AddProfilePage() {
   const [name, setName] = useState("")
-  const { mutate } = useZact(addProfile)
+  const { execute } = useZact(addProfile)
   const debounced = useDebouncedCallback((value: string) => {
     setName(value)
   }, 500)
@@ -39,7 +39,7 @@ export default function AddProfilePage() {
       <section className="space-x-8">
         <Button
           onClick={() => {
-            void mutate({ name })
+            void execute({ name })
             router.replace("/manage-profile")
             router.refresh()
           }}

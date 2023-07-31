@@ -9,7 +9,7 @@ export function raise(err: string): never {
   throw new Error(err)
 }
 
-export const errors = {
+export const ERR = {
   unauthenticated: "Unauthenticated",
   unauthorized: "Unauthorized",
   db: "Failed to find in database",
