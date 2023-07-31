@@ -37,7 +37,7 @@ export const updateProfile = zact(
   const userId = auth().userId
   if (!userId) throw new Error(ERR.unauthenticated)
   const profile = await db.query.profiles.findFirst({
-    where: eq(accounts.id, input.profileId),
+    where: eq(profiles.id, input.profileId),
   })
   if (!profile) throw new Error(ERR.db)
   if (userId !== profile.accountId) throw new Error(ERR.unauthorized)
@@ -51,13 +51,32 @@ export const updateProfile = zact(
   return { message: "Profile Updated" }
 })
 
+export const switchProfile = zact(z.object({ profileId: z.string() }))(async (
+  input,
+) => {
+  const userId = auth().userId
+  if (!userId) throw new Error(ERR.unauthenticated)
+  const profile = await db.query.profiles.findFirst({
+    where: eq(profiles.id, input.profileId),
+  })
+  if (!profile) throw new Error(ERR.db)
+  if (profile.accountId !== userId) throw new Error(ERR.unauthorized)
+  await db
+    .update(accounts)
+    .set({
+      activeProfileId: input.profileId,
+    })
+    .where(eq(accounts.id, userId))
+  return { message: "Active Profile Updated" }
+})
+
 export const deleteProfile = zact(z.object({ profileId: z.string() }))(async (
   input,
 ) => {
   const userId = auth().userId
   if (!userId) throw new Error(ERR.unauthenticated)
   const profile = await db.query.profiles.findFirst({
-    where: eq(accounts.id, input.profileId),
+    where: eq(profiles.id, input.profileId),
   })
   if (!profile) throw new Error(ERR.db)
   if (userId !== profile.accountId) throw new Error(ERR.unauthorized)

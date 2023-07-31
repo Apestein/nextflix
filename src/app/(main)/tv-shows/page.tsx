@@ -1,4 +1,4 @@
-import { type Show } from "~/types"
+import type { Show } from "~/types"
 import { Button } from "~/components/ui/button"
 import { ShowsCarousel } from "~/components/show-carousel"
 import { Play } from "lucide-react"
@@ -6,10 +6,11 @@ import Image from "next/image"
 import { ERR } from "~/lib/utils"
 import { getShows } from "~/lib/fetchers"
 
-export default async function Home() {
-  const allShows = await getShows("movie")
+export default async function TvShows() {
+  const allShows = await getShows("tv")
+  console.log(allShows)
 
-  const randomMovie = pickRandomShow(allShows.nowPlaying)
+  const randomMovie = pickRandomShow(allShows.topRated)
   return (
     <>
       <div
@@ -46,7 +47,7 @@ export default async function Home() {
           </div>
         </div>
         <div className="space-y-10">
-          <ShowsCarousel title="Now Playing" shows={allShows.nowPlaying} />
+          {/* <ShowsCarousel title="Now Playing" shows={allShows.nowPlaying} /> */}
           <ShowsCarousel title="Top Rated" shows={allShows.topRated} />
           <ShowsCarousel
             title="Action Thriller"

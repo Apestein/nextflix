@@ -1,7 +1,8 @@
-import type { myShows } from "~/db/schema"
+import type { myShows, profiles } from "~/db/schema"
 import type { InferModel } from "drizzle-orm"
 
-export type myShow = InferModel<typeof myShows>
+export type MyShow = InferModel<typeof myShows>
+export type Profile = InferModel<typeof profiles>
 
 export interface Show {
   id: number
@@ -11,6 +12,16 @@ export interface Show {
   overview: string
   vote_average: number
   release_date: string
+}
+
+export interface TvShow {
+  id: number
+  backdrop_path: string
+  poster_path: string
+  name: string
+  overview: string
+  vote_average: number
+  first_air_date: string
 }
 
 export interface ShowWithVideoAndGenre extends Show {

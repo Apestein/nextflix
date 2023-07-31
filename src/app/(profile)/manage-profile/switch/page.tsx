@@ -3,11 +3,12 @@ import { accounts } from "~/db/schema"
 import { eq } from "drizzle-orm"
 import { auth } from "@clerk/nextjs"
 import { Button } from "~/components/ui/button"
-import { PlusCircle, ArrowLeft } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { ERR } from "~/lib/utils"
+import { ProfileSwitcher } from "./profile-switcher"
 
-export default async function ManageProfilePage() {
+export default async function SwitchProfilePage() {
   const { userId } = auth()
   if (!userId) throw new Error(ERR.unauthenticated)
   const userAccount = await db.query.accounts.findFirst({
@@ -24,31 +25,11 @@ export default async function ManageProfilePage() {
       </Button>
       <main className="grid min-h-screen place-content-center">
         <section className="space-y-8">
-          <h1 className="text-5xl">Manage Profiles</h1>
+          <h1 className="text-5xl">Who&apos;s Watching</h1>
           <ul className="flex gap-4">
             {userAccount.profiles.map((profile) => (
-              <Link
-                key={profile.id}
-                href={`/manage-profile/${profile.name}?profileId=${profile.id}`}
-                className="outline-1 hover:outline"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={profile.profileImgPath}
-                  alt="profile-image"
-                  width="96"
-                  height="96"
-                />
-              </Link>
+              <ProfileSwitcher key={profile.id} profile={profile} />
             ))}
-            {userAccount.profiles.length !== 4 && (
-              <Link href="/manage-profile/add">
-                <PlusCircle
-                  className="h-24 w-24 bg-neutral-800 p-3 outline-1 hover:outline"
-                  strokeWidth={1}
-                />
-              </Link>
-            )}
           </ul>
         </section>
       </main>

@@ -34,9 +34,9 @@ export const accountsRelations = relations(accounts, ({ many, one }) => ({
 
 export const profiles = pgTable("profiles", {
   id: varchar("id", { length: 256 }).primaryKey(),
-  accountId: varchar("account_id", { length: 256 }).references(
-    () => accounts.id,
-  ),
+  accountId: varchar("account_id", { length: 256 })
+    .references(() => accounts.id)
+    .notNull(),
   profileImgPath: varchar("profile_img_path", { length: 256 }).notNull(),
   name: varchar("name", { length: 256 }).notNull(),
 })

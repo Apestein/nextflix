@@ -3,7 +3,7 @@ import { accounts } from "~/db/schema"
 import { eq } from "drizzle-orm"
 import { auth } from "@clerk/nextjs"
 import { ShowCard } from "~/components/show-card"
-import type { myShow, Show } from "~/types"
+import type { MyShow, Show } from "~/types"
 import { env } from "~/env.mjs"
 import { ERR } from "~/lib/utils"
 
@@ -43,7 +43,7 @@ export default async function AccountPage() {
   )
 }
 
-async function getMyShows(shows: myShow[]) {
+async function getMyShows(shows: MyShow[]) {
   const data = await Promise.all<Show>(
     shows.map((show) =>
       fetch(

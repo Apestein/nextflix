@@ -34,9 +34,9 @@ function Header() {
         </Link>
         <div className="flex gap-6 text-sm">
           <Link href="/">Home</Link>
-          <p>TV Shows</p>
-          <p>Movies</p>
-          <p>New & Popular</p>
+          <Link href="/tv-shows">TV Shows</Link>
+          <Link href="/movies">Movies</Link>
+          <Link href="/new-and-popular">New & Popular</Link>
           <Link href="/my-list">
             <p>My List</p>
           </Link>
@@ -101,7 +101,9 @@ async function CustomeUserButton() {
         <DropdownMenuItem>
           <Link href="/manage-profile">Manage Profile</Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>Switch Profile</DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href="/manage-profile/switch">Switch Profile</Link>
+        </DropdownMenuItem>
         <DropdownMenuItem>
           <Link href="/account">Account</Link>
         </DropdownMenuItem>
