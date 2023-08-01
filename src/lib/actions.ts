@@ -84,9 +84,9 @@ export const deleteProfile = zact(z.object({ profileId: z.string() }))(async (
   return { message: "Profile Deleted" }
 })
 
-export const toggleMyShow = zact(z.object({ id: z.number() }))(async (
-  input,
-) => {
+export const toggleMyShow = zact(
+  z.object({ id: z.number(), movieOrTv: z.enum(["movie", "tv"]) }),
+)(async (input) => {
   const userId = auth().userId
   if (!userId) throw new Error(ERR.unauthenticated)
   const userAccount = await db.query.accounts.findFirst({
@@ -97,6 +97,7 @@ export const toggleMyShow = zact(z.object({ id: z.number() }))(async (
     .insert(myShows)
     .values({
       id: input.id,
+      mediaType: input.movieOrTv,
       profileId: userAccount.activeProfileId,
     })
     .onConflictDoNothing()

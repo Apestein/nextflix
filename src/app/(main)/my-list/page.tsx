@@ -45,14 +45,13 @@ export default async function AccountPage() {
 
 async function getMyShows(shows: MyShow[]) {
   const data = await Promise.all<Show>(
-    shows.map((show) =>
-      fetch(
-        `https://api.themoviedb.org/3/movie/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
-      ).then((r) => {
-        if (!r.ok) throw new Error(ERR.fetch)
-        return r.json()
-      }),
-    ),
+    shows.map(async (show) => {
+      const res = await fetch(
+        `https://api.themoviedb.org/3/${show.mediaType}/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
+      )
+      if (!res.ok) throw new Error(ERR.fetch)
+      return res.json()
+    }),
   )
   return data
 }

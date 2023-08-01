@@ -1,15 +1,15 @@
-import { type Show } from "~/types"
+import type { Show } from "~/types"
 import { Button } from "~/components/ui/button"
 import { ShowsCarousel } from "~/components/show-carousel"
 import { Play } from "lucide-react"
 import Image from "next/image"
 import { ERR } from "~/lib/utils"
-import { getShows } from "~/lib/fetchers"
+import { getNewAndPopularShows } from "~/lib/fetchers"
 
-export default async function Home() {
-  const allShows = await getShows("movie")
+export default async function NewAndPopular() {
+  const newAndPopularShows = await getNewAndPopularShows()
 
-  const randomShow = pickRandomShow(allShows.trending)
+  const randomShow = pickRandomShow(newAndPopularShows.trendingMovies)
   return (
     <>
       <div
@@ -46,16 +46,22 @@ export default async function Home() {
           </div>
         </div>
         <div className="space-y-10">
-          <ShowsCarousel title="Trending" shows={allShows.trending} />
-          <ShowsCarousel title="Top Rated" shows={allShows.topRated} />
           <ShowsCarousel
-            title="Action Thriller"
-            shows={allShows.actionThriller}
+            title="Popular Movies"
+            shows={newAndPopularShows.popularMovies}
           />
-          <ShowsCarousel title="Comedy" shows={allShows.comedy} />
-          <ShowsCarousel title="Horror" shows={allShows.horror} />
-          <ShowsCarousel title="Romance" shows={allShows.romance} />
-          <ShowsCarousel title="Documentary" shows={allShows.documentary} />
+          <ShowsCarousel
+            title="Popular TV Shows"
+            shows={newAndPopularShows.popularTvs}
+          />
+          <ShowsCarousel
+            title="Trending Movies"
+            shows={newAndPopularShows.trendingMovies}
+          />
+          <ShowsCarousel
+            title="Trending TV Shows"
+            shows={newAndPopularShows.trendingTvs}
+          />
         </div>
       </main>
     </>

@@ -48,10 +48,12 @@ export const profilesRelation = relations(profiles, ({ one, many }) => ({
   savedShows: many(myShows),
 }))
 
+export const mediaTypeEnum = pgEnum("media_type", ["movie", "tv"])
 export const myShows = pgTable(
   "my_shows",
   {
     id: integer("id").notNull(),
+    mediaType: mediaTypeEnum("media_type").notNull(),
     profileId: varchar("profile_id", { length: 256 })
       .references(() => profiles.id)
       .notNull(),

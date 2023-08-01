@@ -6,7 +6,7 @@ import Image from "next/image"
 import { ERR } from "~/lib/utils"
 import { getShows } from "~/lib/fetchers"
 
-export default async function Home() {
+export default async function Movies() {
   const allShows = await getShows("movie")
 
   const randomShow = pickRandomShow(allShows.trending)

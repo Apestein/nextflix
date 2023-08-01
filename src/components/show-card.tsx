@@ -44,7 +44,7 @@ export function ShowCard({ show }: { show: Show }) {
   )
 
   return (
-    <Dialog onOpenChange={() => setOpen(!open)}>
+    <Dialog onOpenChange={() => setOpen((open) => !open)}>
       <DialogTrigger>
         <Image
           src={`https://image.tmdb.org/t/p/w500${
@@ -59,10 +59,10 @@ export function ShowCard({ show }: { show: Show }) {
       <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5">
-            {show.title}
+            {show.title ?? show.name}
             <SaveOrUnsave
               isSaved={isSaved}
-              showId={show.id}
+              show={show}
               isLoading={isLoading}
               isValidating={isValidating}
             />
@@ -71,7 +71,10 @@ export function ShowCard({ show }: { show: Show }) {
             <p className="text-green-400">
               {Math.round((show.vote_average * 100) / 10)}% Match
             </p>
-            <p>{show.release_date.substring(0, 4)}</p>
+            <p>
+              {show.release_date?.substring(0, 4) ??
+                show.first_air_date?.substring(0, 4)}
+            </p>
             <p className="border border-neutral-500 px-1 text-xs text-white/50">
               EN
             </p>
@@ -94,12 +97,12 @@ import { Icons } from "./icons"
 
 function SaveOrUnsave({
   isSaved,
-  showId,
+  show,
   isLoading,
   isValidating,
 }: {
   isSaved: boolean | undefined
-  showId: number
+  show: Show
   isLoading: boolean
   isValidating: boolean
 }) {
@@ -114,8 +117,11 @@ function SaveOrUnsave({
     <button
       onClick={() =>
         startTransition(async () => {
-          await toggleMyShow({ id: showId })
-          void mutate(`/api/my-list/${showId}`)
+          await toggleMyShow({
+            id: show.id,
+            movieOrTv: show.title ? "movie" : "tv",
+          })
+          void mutate(`/api/my-list/${show.id}`)
         })
       }
     >

@@ -8,22 +8,13 @@ export interface Show {
   id: number
   backdrop_path: string
   poster_path: string
-  title: string
+  title?: string
+  name?: string
   overview: string
   vote_average: number
-  release_date: string
+  release_date?: string
+  first_air_date?: string
 }
-
-export interface TvShow {
-  id: number
-  backdrop_path: string
-  poster_path: string
-  name: string
-  overview: string
-  vote_average: number
-  first_air_date: string
-}
-
 export interface ShowWithVideoAndGenre extends Show {
   videos: {
     results: Video[]
