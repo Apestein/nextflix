@@ -2,4 +2,6 @@
 
 ### Note: Parallel and intercepting routes currently very broken so I will reimplement using them later.
 
+### Planned features: Payment subscription service with Stripe, Full text search, and safety pin for each profile.
+
 Project Description: Netflix clone. Project is 100% typesafe (zero any) due to typescript-eslint library, extremely strict typescript . Bootrapped with CreateT3App. Zact library for typesafe server actions, modified to allow for querying also. Each account can have up to 4 profiles. Each profiles have it's own avatar and list of saved shows.
