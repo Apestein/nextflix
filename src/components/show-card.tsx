@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import type { Show, ShowWithVideoAndGenre } from "~/types"
-import Image from "next/image"
 import {
   Dialog,
   DialogContent,
@@ -15,7 +14,13 @@ import useSWR from "swr"
 import { env } from "~/env.mjs"
 import { useAuth } from "@clerk/nextjs"
 
-export function ShowCard({ show }: { show: Show }) {
+export function ShowCard({
+  children,
+  show,
+}: {
+  children: React.ReactNode
+  show: Show
+}) {
   const [open, setOpen] = useState(false)
   const { userId } = useAuth()
 
@@ -45,17 +50,7 @@ export function ShowCard({ show }: { show: Show }) {
 
   return (
     <Dialog onOpenChange={() => setOpen((open) => !open)}>
-      <DialogTrigger>
-        <Image
-          src={`https://image.tmdb.org/t/p/w500${
-            show.backdrop_path ?? show.poster_path
-          }`}
-          alt="show-backdrop"
-          width={240}
-          height={135}
-          className="h-[135px] min-w-[240px] cursor-pointer object-cover transition-transform hover:scale-110"
-        />
-      </DialogTrigger>
+      <DialogTrigger>{children}</DialogTrigger>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5">

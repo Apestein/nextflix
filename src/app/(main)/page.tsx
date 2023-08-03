@@ -1,10 +1,12 @@
 import { type Show } from "~/types"
-import { Button } from "~/components/ui/button"
+import { buttonVariants } from "~/components/ui/button"
 import { ShowsCarousel } from "~/components/show-carousel"
-import { Play } from "lucide-react"
+import { Play, Info } from "lucide-react"
 import Image from "next/image"
 import { ERR } from "~/lib/utils"
 import { getShows } from "~/lib/fetchers"
+import { ShowCard } from "~/components/show-card"
+import { cn } from "~/lib/utils"
 
 export default async function Home() {
   const allShows = await getShows("movie")
@@ -38,11 +40,28 @@ export default async function Home() {
             {randomShow.overview}
           </p>
           <div className="flex items-center gap-3">
-            <Button>
-              <Play fill="black" className="mr-1" />
-              Play
-            </Button>
-            <Button variant="outline">More Info</Button>
+            <ShowCard show={randomShow}>
+              <div
+                className={cn(
+                  "flex gap-1.5",
+                  buttonVariants({ variant: "default" }),
+                )}
+              >
+                <Play fill="black" />
+                Play
+              </div>
+            </ShowCard>
+            <ShowCard show={randomShow}>
+              <div
+                className={cn(
+                  "flex gap-1.5",
+                  buttonVariants({ variant: "outline" }),
+                )}
+              >
+                <Info />
+                More Info
+              </div>
+            </ShowCard>
           </div>
         </div>
         <div className="space-y-10">
