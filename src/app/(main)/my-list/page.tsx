@@ -6,6 +6,7 @@ import { ShowCard } from "~/components/show-card"
 import type { MyShow, Show } from "~/types"
 import { env } from "~/env.mjs"
 import { ERR } from "~/lib/utils"
+import Image from "next/image"
 
 export default async function AccountPage() {
   const { userId } = auth()
@@ -36,7 +37,17 @@ export default async function AccountPage() {
       )}
       <div className="grid grid-cols-[repeat(auto-fill,_minmax(240px,_1fr))] gap-y-5">
         {shows.map((show) => (
-          <ShowCard key={show.id} show={show} />
+          <ShowCard key={show.id} show={show}>
+            <Image
+              src={`https://image.tmdb.org/t/p/w500${
+                show.backdrop_path ?? show.poster_path
+              }`}
+              alt="show-backdrop"
+              width={240}
+              height={135}
+              className="h-[135px] min-w-[240px] cursor-pointer object-cover transition-transform hover:scale-110"
+            />
+          </ShowCard>
         ))}
       </div>
     </main>
