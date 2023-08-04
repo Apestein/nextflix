@@ -5,8 +5,8 @@ export default authMiddleware({
     "/api/(.*)",
     "/show/(.*)",
     "/tv-shows",
-    "movies",
-    "new-and-popular",
+    "/movies",
+    "/new-and-popular",
   ],
 })
 
