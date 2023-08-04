@@ -77,7 +77,7 @@ import { ERR } from "~/lib/utils"
 
 async function CustomeUserButton() {
   const { userId } = auth()
-  if (!userId) throw new Error(ERR.unauthenticated)
+  if (!userId) return
   const userAccount = await db.query.accounts.findFirst({
     where: eq(accounts.id, userId),
     with: { activeProfile: true },
