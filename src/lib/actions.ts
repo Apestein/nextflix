@@ -105,16 +105,24 @@ export const toggleMyShow = zact(
   if (!res.rowCount) await db.delete(myShows).where(eq(myShows.id, input.id))
 })
 
-export const testAction = zact(z.object({ id: z.string() }))(async (input) => {
-  const res = await fetch(
-    `https://jsonplaceholder.typicode.com/todos/${input.id}`,
-  )
-  if (!res.ok) throw new Error()
-  const data = (await res.json()) as {
-    userId: number
-    id: number
-    title: string
-    body: string
-  }
-  return data
+export const myShowQuery = zact(z.object({ id: z.number() }))(async (input) => {
+  const { userId } = auth()
+  if (!userId) return null
+  const userAccount = await db.query.accounts.findFirst({
+    where: eq(accounts.id, userId),
+    with: {
+      activeProfile: {
+        with: {
+          savedShows: {
+            where: eq(myShows.id, input.id),
+            limit: 1,
+          },
+        },
+      },
+    },
+  })
+  if (!userAccount) throw new Error(ERR.db)
+  const savedShow = userAccount.activeProfile.savedShows
+  if (savedShow.length) return true
+  else return false
 })

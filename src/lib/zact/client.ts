@@ -11,17 +11,16 @@ export function useZact<
   ResponseType extends any,
 >(action: ZactAction<InputType, ResponseType>, query?: z.infer<InputType>) {
   const doAction = useRef(action)
+  const queryRef = useRef(query)
 
   const [data, setData] = useState<ResponseType | null>(null)
-
+  const [isLoading, setLoading] = useState(false)
   const [isRunning, setRunning] = useState(false)
   const [err, setErr] = useState<Error | null>(null)
 
   const execute = useMemo(
     () => async (input: z.infer<InputType>) => {
       setRunning(true)
-      setErr(null)
-      setData(null)
       try {
         const result = await doAction.current(input)
         setData(result)
@@ -36,12 +35,25 @@ export function useZact<
   )
 
   useEffect(() => {
-    if (query) void execute(query)
+    const doQuery = async () => {
+      setLoading(true)
+      try {
+        const result = await doAction.current(queryRef.current)
+        setData(result)
+        setLoading(false)
+      } catch (e) {
+        console.log(e)
+        setErr(e as Error)
+        setLoading(false)
+      }
+    }
+    if (queryRef.current) void doQuery()
   }, [])
 
   return {
     execute,
     data,
+    isLoading,
     isRunning,
     error: err,
   }

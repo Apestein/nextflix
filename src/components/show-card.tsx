@@ -12,7 +12,6 @@ import {
 } from "~/components/ui/dialog"
 import useSWR from "swr"
 import { env } from "~/env.mjs"
-import { useAuth } from "@clerk/nextjs"
 
 export function ShowCard({
   children,
@@ -22,30 +21,17 @@ export function ShowCard({
   show: Show
 }) {
   const [open, setOpen] = useState(false)
-  const { userId } = useAuth()
-
-  const swrOptions = {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-  }
 
   const { data: showWithGenreAndVideo } = useSWR<ShowWithVideoAndGenre>(
     open
       ? `https://api.themoviedb.org/3/movie/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`
       : null,
     (url: string) => fetch(url).then((r) => r.json()),
-    swrOptions,
-  )
-
-  const {
-    data: isSaved,
-    isLoading,
-    isValidating,
-  } = useSWR<boolean>(
-    open && userId ? `/api/my-list/${show.id}` : null,
-    (url: string) => fetch(url).then((r) => r.json()),
-    swrOptions,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
   )
 
   return (
@@ -55,12 +41,7 @@ export function ShowCard({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5">
             {show.title ?? show.name}
-            <SaveOrUnsave
-              isSaved={isSaved}
-              show={show}
-              isLoading={isLoading}
-              isValidating={isValidating}
-            />
+            <SaveOrUnsave show={show} />
           </DialogTitle>
           <div className="flex items-center gap-1.5">
             <p className="text-green-400">
@@ -85,42 +66,32 @@ export function ShowCard({
 
 import { PlusCircle, CheckCircle } from "lucide-react"
 import { Skeleton } from "./ui/skeleton"
-import { useTransition } from "react"
-import { useSWRConfig } from "swr"
-import { toggleMyShow } from "~/lib/actions"
+import { myShowQuery, toggleMyShow } from "~/lib/actions"
 import { Icons } from "./icons"
+import { useZact } from "~/lib/zact/client"
+import { useTransition } from "react"
 
-function SaveOrUnsave({
-  isSaved,
-  show,
-  isLoading,
-  isValidating,
-}: {
-  isSaved: boolean | undefined
-  show: Show
-  isLoading: boolean
-  isValidating: boolean
-}) {
-  const { mutate } = useSWRConfig()
+function SaveOrUnsave({ show }: { show: Show }) {
+  const { execute, data, isLoading } = useZact(myShowQuery, {
+    id: show.id,
+  })
   const [isPending, startTransition] = useTransition()
 
-  if (isSaved === undefined && !isLoading) return
+  if (data === null && !isLoading) return
   if (isLoading) return <Skeleton className="h-6 w-6 rounded-full" />
-  if (isPending || isValidating)
-    return <Icons.spinner className="h-6 w-6 animate-spin" />
+  if (isPending) return <Icons.spinner className="h-6 w-6 animate-spin" />
+
+  function doUpdate() {
+    void toggleMyShow({
+      id: show.id,
+      movieOrTv: show.title ? "movie" : "tv",
+    })
+    void execute({ id: show.id })
+  }
+
   return (
-    <button
-      onClick={() =>
-        startTransition(async () => {
-          await toggleMyShow({
-            id: show.id,
-            movieOrTv: show.title ? "movie" : "tv",
-          })
-          void mutate(`/api/my-list/${show.id}`)
-        })
-      }
-    >
-      {isSaved ? (
+    <button onClick={() => startTransition(() => doUpdate())}>
+      {data ? (
         <CheckCircle className="h-6 w-6 cursor-pointer" strokeWidth="1.5" />
       ) : (
         <PlusCircle className="h-6 w-6 cursor-pointer" strokeWidth="1.5" />
