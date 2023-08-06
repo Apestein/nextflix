@@ -8,20 +8,31 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { useToast } from "~/components/ui/use-toast"
+import { useEffect } from "react"
 
 export default function AddProfilePage() {
   const [name, setName] = useState("")
-  const { execute } = useZact(addProfile)
+  const { execute, data } = useZact(addProfile)
   const debounced = useDebouncedCallback((value: string) => {
     setName(value)
   }, 500)
   const router = useRouter()
   const { toast } = useToast()
 
+  function doAdd() {
+    void execute({ name })
+    router.replace("/manage-profile")
+    router.refresh()
+  }
+
+  useEffect(() => {
+    if (data) toast({ description: data.message })
+  }, [data])
+
   return (
     <>
       <Button variant="outline" asChild className="absolute ml-6 mt-6">
-        <Link href="/">
+        <Link href="/manage-profile">
           <ArrowLeft />
         </Link>
       </Button>
@@ -46,19 +57,7 @@ export default function AddProfilePage() {
           className="w-full border border-white/40 p-1"
           onChange={(e) => debounced(e.target.value)}
         />
-        <Button
-          onClick={() => {
-            void execute({ name })
-            router.replace("/manage-profile")
-            router.refresh()
-            toast({
-              title: "Action Completed",
-              description: "Profile Added",
-            })
-          }}
-        >
-          Save
-        </Button>
+        <Button onClick={doAdd}>Save</Button>
       </main>
     </>
   )

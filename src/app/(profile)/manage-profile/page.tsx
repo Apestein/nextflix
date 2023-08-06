@@ -3,7 +3,7 @@ import { accounts } from "~/db/schema"
 import { eq } from "drizzle-orm"
 import { auth } from "@clerk/nextjs"
 import { Button } from "~/components/ui/button"
-import { PlusCircle, ArrowLeft } from "lucide-react"
+import { PlusCircle, ArrowLeft, Pencil } from "lucide-react"
 import Link from "next/link"
 import { ERR } from "~/lib/utils"
 
@@ -27,19 +27,24 @@ export default async function ManageProfilePage() {
           <h1 className="text-5xl">Manage Profiles</h1>
           <ul className="flex gap-4">
             {userAccount.profiles.map((profile) => (
-              <Link
-                key={profile.id}
-                href={`/manage-profile/${profile.name}?profileId=${profile.id}`}
-                className="outline-1 hover:outline"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={profile.profileImgPath}
-                  alt="profile-image"
-                  width="96"
-                  height="96"
-                />
-              </Link>
+              <div key={profile.id} className="space-y-1.5">
+                <Link
+                  href={`/manage-profile/${profile.name}?profileId=${profile.id}`}
+                  className="relative"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={profile.profileImgPath}
+                    alt="profile-image"
+                    width="96"
+                    height="96"
+                  />
+                  <div className="absolute inset-0 grid h-full w-full place-items-center bg-black/25 hover:bg-transparent">
+                    <Pencil />
+                  </div>
+                </Link>
+                <h3 className="text-center">{profile.name}</h3>
+              </div>
             ))}
             {userAccount.profiles.length !== 4 && (
               <Link href="/manage-profile/add">

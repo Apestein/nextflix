@@ -21,14 +21,14 @@ export const addProfile = zact(z.object({ name: z.string().min(3) }))(async (
     },
   })
   if (!userAccount) throw new Error(ERR.db)
-  if (userAccount.profiles.length === 4) return
-  await db.insert(profiles).values({
+  if (userAccount.profiles.length === 4) return null
+  const res = await db.insert(profiles).values({
     id: `${userAccount.id}/${userAccount.profiles.length + 1}`,
     accountId: userAccount.id,
     name: input.name,
     profileImgPath: `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${input.name}`,
   })
-  return { message: `Profile ${input.name} created` }
+  return { success: res.rowCount ? true : false, message: "Profile created" }
 })
 
 export const updateProfile = zact(
@@ -41,14 +41,14 @@ export const updateProfile = zact(
   })
   if (!profile) throw new Error(ERR.db)
   if (userId !== profile.accountId) throw new Error(ERR.unauthorized)
-  await db
+  const res = await db
     .update(profiles)
     .set({
       name: input.name,
       profileImgPath: `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${input.name}`,
     })
     .where(eq(profiles.id, input.profileId))
-  return { message: "Profile Updated" }
+  return { success: res.rowCount ? true : false, message: "Profile Updated" }
 })
 
 export const switchProfile = zact(z.object({ profileId: z.string() }))(async (
@@ -61,13 +61,16 @@ export const switchProfile = zact(z.object({ profileId: z.string() }))(async (
   })
   if (!profile) throw new Error(ERR.db)
   if (profile.accountId !== userId) throw new Error(ERR.unauthorized)
-  await db
+  const res = await db
     .update(accounts)
     .set({
       activeProfileId: input.profileId,
     })
     .where(eq(accounts.id, userId))
-  return { message: "Active Profile Updated" }
+  return {
+    success: res.rowCount ? true : false,
+    message: "You have switched active profile",
+  }
 })
 
 export const deleteProfile = zact(z.object({ profileId: z.string() }))(async (
@@ -75,13 +78,19 @@ export const deleteProfile = zact(z.object({ profileId: z.string() }))(async (
 ) => {
   const userId = auth().userId
   if (!userId) throw new Error(ERR.unauthenticated)
-  const profile = await db.query.profiles.findFirst({
-    where: eq(profiles.id, input.profileId),
+  const account = await db.query.accounts.findFirst({
+    where: eq(accounts.id, userId),
+    with: {
+      profiles: true,
+    },
   })
-  if (!profile) throw new Error(ERR.db)
-  if (userId !== profile.accountId) throw new Error(ERR.unauthorized)
-  await db.delete(profiles).where(eq(profiles.id, input.profileId))
-  return { message: "Profile Deleted" }
+  if (!account) throw new Error(ERR.db)
+  if (account.activeProfileId === input.profileId)
+    return { success: false, message: "Cannot delete active profile" }
+  if (!account.profiles.find((profile) => profile.id === input.profileId))
+    throw new Error(ERR.unauthorized)
+  const res = await db.delete(profiles).where(eq(profiles.id, input.profileId))
+  return { success: res.rowCount ? true : false, message: "Profile Deleted" }
 })
 
 export const toggleMyShow = zact(

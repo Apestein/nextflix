@@ -122,31 +122,39 @@ function Footer() {
   return (
     <footer className="mt-auto pb-3 pt-12 text-sm">
       <i className="flex gap-3 py-3">
-        <Facebook />
-        <Instagram />
-        <Twitter />
-        <Youtube />
+        <Link href="/">
+          <Facebook className="hover:text-red-500" />
+        </Link>
+        <Link href="/" className="hover:text-red-500">
+          <Instagram />
+        </Link>
+        <Link href="/" className="hover:text-red-500">
+          <Twitter />
+        </Link>
+        <Link href="/" className="hover:text-red-500">
+          <Youtube />
+        </Link>
       </i>
       <div className="flex justify-between py-3 text-white/50">
-        <div className="space-y-3">
-          <p>Audio Description</p>
-          <p>Investor Relations</p>
-          <p>Legal Notices</p>
+        <div className="flex flex-col gap-3">
+          <Link href="/">Audio Description</Link>
+          <Link href="/">Investor Relations</Link>
+          <Link href="/">Legal Notices</Link>
         </div>
-        <div className="space-y-3">
-          <p>Help Center</p>
-          <p>Jobs</p>
-          <p>Cookie Preferences</p>
+        <div className="flex flex-col gap-3">
+          <Link href="/">Help Center</Link>
+          <Link href="/">Jobs</Link>
+          <Link href="/">Cookie Preferences</Link>
         </div>
-        <div className="space-y-3">
-          <p>Gift Cards</p>
-          <p>Terms of Use</p>
-          <p>Corporate Information</p>
+        <div className="flex flex-col gap-3">
+          <Link href="/">Gift Cards</Link>
+          <Link href="/">Terms of Use</Link>
+          <Link href="/">Corporate Information</Link>
         </div>
-        <div className="space-y-3">
-          <p>Media Center</p>
-          <p>Privacy</p>
-          <p>Contact Us</p>
+        <div className="flex flex-col gap-3">
+          <Link href="/">Media Center</Link>
+          <Link href="/">Privacy</Link>
+          <Link href="/">Contact Us</Link>
         </div>
       </div>
       <div className="font-semibold">Copyright © 2023 Nextflix</div>

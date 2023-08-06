@@ -2,7 +2,7 @@
 import { Button } from "~/components/ui/button"
 import * as sa from "~/lib/actions"
 import { useZact } from "~/lib/zact/client"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { useRouter } from "next/navigation"
 import { raise, ERR } from "~/lib/utils"
@@ -18,13 +18,35 @@ export default function ProfilePage({
   searchParams: { profileId: string }
 }) {
   const [name, setName] = useState(params.slug[0] ?? raise(ERR.undefined))
-  const { execute: executeUpdate } = useZact(sa.updateProfile)
-  const { execute: executeDelete } = useZact(sa.deleteProfile)
+  const { execute: executeUpdate, data: updateData } = useZact(sa.updateProfile)
+  const { execute: executeDelete, data: deleteData } = useZact(sa.deleteProfile)
   const debounced = useDebouncedCallback((value: string) => {
     setName(value)
   }, 500)
   const router = useRouter()
   const { toast } = useToast()
+
+  useEffect(() => {
+    if (updateData) toast({ description: updateData.message })
+    else if (deleteData) toast({ description: deleteData.message })
+  }, [updateData, deleteData])
+
+  function doDelete() {
+    void executeDelete({
+      profileId: searchParams.profileId,
+    })
+    router.replace("/manage-profile")
+    router.refresh()
+  }
+
+  function doUpdate() {
+    void executeUpdate({
+      name: name,
+      profileId: searchParams.profileId,
+    })
+    router.replace("/manage-profile")
+    router.refresh()
+  }
 
   return (
     <>
@@ -57,34 +79,13 @@ export default function ProfilePage({
         <section className="space-x-8">
           <Button
             className="bg-green-600 font-semibold text-white hover:bg-green-700 active:bg-green-800"
-            onClick={() => {
-              void executeUpdate({
-                name: name,
-                profileId: searchParams.profileId,
-              })
-              router.replace("/manage-profile")
-              router.refresh()
-              toast({
-                title: "Action Completed",
-                description: "Updated profile",
-              })
-            }}
+            onClick={doUpdate}
           >
             Update
           </Button>
           <Button
             className="bg-red-600 font-semibold text-white hover:bg-red-700 active:bg-red-800"
-            onClick={() => {
-              void executeDelete({
-                profileId: searchParams.profileId,
-              })
-              router.replace("/manage-profile")
-              router.refresh()
-              toast({
-                title: "Action Completed",
-                description: "Deleted profile",
-              })
-            }}
+            onClick={doDelete}
           >
             Delete
           </Button>
