@@ -102,7 +102,7 @@ async function CustomeUserButton() {
           <Link href="/manage-profile">Manage Profile</Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href="/manage-profile/switch">Switch Profile</Link>
+          <Link href="/switch-profile">Switch Profile</Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Link href="/account">Account</Link>
