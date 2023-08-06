@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import type { Show, ShowWithVideoAndGenre } from "~/types"
 import {
   Dialog,
@@ -10,8 +9,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/components/ui/dialog"
-import useSWR from "swr"
-import { env } from "~/env.mjs"
+import { Skeleton } from "./ui/skeleton"
+import { PlusCircle, CheckCircle } from "lucide-react"
+import { myShowQuery, toggleMyShow } from "~/lib/actions"
+import { type LucideProps } from "lucide-react"
+import { useZact } from "~/lib/zact/client"
+import { useTransition } from "react"
+import { useShowWithVideoAndGenre } from "~/lib/hooks"
 
 export function ShowCard({
   children,
@@ -20,22 +24,8 @@ export function ShowCard({
   children: React.ReactNode
   show: Show
 }) {
-  const [open, setOpen] = useState(false)
-
-  const { data: showWithGenreAndVideo } = useSWR<ShowWithVideoAndGenre>(
-    open
-      ? `https://api.themoviedb.org/3/movie/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`
-      : null,
-    (url: string) => fetch(url).then((r) => r.json()),
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    },
-  )
-
   return (
-    <Dialog onOpenChange={() => setOpen((open) => !open)}>
+    <Dialog>
       <DialogTrigger>{children}</DialogTrigger>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
@@ -56,20 +46,13 @@ export function ShowCard({
             </p>
           </div>
           <DialogDescription>{show.overview}</DialogDescription>
-          <ShowGenres show={showWithGenreAndVideo} />
+          <ShowGenres show={show} />
         </DialogHeader>
-        <ShowTrailer show={showWithGenreAndVideo} />
+        <ShowTrailer show={show} />
       </DialogContent>
     </Dialog>
   )
 }
-
-import { PlusCircle, CheckCircle } from "lucide-react"
-import { Skeleton } from "./ui/skeleton"
-import { myShowQuery, toggleMyShow } from "~/lib/actions"
-import { Icons } from "./icons"
-import { useZact } from "~/lib/zact/client"
-import { useTransition } from "react"
 
 function SaveOrUnsave({ show }: { show: Show }) {
   const { execute, data, isLoading } = useZact(myShowQuery, {
@@ -79,7 +62,7 @@ function SaveOrUnsave({ show }: { show: Show }) {
 
   if (data === null && !isLoading) return
   if (isLoading) return <Skeleton className="h-6 w-6 rounded-full" />
-  if (isPending) return <Icons.spinner className="h-6 w-6 animate-spin" />
+  if (isPending) return <Spinner className="h-6 w-6 animate-spin" />
 
   function doUpdate() {
     void toggleMyShow({
@@ -100,20 +83,22 @@ function SaveOrUnsave({ show }: { show: Show }) {
   )
 }
 
-function ShowGenres({ show }: { show: ShowWithVideoAndGenre | undefined }) {
-  if (show === undefined) return <Skeleton className="h-5 w-full" />
+function ShowGenres({ show }: { show: Show }) {
+  const { data } = useShowWithVideoAndGenre(show)
+  if (data === undefined) return <Skeleton className="h-5 w-full" />
   return (
     <p className="text-sm">
-      {show.genres.map((genre) => genre.name).join(", ")}
+      {data.genres.map((genre) => genre.name).join(", ")}
     </p>
   )
 }
 
-function ShowTrailer({ show }: { show: ShowWithVideoAndGenre | undefined }) {
-  if (show === undefined) return <Skeleton className="aspect-video w-full" />
+function ShowTrailer({ show }: { show: Show }) {
+  const { data } = useShowWithVideoAndGenre(show)
+  if (data === undefined) return <Skeleton className="aspect-video w-full" />
   return (
     <iframe
-      src={`https://www.youtube.com/embed/${findTrailer(show)}`}
+      src={`https://www.youtube.com/embed/${findTrailer(data)}`}
       className="aspect-video w-full"
     />
   )
@@ -127,3 +112,20 @@ function findTrailer(show: ShowWithVideoAndGenre) {
   const trailerKey = show.videos.results[trailerIndex]?.key
   return trailerKey ?? ""
 }
+
+const Spinner = ({ ...props }: LucideProps) => (
+  <svg viewBox="0 0 24 24" fill="none" {...props}>
+    <circle
+      cx="12"
+      cy="12"
+      r="10"
+      className="stroke-slate-200"
+      strokeWidth="4"
+    />
+    <path
+      d="M12 22C14.6522 22 17.1957 20.9464 19.0711 19.0711C20.9464 17.1957 22 14.6522 22 12C22 9.34784 20.9464 6.8043 19.0711 4.92893C17.1957 3.05357 14.6522 2 12 2"
+      className="stroke-emerald-500"
+      strokeWidth="4"
+    />
+  </svg>
+)

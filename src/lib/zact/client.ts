@@ -9,8 +9,10 @@ import { useMemo, useRef, useState, useEffect } from "react"
 export function useZact<
   InputType extends z.ZodTypeAny,
   ResponseType extends any,
->(action: ZactAction<InputType, ResponseType>, query?: z.infer<InputType>) {
-  const doAction = useRef(action)
+>(
+  action: ZactAction<InputType, ResponseType> | null,
+  query?: z.infer<InputType>,
+) {
   const queryRef = useRef(query)
 
   const [data, setData] = useState<ResponseType | null>(null)
@@ -20,9 +22,13 @@ export function useZact<
 
   const execute = useMemo(
     () => async (input: z.infer<InputType>) => {
+      if (!action) {
+        setData(null)
+        return
+      }
       setRunning(true)
       try {
-        const result = await doAction.current(input)
+        const result = await action(input)
         setData(result)
         setRunning(false)
       } catch (e) {
@@ -31,14 +37,18 @@ export function useZact<
         setRunning(false)
       }
     },
-    [],
+    [action],
   )
 
   useEffect(() => {
+    if (!action) {
+      setData(null)
+      return
+    }
     const doQuery = async () => {
       setLoading(true)
       try {
-        const result = await doAction.current(queryRef.current)
+        const result = await action(queryRef.current)
         setData(result)
         setLoading(false)
       } catch (e) {
@@ -48,7 +58,7 @@ export function useZact<
       }
     }
     if (queryRef.current) void doQuery()
-  }, [])
+  }, [action])
 
   return {
     execute,
