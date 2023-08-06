@@ -4,7 +4,7 @@ import { ShowsCarousel } from "~/components/show-carousel"
 import { Play } from "lucide-react"
 import Image from "next/image"
 import { ERR } from "~/lib/utils"
-import { getNewAndPopularShows } from "~/lib/fetchers"
+import { env } from "~/env.mjs"
 
 export default async function NewAndPopular() {
   const newAndPopularShows = await getNewAndPopularShows()
@@ -66,6 +66,51 @@ export default async function NewAndPopular() {
       </main>
     </>
   )
+}
+
+async function getNewAndPopularShows() {
+  const [popularTvRes, popularMovieRes, trendingTvRes, trendingMovieRes] =
+    await Promise.all([
+      fetch(
+        `https://api.themoviedb.org/3/tv/popular?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
+      ),
+      fetch(
+        `https://api.themoviedb.org/3/movie/popular?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
+      ),
+      fetch(
+        `https://api.themoviedb.org/3/trending/tv/day?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
+      ),
+      fetch(
+        `https://api.themoviedb.org/3/trending/movie/day?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
+      ),
+    ])
+
+  if (
+    !popularTvRes.ok ||
+    !popularMovieRes.ok ||
+    !trendingTvRes.ok ||
+    !trendingMovieRes.ok
+  ) {
+    throw new Error(ERR.fetch)
+  }
+
+  const [popularTvs, popularMovies, trendingTvs, trendingMovies] =
+    await Promise.all<{ results: Show[] }>([
+      popularTvRes.json(),
+      popularMovieRes.json(),
+      trendingTvRes.json(),
+      trendingMovieRes.json(),
+    ])
+
+  if (!popularTvs || !popularMovies || !trendingTvs || !trendingMovies)
+    throw new Error(ERR.fetch)
+
+  return {
+    popularTvs: popularTvs.results,
+    popularMovies: popularMovies.results,
+    trendingTvs: trendingTvs.results,
+    trendingMovies: trendingMovies.results,
+  }
 }
 
 function pickRandomShow(shows: Show[]) {

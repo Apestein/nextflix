@@ -15,7 +15,9 @@ import { myShowQuery, toggleMyShow } from "~/lib/actions"
 import { type LucideProps } from "lucide-react"
 import { useZact } from "~/lib/zact/client"
 import { useTransition } from "react"
-import { useShowWithVideoAndGenre } from "~/lib/hooks"
+import useSWR from "swr"
+import { env } from "~/env.mjs"
+import { useAuth } from "@clerk/nextjs"
 
 export function ShowCard({
   children,
@@ -55,12 +57,13 @@ export function ShowCard({
 }
 
 function SaveOrUnsave({ show }: { show: Show }) {
+  const { isSignedIn } = useAuth()
   const { execute, data, isLoading } = useZact(myShowQuery, {
     id: show.id,
   })
   const [isPending, startTransition] = useTransition()
 
-  if (data === null && !isLoading) return
+  if (!isSignedIn) return
   if (isLoading) return <Skeleton className="h-6 w-6 rounded-full" />
   if (isPending) return <Spinner className="h-6 w-6 animate-spin" />
 
@@ -111,6 +114,20 @@ function findTrailer(show: ShowWithVideoAndGenre) {
   if (trailerIndex === -1) return ""
   const trailerKey = show.videos.results[trailerIndex]?.key
   return trailerKey ?? ""
+}
+
+export function useShowWithVideoAndGenre(show: Show) {
+  const { data, isLoading, error } = useSWR<ShowWithVideoAndGenre, Error>(
+    `https://api.themoviedb.org/3/movie/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`,
+    (url: string) => fetch(url).then((r) => r.json()),
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
+  )
+
+  return { data, isLoading, error }
 }
 
 const Spinner = ({ ...props }: LucideProps) => (
