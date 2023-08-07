@@ -8,26 +8,24 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { useToast } from "~/components/ui/use-toast"
-import { useEffect } from "react"
 
 export default function AddProfilePage() {
   const [name, setName] = useState("")
-  const { execute, data } = useZact(addProfile)
+  const { execute } = useZact(addProfile)
   const debounced = useDebouncedCallback((value: string) => {
     setName(value)
   }, 500)
   const router = useRouter()
   const { toast } = useToast()
 
-  function doAdd() {
-    void execute({ name })
+  async function doAdd() {
+    const res = await execute({ name })
+    toast({
+      description: res?.message,
+    })
     router.replace("/manage-profile")
     router.refresh()
   }
-
-  useEffect(() => {
-    if (data) toast({ description: data.message })
-  }, [data])
 
   return (
     <>
@@ -37,7 +35,7 @@ export default function AddProfilePage() {
         </Link>
       </Button>
       <main className="grid min-h-screen place-content-center place-items-center gap-y-8">
-        <div className="w-full space-y-3 border-b border-white/40 pb-3">
+        <div className="w-full space-y-3 border-b border-white/25 pb-3">
           <h1 className="text-5xl">Add Profile</h1>
           <p className="text-white/60">
             Add a profile for another person watching Netflix.
@@ -57,6 +55,7 @@ export default function AddProfilePage() {
           className="w-full border border-white/40 p-1"
           onChange={(e) => debounced(e.target.value)}
         />
+        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
         <Button onClick={doAdd}>Save</Button>
       </main>
     </>

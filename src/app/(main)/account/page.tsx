@@ -14,55 +14,57 @@ export default async function AccountPage() {
   })
   if (!userAccount) throw new Error(ERR.db)
   return (
-    <main className="flex justify-center">
-      <div className="w-1/2 max-w-xl space-y-5 py-12">
+    <main className="my-12 flex justify-center">
+      <div className="space-y-5">
         <section className="space-y-2">
           <h1 className="text-4xl">Account</h1>
-          <p className="flex items-center gap-2 text-sm text-white/50">
+          <p className="flex items-center gap-2 text-sm text-white/60">
             <CreditCard />
             Member Since: {userAccount.createdAt.toDateString()}
           </p>
         </section>
-        <div aria-label="divider" className="h-px w-full bg-white/50" />
-        <p className="text-2xl text-white/50">MEMBERSHIP & BILLING</p>
+        <div aria-label="divider" className="h-px w-full bg-white/25" />
+        <p className="text-2xl text-white/60">MEMBERSHIP & BILLING</p>
         <p className="flex cursor-pointer justify-between">
           {userAccount.email}
-          <ChevronRight stroke="white" opacity="0.5" />
+          <ChevronRight />
         </p>
-        <div aria-label="divider" className="h-px w-full bg-white/50" />
+        <div aria-label="divider" className="h-px w-full bg-white/25" />
         <p className="flex cursor-pointer justify-between">
           Update Account
-          <ChevronRight stroke="white" opacity="0.5" />
+          <ChevronRight />
         </p>
-        <div aria-label="divider" className="h-px w-full bg-white/50" />
+        <div aria-label="divider" className="h-px w-full bg-white/25" />
         <p>
           {userAccount.membership ??
             " You are currently not subsribed to any plan."}
         </p>
-        <div aria-label="divider" className="h-px w-full bg-white/50" />
-        <p className="text-2xl text-white/50">Plan Details</p>
+        <div aria-label="divider" className="h-px w-full bg-white/25" />
+        <p className="text-2xl text-white/60">Plan Details</p>
         <p>{userAccount.membership ? userAccount.membership : "None Member"}</p>
-        <div aria-label="divider" className="h-px w-full bg-white/50" />
+        <div aria-label="divider" className="h-px w-full bg-white/25" />
         <p className="flex cursor-pointer justify-between">
           Change plan
-          <ChevronRight stroke="white" opacity="0.5" />
+          <ChevronRight />
         </p>
-        <div aria-label="divider" className="h-px w-full bg-white/50" />
-        <p className="text-2xl text-white/50">Profiles</p>
+        <div aria-label="divider" className="h-px w-full bg-white/25" />
+        <p className="text-2xl text-white/60">Profiles</p>
         <div className="flex gap-5">
           {userAccount.profiles.map((profile) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              key={profile.id}
-              src={profile.profileImgPath}
-              width="100"
-              height="100"
-              alt="profile-img"
-              className="rounded-lg"
-            />
+            <div key={profile.id} className="space-y-1.5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={profile.profileImgPath}
+                width="100"
+                height="100"
+                alt="profile-img"
+                className="rounded-lg"
+              />
+              <h3 className="text-center">{profile.name}</h3>
+            </div>
           ))}
         </div>
-        <div aria-label="divider" className="h-px w-full bg-white/50" />
+        <div aria-label="divider" className="h-px w-full bg-white/25" />
       </div>
     </main>
   )

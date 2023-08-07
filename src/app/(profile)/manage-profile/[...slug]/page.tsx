@@ -2,7 +2,7 @@
 import { Button } from "~/components/ui/button"
 import * as sa from "~/lib/actions"
 import { useZact } from "~/lib/zact/client"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { useRouter } from "next/navigation"
 import { raise, ERR } from "~/lib/utils"
@@ -18,31 +18,32 @@ export default function ProfilePage({
   searchParams: { profileId: string }
 }) {
   const [name, setName] = useState(params.slug[0] ?? raise(ERR.undefined))
-  const { execute: executeUpdate, data: updateData } = useZact(sa.updateProfile)
-  const { execute: executeDelete, data: deleteData } = useZact(sa.deleteProfile)
+  const { execute: executeUpdate } = useZact(sa.updateProfile)
+  const { execute: executeDelete } = useZact(sa.deleteProfile)
   const debounced = useDebouncedCallback((value: string) => {
     setName(value)
   }, 500)
   const router = useRouter()
   const { toast } = useToast()
 
-  useEffect(() => {
-    if (updateData) toast({ description: updateData.message })
-    else if (deleteData) toast({ description: deleteData.message })
-  }, [updateData, deleteData])
-
-  function doDelete() {
-    void executeDelete({
+  async function doDelete() {
+    const res = await executeDelete({
       profileId: searchParams.profileId,
+    })
+    toast({
+      description: res?.message,
     })
     router.replace("/manage-profile")
     router.refresh()
   }
 
-  function doUpdate() {
-    void executeUpdate({
+  async function doUpdate() {
+    const res = await executeUpdate({
       name: name,
       profileId: searchParams.profileId,
+    })
+    toast({
+      description: res?.message,
     })
     router.replace("/manage-profile")
     router.refresh()
@@ -56,7 +57,7 @@ export default function ProfilePage({
         </Link>
       </Button>
       <main className="grid min-h-screen place-content-center place-items-center gap-y-8">
-        <div className="w-full space-y-3 border-b border-white/40 pb-3">
+        <div className="w-full space-y-3 border-b border-white/25 pb-3">
           <h1 className="text-5xl">Update Profile</h1>
           <p className="text-white/60">
             Update a profile with a new name and avatar.
@@ -79,12 +80,14 @@ export default function ProfilePage({
         <section className="space-x-8">
           <Button
             className="bg-green-600 font-semibold text-white hover:bg-green-700 active:bg-green-800"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={doUpdate}
           >
             Update
           </Button>
           <Button
             className="bg-red-600 font-semibold text-white hover:bg-red-700 active:bg-red-800"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={doDelete}
           >
             Delete

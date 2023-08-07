@@ -4,19 +4,15 @@ import { useZact } from "~/lib/zact/client"
 import type { Profile } from "~/types"
 import { useRouter } from "next/navigation"
 import { useToast } from "~/components/ui/use-toast"
-import { useEffect } from "react"
 
 export function ProfileSwitcher({ profile }: { profile: Profile }) {
   const router = useRouter()
   const { toast } = useToast()
-  const { execute, data } = useZact(switchProfile)
+  const { execute } = useZact(switchProfile)
 
-  useEffect(() => {
-    if (data) toast({ description: data.message })
-  }, [data])
-
-  function doSwitch() {
-    void execute({ profileId: profile.id })
+  async function doSwitch() {
+    const res = await execute({ profileId: profile.id })
+    toast({ description: res?.message })
     router.replace("/")
     router.refresh()
   }
@@ -29,6 +25,7 @@ export function ProfileSwitcher({ profile }: { profile: Profile }) {
         width="96"
         height="96"
         alt="profile-image"
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onClick={doSwitch}
         className="cursor-pointer outline-1 hover:outline"
       />

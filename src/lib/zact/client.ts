@@ -25,6 +25,7 @@ export function useZact<
         const result = await actionRef.current(input)
         setData(result)
         setRunning(false)
+        return result
       } catch (e) {
         console.log(e)
         setErr(e as Error)
