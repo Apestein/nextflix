@@ -34,7 +34,6 @@ export default function ProfilePage({
       description: res?.message,
     })
     router.replace("/manage-profile")
-    router.refresh()
   }
 
   async function doUpdate() {
@@ -46,7 +45,6 @@ export default function ProfilePage({
       description: res?.message,
     })
     router.replace("/manage-profile")
-    router.refresh()
   }
 
   return (

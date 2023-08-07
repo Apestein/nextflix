@@ -24,7 +24,6 @@ export default function AddProfilePage() {
       description: res?.message,
     })
     router.replace("/manage-profile")
-    router.refresh()
   }
 
   return (

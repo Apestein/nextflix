@@ -8,6 +8,7 @@ import { accounts, profiles } from "~/db/schema"
 import { z } from "zod"
 import { zact } from "./zact/server"
 import { ERR } from "./utils"
+import { revalidatePath } from "next/cache"
 
 export const addProfile = zact(z.object({ name: z.string().min(3) }))(async (
   input,
@@ -35,6 +36,7 @@ export const addProfile = zact(z.object({ name: z.string().min(3) }))(async (
     name: input.name,
     profileImgPath: `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${input.name}`,
   })
+  if (res.rowCount) revalidatePath("/manage-profile")
   return { success: res.rowCount ? true : false, message: "Profile created" }
 })
 
@@ -55,6 +57,7 @@ export const updateProfile = zact(
       profileImgPath: `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${input.name}`,
     })
     .where(eq(profiles.id, input.profileId))
+  if (res.rowCount) revalidatePath("/manage-profile")
   return { success: res.rowCount ? true : false, message: "Profile Updated" }
 })
 
@@ -74,6 +77,7 @@ export const switchProfile = zact(z.object({ profileId: z.string() }))(async (
       activeProfileId: input.profileId,
     })
     .where(eq(accounts.id, userId))
+  if (res.rowCount) revalidatePath("/")
   return {
     success: res.rowCount ? true : false,
     message: "You have switched active profile",
@@ -97,6 +101,7 @@ export const deleteProfile = zact(z.object({ profileId: z.string() }))(async (
   if (!account.profiles.find((profile) => profile.id === input.profileId))
     throw new Error(ERR.unauthorized)
   const res = await db.delete(profiles).where(eq(profiles.id, input.profileId))
+  if (res.rowCount) revalidatePath("/manage-profile")
   return { success: res.rowCount ? true : false, message: "Profile Deleted" }
 })
 

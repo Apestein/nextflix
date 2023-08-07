@@ -14,7 +14,6 @@ export function ProfileSwitcher({ profile }: { profile: Profile }) {
     const res = await execute({ profileId: profile.id })
     toast({ description: res?.message })
     router.replace("/")
-    router.refresh()
   }
 
   return (
