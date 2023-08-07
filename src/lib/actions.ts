@@ -22,8 +22,15 @@ export const addProfile = zact(z.object({ name: z.string().min(3) }))(async (
   })
   if (!userAccount) throw new Error(ERR.db)
   if (userAccount.profiles.length === 4) return null
+  const takenProfileSlots = userAccount.profiles.map((profile) =>
+    Number(profile.id.at(-1)),
+  )
+  const openProfileSlot = [1, 2, 3, 4].find(
+    (el) => !takenProfileSlots.includes(el),
+  )
+  if (!openProfileSlot) throw new Error(ERR.undefined)
   const res = await db.insert(profiles).values({
-    id: `${userAccount.id}/${userAccount.profiles.length + 1}`,
+    id: `${userAccount.id}/${openProfileSlot}`,
     accountId: userAccount.id,
     name: input.name,
     profileImgPath: `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${input.name}`,
