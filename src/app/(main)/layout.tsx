@@ -17,6 +17,7 @@ import { Search, Bell } from "lucide-react"
 import Link from "next/link"
 import { Button } from "~/components/ui/button"
 import { SignedOut, SignedIn } from "@clerk/nextjs"
+import { LinkButton } from "~/components/link-button"
 
 function Header() {
   return (
@@ -37,9 +38,7 @@ function Header() {
           <Link href="/tv-shows">TV Shows</Link>
           <Link href="/movies">Movies</Link>
           <Link href="/new-and-popular">New & Popular</Link>
-          <Link href="/my-list">
-            <p>My List</p>
-          </Link>
+          <LinkButton href="/my-list">My List</LinkButton>
         </div>
       </div>
       <div className="flex items-center gap-6">
