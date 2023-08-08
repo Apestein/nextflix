@@ -8,7 +8,7 @@ import { env } from "~/env.mjs"
 import { ERR } from "~/lib/utils"
 import Image from "next/image"
 
-export default async function AccountPage() {
+export default async function MyShowPage() {
   const { userId } = auth()
   if (!userId) throw new Error(ERR.unauthenticated)
   const userAccount = await db.query.accounts.findFirst({
@@ -26,7 +26,7 @@ export default async function AccountPage() {
 
   const shows = await getMyShows(myShows)
   return (
-    <main className="h-full pt-12">
+    <main className="pt-8">
       {!shows.length && (
         <div className="space-y-3">
           <p className="text-3xl font-semibold">Your list is empty</p>
@@ -35,7 +35,7 @@ export default async function AccountPage() {
           </p>
         </div>
       )}
-      <div className="grid grid-cols-[repeat(auto-fill,_minmax(240px,_1fr))] gap-y-5">
+      <div className="grid grid-cols-[repeat(auto-fill,_minmax(240px,_1fr))] gap-5">
         {shows.map((show) => (
           <ShowCard key={show.id} show={show}>
             <Image
@@ -45,7 +45,7 @@ export default async function AccountPage() {
               alt="show-backdrop"
               width={240}
               height={135}
-              className="h-[135px] min-w-[240px] cursor-pointer object-cover transition-transform hover:scale-110"
+              className="aspect-video w-full cursor-pointer object-cover transition-transform hover:scale-110"
             />
           </ShowCard>
         ))}

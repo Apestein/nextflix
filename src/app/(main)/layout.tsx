@@ -42,7 +42,7 @@ function Header() {
         </div>
       </div>
       <div className="flex items-center gap-6">
-        <Link href="/search">
+        <Link href="/search?keyword=">
           <Search />
         </Link>
         <Bell />
