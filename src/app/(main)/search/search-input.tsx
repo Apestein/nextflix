@@ -22,6 +22,7 @@ export function SearchInput({ initialQuery, ...props }: PageProps) {
       placeholder="search keyword"
       defaultValue={initialQuery}
       onChange={(e) => debounced(e.target.value)}
+      autoFocus
       {...props}
     />
   )
