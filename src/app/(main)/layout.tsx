@@ -42,7 +42,9 @@ function Header() {
         </div>
       </div>
       <div className="flex items-center gap-6">
-        <Search />
+        <Link href="/search">
+          <Search />
+        </Link>
         <Bell />
         <SignedIn>
           <CustomeUserButton />

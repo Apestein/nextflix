@@ -7,6 +7,8 @@ import { useDebouncedCallback } from "use-debounce"
 import { useRouter } from "next/navigation"
 import { raise, ERR } from "~/lib/utils"
 import { useToast } from "~/components/ui/use-toast"
+import { Input } from "~/components/ui/input"
+import { Separator } from "~/components/ui/separator"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
@@ -68,11 +70,8 @@ export default function ProfilePage({
           width="240"
           height="135"
         />
-        <input
-          type="text"
-          name="name"
+        <Input
           defaultValue={name}
-          className="w-full border border-white/40 p-1"
           onChange={(e) => debounced(e.target.value)}
         />
         <section className="space-x-8">

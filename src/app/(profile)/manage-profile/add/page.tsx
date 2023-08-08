@@ -1,5 +1,6 @@
 "use client"
 import { Button } from "~/components/ui/button"
+import { Input } from "~/components/ui/input"
 import { addProfile } from "~/lib/actions"
 import { useZact } from "~/lib/zact/client"
 import { useState } from "react"
@@ -47,13 +48,7 @@ export default function AddProfilePage() {
           width="135"
           height="135"
         />
-        <input
-          type="text"
-          name="name"
-          placeholder="name"
-          className="w-full border border-white/40 p-1"
-          onChange={(e) => debounced(e.target.value)}
-        />
+        <Input placeholder="name" onChange={(e) => debounced(e.target.value)} />
         {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
         <Button onClick={doAdd}>Save</Button>
       </main>

@@ -18,13 +18,13 @@ export default async function AccountPage() {
       <div className="space-y-5">
         <section className="space-y-2">
           <h1 className="text-4xl">Account</h1>
-          <p className="flex items-center gap-2 text-sm text-white/60">
+          <p className="flex items-center gap-2 text-sm text-neutral-400">
             <CreditCard />
             Member Since: {userAccount.createdAt.toDateString()}
           </p>
         </section>
         <div aria-label="divider" className="h-px w-full bg-white/25" />
-        <p className="text-2xl text-white/60">MEMBERSHIP & BILLING</p>
+        <p className="text-2xl text-neutral-400">MEMBERSHIP & BILLING</p>
         <p className="flex cursor-pointer justify-between">
           {userAccount.email}
           <ChevronRight />
@@ -40,7 +40,7 @@ export default async function AccountPage() {
             " You are currently not subsribed to any plan."}
         </p>
         <div aria-label="divider" className="h-px w-full bg-white/25" />
-        <p className="text-2xl text-white/60">Plan Details</p>
+        <p className="text-2xl text-neutral-400">Plan Details</p>
         <p>{userAccount.membership ? userAccount.membership : "None Member"}</p>
         <div aria-label="divider" className="h-px w-full bg-white/25" />
         <p className="flex cursor-pointer justify-between">
@@ -48,7 +48,7 @@ export default async function AccountPage() {
           <ChevronRight />
         </p>
         <div aria-label="divider" className="h-px w-full bg-white/25" />
-        <p className="text-2xl text-white/60">Profiles</p>
+        <p className="text-2xl text-neutral-400">Profiles</p>
         <div className="flex gap-5">
           {userAccount.profiles.map((profile) => (
             <div key={profile.id} className="space-y-1.5">
