@@ -13,6 +13,7 @@ import {
 } from "drizzle-orm/pg-core"
 
 export const memebershipEnum = pgEnum("membership", [
+  "free",
   "basic",
   "standard",
   "premium",
@@ -21,7 +22,7 @@ export const accounts = pgTable("accounts", {
   id: varchar("id", { length: 256 }).primaryKey(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   email: varchar("email", { length: 256 }).notNull(),
-  membership: memebershipEnum("membership"),
+  membership: memebershipEnum("membership").notNull().default("free"),
   activeProfileId: varchar("active_profile_id", { length: 256 }).notNull(),
 })
 export const accountsRelations = relations(accounts, ({ many, one }) => ({

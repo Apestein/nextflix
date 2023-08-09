@@ -108,7 +108,9 @@ async function CustomeUserButton() {
         <DropdownMenuItem>
           <Link href="/account">Account</Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>Subscription</DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href="/subscription">Subscription</Link>
+        </DropdownMenuItem>
         <DropdownMenuItem className="flex justify-center border">
           <SignOutButton />
         </DropdownMenuItem>
