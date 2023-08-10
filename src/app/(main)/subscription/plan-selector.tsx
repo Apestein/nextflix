@@ -2,23 +2,31 @@
 import { cn } from "~/lib/utils"
 import { useState } from "react"
 import { Button } from "~/components/ui/button"
+import type { SubscriptionPlan } from "~/types"
+import { PLANS } from "~/lib/configs"
+import { createCheckoutSession } from "~/lib/actions"
+import { useZact } from "~/lib/zact/client"
 
 export function PlanSelector() {
-  const [selectedplan, setSelectedPlan] = useState<PlanNames>("premium")
+  const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan>(PLANS[3])
+  const { execute } = useZact(createCheckoutSession)
+
   function submit() {
-    console.log(selectedplan)
+    void execute({ stripeProductId: selectedPlan.id })
   }
   return (
     <>
       <div className="flex justify-end gap-8">
-        {plans.map((plan) => (
+        {PLANS.map((plan) => (
           <div
             key={plan.id}
             className={cn(
-              "grid aspect-square w-28 place-content-center rounded-lg font-semibold",
-              selectedplan === plan.name ? "bg-red-600" : "bg-red-900",
+              "grid aspect-square w-28 cursor-pointer place-content-center rounded-lg font-semibold",
+              selectedPlan.name === plan.name
+                ? "bg-red-600"
+                : "bg-red-900 hover:bg-red-700",
             )}
-            onClick={() => setSelectedPlan(plan.name)}
+            onClick={() => setSelectedPlan(plan)}
           >
             {plan.name}
           </div>
@@ -35,31 +43,3 @@ export function PlanSelector() {
     </>
   )
 }
-
-const plans = [
-  {
-    id: 0,
-    name: "free",
-    price: 0,
-    description: "Free Video Stream",
-  },
-  {
-    id: "price_1Nd71XBrDYSkolG53ADLYQXk",
-    name: "basic",
-    price: 5,
-    description: "Basic Video Stream",
-  },
-  {
-    id: "price_1Nd71ABrDYSkolG5kiBRhIHv",
-    name: "standard",
-    price: 10,
-    description: "Standard Video Stream",
-  },
-  {
-    id: "price_1Nd71XBrDYSkolG53ADLYQXk",
-    name: "premium",
-    price: 20,
-    description: "Premium Video Stream",
-  },
-] as const
-type PlanNames = (typeof plans)[number]["name"]
