@@ -153,7 +153,10 @@ export const myShowQuery = zact(z.object({ id: z.number() }))(async (input) => {
 })
 
 export const createCheckoutSession = zact(
-  z.object({ stripeProductId: z.string() }),
+  z.object({
+    stripeProductId: z.string(),
+    planName: z.enum(["free", "basic", "standard", "premium"]),
+  }),
 )(async (input) => {
   const userId = auth().userId
   if (!userId) throw new Error(ERR.unauthenticated)
@@ -165,7 +168,10 @@ export const createCheckoutSession = zact(
   const siteUrl = headers().get("origin")
   if (!siteUrl) throw new Error(ERR.undefined)
   let checkoutSession: Stripe.Checkout.Session | Stripe.BillingPortal.Session
-  if (userAccount.membership === "free")
+  if (
+    input.planName !== "free" &&
+    input.planName.toLowerCase() !== userAccount.membership
+  )
     checkoutSession = await stripe.checkout.sessions.create({
       mode: "subscription",
       billing_address_collection: "auto",

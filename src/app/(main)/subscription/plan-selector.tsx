@@ -2,17 +2,26 @@
 import { cn } from "~/lib/utils"
 import { useState } from "react"
 import { Button } from "~/components/ui/button"
-import type { SubscriptionPlan } from "~/types"
+import type { SubscriptionPlan, PlanName } from "~/types"
 import { PLANS } from "~/lib/configs"
 import { createCheckoutSession } from "~/lib/actions"
 import { useZact } from "~/lib/zact/client"
 
-export function PlanSelector() {
-  const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan>(PLANS[3])
+export function PlanSelector({
+  activeSubscription,
+}: {
+  activeSubscription: PlanName
+}) {
+  const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan>(
+    Plans[activeSubscription],
+  )
   const { execute } = useZact(createCheckoutSession)
 
   function submit() {
-    void execute({ stripeProductId: selectedPlan.id })
+    void execute({
+      stripeProductId: selectedPlan.id,
+      planName: selectedPlan.name,
+    })
   }
   return (
     <>
@@ -28,7 +37,7 @@ export function PlanSelector() {
             )}
             onClick={() => setSelectedPlan(plan)}
           >
-            {plan.name}
+            {`${plan.name.charAt(0).toUpperCase()}${plan.name.substring(1)}`}
           </div>
         ))}
       </div>
@@ -37,9 +46,16 @@ export function PlanSelector() {
           className="bg-green-600 font-semibold text-white hover:bg-green-700"
           onClick={submit}
         >
-          Subscribe
+          {selectedPlan.name === activeSubscription ? "Update" : "Subscribe"}
         </Button>
       </div>
     </>
   )
+}
+
+const Plans = {
+  free: PLANS[0],
+  basic: PLANS[1],
+  standard: PLANS[2],
+  premium: PLANS[3],
 }
