@@ -2,25 +2,42 @@
 import { cn } from "~/lib/utils"
 import { useState } from "react"
 import { Button } from "~/components/ui/button"
+import type { SubscriptionPlan, PlanName } from "~/types"
+import { PLANS } from "~/lib/configs"
+import { createCheckoutSession } from "~/lib/actions"
+import { useZact } from "~/lib/zact/client"
 
-export function PlanSelector() {
-  const [selectedplan, setSelectedPlan] = useState<PlanNames>("premium")
+export function PlanSelector({
+  activeSubscription,
+}: {
+  activeSubscription: PlanName
+}) {
+  const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan>(
+    Plans[activeSubscription],
+  )
+  const { execute } = useZact(createCheckoutSession)
+
   function submit() {
-    console.log(selectedplan)
+    void execute({
+      stripeProductId: selectedPlan.id,
+      planName: selectedPlan.name,
+    })
   }
   return (
     <>
       <div className="flex justify-end gap-8">
-        {plans.map((plan) => (
+        {PLANS.map((plan) => (
           <div
             key={plan.id}
             className={cn(
-              "grid aspect-square w-28 place-content-center rounded-lg font-semibold",
-              selectedplan === plan.name ? "bg-red-600" : "bg-red-900",
+              "grid aspect-square w-28 cursor-pointer place-content-center rounded-lg font-semibold",
+              selectedPlan.name === plan.name
+                ? "bg-red-600"
+                : "bg-red-900 hover:bg-red-700",
             )}
-            onClick={() => setSelectedPlan(plan.name)}
+            onClick={() => setSelectedPlan(plan)}
           >
-            {plan.name}
+            {`${plan.name.charAt(0).toUpperCase()}${plan.name.substring(1)}`}
           </div>
         ))}
       </div>
@@ -28,38 +45,22 @@ export function PlanSelector() {
         <Button
           className="bg-green-600 font-semibold text-white hover:bg-green-700"
           onClick={submit}
+          disabled={
+            selectedPlan.name === "free" && activeSubscription === "free"
+              ? true
+              : false
+          }
         >
-          Subscribe
+          {selectedPlan.name === activeSubscription ? "Update" : "Subscribe"}
         </Button>
       </div>
     </>
   )
 }
 
-const plans = [
-  {
-    id: 0,
-    name: "free",
-    price: 0,
-    description: "Free Video Stream",
-  },
-  {
-    id: "price_1Nd71XBrDYSkolG53ADLYQXk",
-    name: "basic",
-    price: 5,
-    description: "Basic Video Stream",
-  },
-  {
-    id: "price_1Nd71ABrDYSkolG5kiBRhIHv",
-    name: "standard",
-    price: 10,
-    description: "Standard Video Stream",
-  },
-  {
-    id: "price_1Nd71XBrDYSkolG53ADLYQXk",
-    name: "premium",
-    price: 20,
-    description: "Premium Video Stream",
-  },
-] as const
-type PlanNames = (typeof plans)[number]["name"]
+const Plans = {
+  free: PLANS[0],
+  basic: PLANS[1],
+  standard: PLANS[2],
+  premium: PLANS[3],
+}

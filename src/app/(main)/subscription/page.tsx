@@ -13,7 +13,6 @@ export default async function SubscriptionPage() {
     where: eq(accounts.id, userId),
   })
   if (!userAccount) throw new Error(ERR.db)
-  console.log(userAccount.membership)
   return (
     <main className="mx-auto mt-8 w-2/3 space-y-8">
       <h1 className="text-3xl font-bold sm:text-4xl">
@@ -33,7 +32,7 @@ export default async function SubscriptionPage() {
           <p>Change or cancel your plan anytime</p>
         </div>
       </div>
-      <PlanSelector />
+      <PlanSelector activeSubscription={userAccount.membership} />
       <div className="space-y-3 text-sm text-zinc-300">
         <p>
           HD (720p), Full HD (1080p), Ultra HD (4K) and HDR availability subject

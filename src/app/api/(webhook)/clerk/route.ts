@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server"
 import { db } from "~/db/client"
 import { accounts, profiles } from "~/db/schema"
 import { raise, ERR } from "~/lib/utils"
@@ -16,26 +15,19 @@ type ClerkEvent = {
 export async function POST(request: Request) {
   const event = (await request.json()) as ClerkEvent
   const user = event.data
-  const accountId = await db
-    .insert(accounts)
-    .values({
-      id: user.id,
-      email: user.email_addresses[0]?.email_address ?? raise(ERR.undefined),
-      activeProfileId: user.id + "/1",
-    })
-    .returning({ id: accounts.id })
-  const profileId = await db
-    .insert(profiles)
-    .values({
-      id: user.id + "/1",
-      accountId: user.id,
-      profileImgPath: `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${
-        user.username ?? "John Doe"
-      }`,
-      name: user.username ?? "John Doe",
-    })
-    .returning({ id: profiles.id })
-  return NextResponse.json({ accountId, profileId })
+  await db.insert(accounts).values({
+    id: user.id,
+    email: user.email_addresses[0]?.email_address ?? raise(ERR.undefined),
+    activeProfileId: user.id + "/1",
+  })
+  await db.insert(profiles).values({
+    id: user.id + "/1",
+    accountId: user.id,
+    profileImgPath: `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${
+      user.username ?? "John Doe"
+    }`,
+    name: user.username ?? "John Doe",
+  })
 }
 
 // example of ClerkEvent

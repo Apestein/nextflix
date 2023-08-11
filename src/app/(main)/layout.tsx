@@ -74,7 +74,7 @@ import {
 import { db } from "~/db/client"
 import { eq } from "drizzle-orm"
 import { accounts } from "~/db/schema"
-import { ERR } from "~/lib/utils"
+import { ForceFresh } from "~/components/force-refresh"
 
 async function CustomeUserButton() {
   const { userId } = auth()
@@ -83,39 +83,43 @@ async function CustomeUserButton() {
     where: eq(accounts.id, userId),
     with: { activeProfile: true },
   })
-  if (!userAccount) throw new Error(ERR.db)
+  if (!userAccount) return <ForceFresh />
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={userAccount.activeProfile.profileImgPath}
-          alt="user-image"
-          height="32"
-          width="32"
-          className="rounded-sm"
-        />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>{userAccount.activeProfile.name}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Link href="/manage-profile">Manage Profile</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href="/switch-profile">Switch Profile</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href="/account">Account</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link href="/subscription">Subscription</Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem className="flex justify-center border">
-          <SignOutButton />
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={userAccount.activeProfile.profileImgPath}
+            alt="user-image"
+            height="32"
+            width="32"
+            className="rounded-sm"
+          />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>
+            {userAccount.activeProfile.name}
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            <Link href="/manage-profile">Manage Profile</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/switch-profile">Switch Profile</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/account">Account</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/subscription">Subscription</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="flex justify-center border">
+            <SignOutButton />
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   )
 }
 
