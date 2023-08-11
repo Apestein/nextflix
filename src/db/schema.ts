@@ -1,23 +1,19 @@
 import { relations } from "drizzle-orm"
 import {
   pgTable,
-  serial,
-  text,
-  real,
   varchar,
   integer,
   timestamp,
   pgEnum,
-  json,
   primaryKey,
+  // json,
+  // serial,
+  // text,
+  // real,
 } from "drizzle-orm/pg-core"
+import { planTuple } from "~/lib/configs"
 
-export const memebershipEnum = pgEnum("membership", [
-  "free",
-  "basic",
-  "standard",
-  "premium",
-])
+export const memebershipEnum = pgEnum("membership", planTuple)
 export const accounts = pgTable("accounts", {
   id: varchar("id", { length: 256 }).primaryKey(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),

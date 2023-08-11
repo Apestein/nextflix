@@ -13,7 +13,6 @@ export default async function SubscriptionPage() {
     where: eq(accounts.id, userId),
   })
   if (!userAccount) throw new Error(ERR.db)
-  console.log(userAccount.membership)
   return (
     <main className="mx-auto mt-8 w-2/3 space-y-8">
       <h1 className="text-3xl font-bold sm:text-4xl">

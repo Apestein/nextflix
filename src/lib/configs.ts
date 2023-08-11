@@ -24,3 +24,14 @@ export const PLANS = [
     description: "Premium Video Stream",
   },
 ] as const
+
+const tupleMap = <
+  const T extends readonly Record<string, unknown>[],
+  Key extends keyof T[number],
+>(
+  input: T,
+  key: Key,
+): { [k in keyof T]: T[k][Key] } => {
+  return input.map((row) => row[key as never]) as never
+}
+export const planTuple = tupleMap(PLANS, "name")

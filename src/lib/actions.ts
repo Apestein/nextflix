@@ -13,6 +13,7 @@ import { stripe } from "~/lib/stripe"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import type { Stripe } from "stripe"
+import { planTuple } from "./configs"
 
 export const addProfile = zact(z.object({ name: z.string().min(3) }))(async (
   input,
@@ -155,7 +156,7 @@ export const myShowQuery = zact(z.object({ id: z.number() }))(async (input) => {
 export const createCheckoutSession = zact(
   z.object({
     stripeProductId: z.string(),
-    planName: z.enum(["free", "basic", "standard", "premium"]),
+    planName: z.enum(planTuple),
   }),
 )(async (input) => {
   const userId = auth().userId
@@ -168,10 +169,7 @@ export const createCheckoutSession = zact(
   const siteUrl = headers().get("origin")
   if (!siteUrl) throw new Error(ERR.undefined)
   let checkoutSession: Stripe.Checkout.Session | Stripe.BillingPortal.Session
-  if (
-    input.planName !== "free" &&
-    input.planName.toLowerCase() !== userAccount.membership
-  )
+  if (input.planName !== "free" && input.planName !== userAccount.membership)
     checkoutSession = await stripe.checkout.sessions.create({
       mode: "subscription",
       billing_address_collection: "auto",
@@ -182,7 +180,7 @@ export const createCheckoutSession = zact(
           quantity: 1,
         },
       ],
-      success_url: `${siteUrl}/subscription/success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${siteUrl}/subscription/result?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}/subscription`,
     })
   else
