@@ -6,13 +6,14 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc",
     "start": "next start",
     "introspect": "drizzle-kit introspect:pg",
     "generate": "drizzle-kit generate:pg",
     "migrate": "tsx ./src/db/migrate.ts",
     "push": "drizzle-kit push:pg",
-    "studio": "drizzle-kit studio"
+    "studio": "drizzle-kit studio",
+    "stripe:listen": "stripe listen --forward-to localhost:3000/api/stripe --latest"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.23.2",

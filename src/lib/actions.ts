@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm"
 import { accounts, profiles } from "~/db/schema"
 import { z } from "zod"
 import { zact } from "./zact/server"
-import { ERR } from "./utils"
+import { ERR, raise } from "./utils"
 import { revalidatePath } from "next/cache"
 import { stripe } from "~/lib/stripe"
 import { headers } from "next/headers"
@@ -169,6 +169,8 @@ export const createCheckoutSession = zact(
   const siteUrl = headers().get("origin")
   if (!siteUrl) throw new Error(ERR.undefined)
   let checkoutSession: Stripe.Checkout.Session | Stripe.BillingPortal.Session
+  if (input.planName === "free" && userAccount.membership === "free") return
+
   if (input.planName !== "free" && input.planName !== userAccount.membership)
     checkoutSession = await stripe.checkout.sessions.create({
       mode: "subscription",
@@ -182,10 +184,13 @@ export const createCheckoutSession = zact(
       ],
       success_url: `${siteUrl}/subscription/result?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}/subscription`,
+      metadata: {
+        userId,
+      },
     })
   else
     checkoutSession = await stripe.billingPortal.sessions.create({
-      customer: "cus_OPw4UIpza7Xiyq",
+      customer: userAccount.stripeCustomerId ?? raise(ERR.db),
       return_url: `${siteUrl}/subscription`,
     })
   redirect(checkoutSession.url!)

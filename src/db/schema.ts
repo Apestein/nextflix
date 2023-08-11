@@ -12,13 +12,22 @@ import {
   // real,
 } from "drizzle-orm/pg-core"
 import { planTuple } from "~/lib/configs"
+// import type { InferModel } from "drizzle-orm"
+// import type { PlanName } from "~/types"
 
-export const memebershipEnum = pgEnum("membership", planTuple)
+export const membershipEnum = pgEnum("membership", planTuple)
 export const accounts = pgTable("accounts", {
   id: varchar("id", { length: 256 }).primaryKey(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   email: varchar("email", { length: 256 }).notNull(),
-  membership: memebershipEnum("membership").notNull().default("free"),
+  membership: membershipEnum("membership").notNull().default("free"),
+  stripeCustomerId: varchar("stripe_customer_id", { length: 256 }),
+  // memebership: json("membership")
+  //   .$type<{
+  //     plan: PlanName
+  //     stripeCustomerId: string | null
+  //   }>()
+  //   .notNull(),
   activeProfileId: varchar("active_profile_id", { length: 256 }).notNull(),
 })
 export const accountsRelations = relations(accounts, ({ many, one }) => ({
@@ -28,6 +37,7 @@ export const accountsRelations = relations(accounts, ({ many, one }) => ({
     references: [profiles.id],
   }),
 }))
+// type accountType = InferModel<typeof accounts>
 
 export const profiles = pgTable("profiles", {
   id: varchar("id", { length: 256 }).primaryKey(),

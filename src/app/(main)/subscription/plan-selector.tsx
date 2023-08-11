@@ -45,6 +45,11 @@ export function PlanSelector({
         <Button
           className="bg-green-600 font-semibold text-white hover:bg-green-700"
           onClick={submit}
+          disabled={
+            selectedPlan.name === "free" && activeSubscription === "free"
+              ? true
+              : false
+          }
         >
           {selectedPlan.name === activeSubscription ? "Update" : "Subscribe"}
         </Button>
