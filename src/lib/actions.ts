@@ -169,10 +169,7 @@ export const createCheckoutSession = zact(
   const siteUrl = headers().get("origin")
   if (!siteUrl) throw new Error(ERR.undefined)
   let checkoutSession: Stripe.Checkout.Session | Stripe.BillingPortal.Session
-  if (input.planName === "free" && userAccount.membership === "free")
-    throw new Error(ERR.not_allowed)
-
-  if (input.planName !== "free" && input.planName !== userAccount.membership)
+  if (input.planName !== "free" && userAccount.membership === "free")
     checkoutSession = await stripe.checkout.sessions.create({
       mode: "subscription",
       billing_address_collection: "auto",
@@ -192,7 +189,7 @@ export const createCheckoutSession = zact(
     })
   else
     checkoutSession = await stripe.billingPortal.sessions.create({
-      customer: userAccount.stripeCustomerId ?? raise(ERR.db),
+      customer: userAccount.stripeCustomerId!,
       return_url: `${siteUrl}/subscription`,
     })
   redirect(checkoutSession.url!)
