@@ -15,4 +15,5 @@ export const ERR = {
   db: "Failed to find in database",
   undefined: "Undefined variable",
   fetch: "Failed to fetch data",
+  not_allowed: "User should not be allowed to do this action",
 }
