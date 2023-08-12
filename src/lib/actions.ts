@@ -186,6 +186,7 @@ export const createCheckoutSession = zact(
       cancel_url: `${siteUrl}/subscription`,
       metadata: {
         userId,
+        planName: input.planName,
       },
     })
   else

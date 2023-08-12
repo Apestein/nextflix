@@ -23,6 +23,7 @@ export function PlanSelector({
       planName: selectedPlan.name,
     })
   }
+
   return (
     <>
       <div className="flex justify-end gap-8">
@@ -43,7 +44,7 @@ export function PlanSelector({
       </div>
       <div className="flex justify-end">
         <Button
-          className="bg-green-600 font-semibold text-white hover:bg-green-700"
+          className="w-56 bg-green-600 font-semibold text-white hover:bg-green-700"
           onClick={submit}
           disabled={
             selectedPlan.name === "free" && activeSubscription === "free"
@@ -51,7 +52,7 @@ export function PlanSelector({
               : false
           }
         >
-          {selectedPlan.name === activeSubscription ? "Update" : "Subscribe"}
+          {selectedPlan.name === activeSubscription ? "Edit" : "Subscribe"}
         </Button>
       </div>
     </>
