@@ -22,7 +22,7 @@ export default function AddProfilePage() {
   async function doAdd() {
     const res = await execute({ name })
     toast({
-      description: res?.message,
+      description: res.message,
     })
     router.replace("/manage-profile")
   }

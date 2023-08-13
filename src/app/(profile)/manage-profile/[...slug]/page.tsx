@@ -32,7 +32,7 @@ export default function ProfilePage({
       profileId: searchParams.profileId,
     })
     toast({
-      description: res?.message,
+      description: res.message,
     })
     router.replace("/manage-profile")
   }
@@ -43,7 +43,7 @@ export default function ProfilePage({
       profileId: searchParams.profileId,
     })
     toast({
-      description: res?.message,
+      description: res.message,
     })
     router.replace("/manage-profile")
   }

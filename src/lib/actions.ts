@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm"
 import { accounts, profiles } from "~/db/schema"
 import { z } from "zod"
 import { zact } from "./zact/server"
-import { ERR, raise } from "./utils"
+import { ERR } from "./utils"
 import { revalidatePath } from "next/cache"
 import { stripe } from "~/lib/stripe"
 import { headers } from "next/headers"
@@ -15,7 +15,7 @@ import { redirect } from "next/navigation"
 import type { Stripe } from "stripe"
 import { planTuple } from "./configs"
 
-export const addProfile = zact(z.object({ name: z.string().min(3) }))(async (
+export const addProfile = zact(z.object({ name: z.string().min(2) }))(async (
   input,
 ) => {
   const userId = auth().userId
@@ -27,7 +27,7 @@ export const addProfile = zact(z.object({ name: z.string().min(3) }))(async (
     },
   })
   if (!userAccount) throw new Error(ERR.db)
-  if (userAccount.profiles.length === 4) return null
+  if (userAccount.profiles.length === 4) throw new Error(ERR.not_allowed)
   const takenProfileSlots = userAccount.profiles.map((profile) =>
     Number(profile.id.at(-1)),
   )
@@ -35,14 +35,14 @@ export const addProfile = zact(z.object({ name: z.string().min(3) }))(async (
     (el) => !takenProfileSlots.includes(el),
   )
   if (!openProfileSlot) throw new Error(ERR.undefined)
-  const res = await db.insert(profiles).values({
+  await db.insert(profiles).values({
     id: `${userAccount.id}/${openProfileSlot}`,
     accountId: userAccount.id,
     name: input.name,
     profileImgPath: `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${input.name}`,
   })
-  if (res.rowCount) revalidatePath("/manage-profile")
-  return { success: res.rowCount ? true : false, message: "Profile created" }
+  revalidatePath("/manage-profile")
+  return { message: "Profile created" }
 })
 
 export const updateProfile = zact(
@@ -55,15 +55,15 @@ export const updateProfile = zact(
   })
   if (!profile) throw new Error(ERR.db)
   if (userId !== profile.accountId) throw new Error(ERR.unauthorized)
-  const res = await db
+  await db
     .update(profiles)
     .set({
       name: input.name,
       profileImgPath: `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${input.name}`,
     })
     .where(eq(profiles.id, input.profileId))
-  if (res.rowCount) revalidatePath("/manage-profile")
-  return { success: res.rowCount ? true : false, message: "Profile Updated" }
+  revalidatePath("/manage-profile")
+  return { message: "Profile Updated" }
 })
 
 export const switchProfile = zact(z.object({ profileId: z.string() }))(async (
@@ -76,17 +76,14 @@ export const switchProfile = zact(z.object({ profileId: z.string() }))(async (
   })
   if (!profile) throw new Error(ERR.db)
   if (profile.accountId !== userId) throw new Error(ERR.unauthorized)
-  const res = await db
+  await db
     .update(accounts)
     .set({
       activeProfileId: input.profileId,
     })
     .where(eq(accounts.id, userId))
-  if (res.rowCount) revalidatePath("/")
-  return {
-    success: res.rowCount ? true : false,
-    message: "You have switched active profile",
-  }
+  revalidatePath("/")
+  return { message: "You have switched active profile" }
 })
 
 export const deleteProfile = zact(z.object({ profileId: z.string() }))(async (
@@ -102,16 +99,20 @@ export const deleteProfile = zact(z.object({ profileId: z.string() }))(async (
   })
   if (!account) throw new Error(ERR.db)
   if (account.activeProfileId === input.profileId)
-    return { success: false, message: "Cannot delete active profile" }
+    return { message: "Cannot delete active profile" }
   if (!account.profiles.find((profile) => profile.id === input.profileId))
     throw new Error(ERR.unauthorized)
-  const res = await db.delete(profiles).where(eq(profiles.id, input.profileId))
-  if (res.rowCount) revalidatePath("/manage-profile")
-  return { success: res.rowCount ? true : false, message: "Profile Deleted" }
+  await db.delete(profiles).where(eq(profiles.id, input.profileId))
+  revalidatePath("/manage-profile")
+  return { message: "Profile Deleted" }
 })
 
 export const toggleMyShow = zact(
-  z.object({ id: z.number(), movieOrTv: z.enum(["movie", "tv"]) }),
+  z.object({
+    id: z.number(),
+    isSaved: z.boolean(),
+    movieOrTv: z.enum(["movie", "tv"]),
+  }),
 )(async (input) => {
   const userId = auth().userId
   if (!userId) throw new Error(ERR.unauthenticated)
@@ -119,16 +120,13 @@ export const toggleMyShow = zact(
     where: eq(accounts.id, userId),
   })
   if (!userAccount) throw new Error(ERR.db)
-  const res = await db
-    .insert(myShows)
-    .values({
+  if (!input.isSaved)
+    await db.insert(myShows).values({
       id: input.id,
       mediaType: input.movieOrTv,
       profileId: userAccount.activeProfileId,
     })
-    .onConflictDoNothing()
-
-  if (!res.rowCount) await db.delete(myShows).where(eq(myShows.id, input.id))
+  else await db.delete(myShows).where(eq(myShows.id, input.id))
 })
 
 export const myShowQuery = zact(z.object({ id: z.number() }))(async (input) => {
@@ -148,9 +146,8 @@ export const myShowQuery = zact(z.object({ id: z.number() }))(async (input) => {
     },
   })
   if (!userAccount) throw new Error(ERR.db)
-  const savedShow = userAccount.activeProfile.savedShows
-  if (savedShow.length) return true
-  else return false
+  const showExist = !!userAccount.activeProfile.savedShows.length
+  return showExist
 })
 
 export const createCheckoutSession = zact(
@@ -166,8 +163,7 @@ export const createCheckoutSession = zact(
   })
   if (!userAccount) throw new Error(ERR.db)
 
-  const siteUrl = headers().get("origin")
-  if (!siteUrl) throw new Error(ERR.undefined)
+  const siteUrl = headers().get("origin")!
   let checkoutSession: Stripe.Checkout.Session | Stripe.BillingPortal.Session
   if (input.planName !== "free" && userAccount.membership === "free")
     checkoutSession = await stripe.checkout.sessions.create({

@@ -58,7 +58,11 @@ export function ShowCard({
 
 function SaveOrUnsave({ show }: { show: Show }) {
   const { isSignedIn } = useAuth()
-  const { execute, data, isLoading } = useZact(myShowQuery, {
+  const {
+    execute,
+    data: isSaved,
+    isLoading,
+  } = useZact(myShowQuery, {
     id: show.id,
   })
   const [isPending, startTransition] = useTransition()
@@ -70,6 +74,7 @@ function SaveOrUnsave({ show }: { show: Show }) {
   function doUpdate() {
     void toggleMyShow({
       id: show.id,
+      isSaved: isSaved!,
       movieOrTv: show.title ? "movie" : "tv",
     })
     void execute({ id: show.id })
@@ -77,7 +82,7 @@ function SaveOrUnsave({ show }: { show: Show }) {
 
   return (
     <button onClick={() => startTransition(() => doUpdate())}>
-      {data ? (
+      {isSaved ? (
         <CheckCircle className="h-6 w-6 cursor-pointer" strokeWidth="1.5" />
       ) : (
         <PlusCircle className="h-6 w-6 cursor-pointer" strokeWidth="1.5" />

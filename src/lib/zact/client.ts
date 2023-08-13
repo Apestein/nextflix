@@ -22,14 +22,15 @@ export function useZact<
     () => async (input: z.infer<InputType>) => {
       setRunning(true)
       try {
-        const result = await actionRef.current(input)
-        setData(result)
+        const res = await actionRef.current(input)
+        setData(res)
         setRunning(false)
-        return result
+        return res
       } catch (e) {
         console.log(e)
         setErr(e as Error)
         setRunning(false)
+        return e as Error
       }
     },
     [],
