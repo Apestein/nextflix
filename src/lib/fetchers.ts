@@ -1,5 +1,5 @@
 import { env } from "~/env.mjs"
-import { type Show } from "~/types"
+import { type Show } from "~/lib/types"
 import { ERR } from "~/lib/utils"
 
 export async function getShows(mediaType: "movie" | "tv") {

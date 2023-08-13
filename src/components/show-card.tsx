@@ -1,6 +1,6 @@
 "use client"
 
-import type { Show, ShowWithVideoAndGenre } from "~/types"
+import type { Show, ShowWithVideoAndGenre } from "~/lib/types"
 import {
   Dialog,
   DialogContent,
@@ -11,12 +11,12 @@ import {
 } from "~/components/ui/dialog"
 import { Skeleton } from "./ui/skeleton"
 import { PlusCircle, CheckCircle } from "lucide-react"
-import { myShowQuery, toggleMyShow } from "~/lib/actions"
 import { type LucideProps } from "lucide-react"
 import { useZact } from "~/lib/zact/client"
 import useSWR from "swr"
 import { env } from "~/env.mjs"
 import { useAuth } from "@clerk/nextjs"
+import { sa } from "~/actions"
 
 export function ShowCard({
   children,
@@ -62,7 +62,7 @@ function SaveOrUnsave({ show }: { show: Show }) {
     data: isSaved,
     isLoading,
     isRunning,
-  } = useZact(myShowQuery, {
+  } = useZact(sa.myShow.myShowQuery, {
     id: show.id,
   })
 
@@ -71,7 +71,7 @@ function SaveOrUnsave({ show }: { show: Show }) {
   if (isRunning) return <Spinner className="h-6 w-6 animate-spin" />
 
   function doUpdate() {
-    void toggleMyShow({
+    void sa.myShow.toggleMyShow({
       id: show.id,
       isSaved: isSaved!,
       movieOrTv: show.title ? "movie" : "tv",

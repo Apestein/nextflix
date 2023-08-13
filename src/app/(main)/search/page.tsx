@@ -1,6 +1,6 @@
 import { ERR } from "~/lib/utils"
 import { env } from "~/env.mjs"
-import type { Show } from "~/types"
+import type { Show } from "~/lib/types"
 import { ShowCard } from "~/components/show-card"
 import Image from "next/image"
 import { SearchInput } from "./search-input"

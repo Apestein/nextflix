@@ -2,10 +2,10 @@
 import { cn } from "~/lib/utils"
 import { useState } from "react"
 import { Button } from "~/components/ui/button"
-import type { SubscriptionPlan, PlanName } from "~/types"
+import type { SubscriptionPlan, PlanName } from "~/lib/types"
 import { PLANS } from "~/lib/configs"
-import { createCheckoutSession } from "~/lib/actions"
 import { useZact } from "~/lib/zact/client"
+import { sa } from "~/actions"
 
 export function PlanSelector({
   activeSubscription,
@@ -15,7 +15,7 @@ export function PlanSelector({
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan>(
     Plans[activeSubscription],
   )
-  const { execute } = useZact(createCheckoutSession)
+  const { execute } = useZact(sa.stripe.createCheckoutSession)
 
   function submit() {
     void execute({

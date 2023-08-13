@@ -4,7 +4,7 @@ import { useState, useRef } from "react"
 import { cn } from "~/lib/utils"
 import { Button } from "./ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import { type Show } from "~/types"
+import { type Show } from "~/lib/types"
 import { ShowCard } from "./show-card"
 import Image from "next/image"
 

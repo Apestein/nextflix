@@ -1,4 +1,4 @@
-import { type Show } from "~/types"
+import { type Show } from "~/lib/types"
 import { Button } from "~/components/ui/button"
 import { ShowsCarousel } from "~/components/show-carousel"
 import { Play } from "lucide-react"

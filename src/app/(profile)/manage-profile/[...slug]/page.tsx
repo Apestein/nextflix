@@ -1,6 +1,5 @@
 "use client"
 import { Button } from "~/components/ui/button"
-import * as sa from "~/lib/actions"
 import { useZact } from "~/lib/zact/client"
 import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
@@ -10,6 +9,7 @@ import { useToast } from "~/components/ui/use-toast"
 import { Input } from "~/components/ui/input"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import { sa } from "~/actions"
 
 export default function ProfilePage({
   params,
@@ -19,8 +19,8 @@ export default function ProfilePage({
   searchParams: { profileId: string }
 }) {
   const [name, setName] = useState(params.slug[0] ?? raise(ERR.undefined))
-  const { execute: executeUpdate } = useZact(sa.updateProfile)
-  const { execute: executeDelete } = useZact(sa.deleteProfile)
+  const { execute: executeUpdate } = useZact(sa.profile.updateProfile)
+  const { execute: executeDelete } = useZact(sa.profile.deleteProfile)
   const debounced = useDebouncedCallback((value: string) => {
     setName(value)
   }, 500)
