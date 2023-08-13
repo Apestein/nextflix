@@ -7,6 +7,7 @@ export default authMiddleware({
     "/tv-shows",
     "/movies",
     "/new-and-popular",
+    "/search/(.*)",
   ],
 })
 
