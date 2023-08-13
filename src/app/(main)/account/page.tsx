@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm"
 import { auth } from "@clerk/nextjs"
 import { CreditCard, ChevronRight } from "lucide-react"
 import { ERR } from "~/lib/utils"
+import { Button } from "~/components/ui/button"
 
 export default async function AccountPage() {
   const { userId } = auth()
@@ -15,7 +16,7 @@ export default async function AccountPage() {
   if (!userAccount) throw new Error(ERR.db)
   return (
     <main className="my-12 flex justify-center">
-      <div className="space-y-5">
+      <div className="space-y-5 md:min-w-[500px]">
         <section className="space-y-2">
           <h1 className="text-4xl">Account</h1>
           <p className="flex items-center gap-2 text-sm text-neutral-400">
@@ -35,13 +36,17 @@ export default async function AccountPage() {
           <ChevronRight />
         </p>
         <div aria-label="divider" className="h-px w-full bg-white/25" />
-        <p>
-          {userAccount.membership ??
-            " You are currently not subsribed to any plan."}
-        </p>
+        <Button className="w-full">Manage Subscription</Button>
         <div aria-label="divider" className="h-px w-full bg-white/25" />
         <p className="text-2xl text-neutral-400">Plan Details</p>
-        <p>{userAccount.membership ? userAccount.membership : "None Member"}</p>
+        <p className="flex gap-1.5">
+          {`${userAccount.membership
+            .charAt(0)
+            .toUpperCase()}${userAccount.membership.substring(1)}`}
+          <span className="rounded-sm px-1 text-neutral-100 ring-2 ring-slate-100">
+            4K+HDR
+          </span>
+        </p>
         <div aria-label="divider" className="h-px w-full bg-white/25" />
         <p className="flex cursor-pointer justify-between">
           Change plan

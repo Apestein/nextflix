@@ -14,7 +14,6 @@ import { PlusCircle, CheckCircle } from "lucide-react"
 import { myShowQuery, toggleMyShow } from "~/lib/actions"
 import { type LucideProps } from "lucide-react"
 import { useZact } from "~/lib/zact/client"
-import { useTransition } from "react"
 import useSWR from "swr"
 import { env } from "~/env.mjs"
 import { useAuth } from "@clerk/nextjs"
@@ -29,8 +28,8 @@ export function ShowCard({
   return (
     <Dialog>
       <DialogTrigger>{children}</DialogTrigger>
-      <DialogContent className="max-w-3xl">
-        <DialogHeader>
+      <DialogContent className="max-w-3xl p-0">
+        <DialogHeader className="p-4 pb-0">
           <DialogTitle className="flex items-center gap-1.5">
             {show.title ?? show.name}
             <SaveOrUnsave show={show} />
@@ -62,14 +61,14 @@ function SaveOrUnsave({ show }: { show: Show }) {
     execute,
     data: isSaved,
     isLoading,
+    isRunning,
   } = useZact(myShowQuery, {
     id: show.id,
   })
-  const [isPending, startTransition] = useTransition()
 
   if (!isSignedIn) return
   if (isLoading) return <Skeleton className="h-6 w-6 rounded-full" />
-  if (isPending) return <Spinner className="h-6 w-6 animate-spin" />
+  if (isRunning) return <Spinner className="h-6 w-6 animate-spin" />
 
   function doUpdate() {
     void toggleMyShow({
@@ -81,7 +80,7 @@ function SaveOrUnsave({ show }: { show: Show }) {
   }
 
   return (
-    <button onClick={() => startTransition(() => doUpdate())}>
+    <button onClick={doUpdate}>
       {isSaved ? (
         <CheckCircle className="h-6 w-6 cursor-pointer" strokeWidth="1.5" />
       ) : (
@@ -107,7 +106,7 @@ function ShowTrailer({ show }: { show: Show }) {
   return (
     <iframe
       src={`https://www.youtube.com/embed/${findTrailer(data)}`}
-      className="aspect-video w-full"
+      className="aspect-video w-full rounded-md"
     />
   )
 }
