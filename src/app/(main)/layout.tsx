@@ -85,41 +85,37 @@ async function CustomeUserButton() {
   })
   if (!userAccount) return <ForceFresh />
   return (
-    <>
-      <DropdownMenu>
-        <DropdownMenuTrigger>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={userAccount.activeProfile.profileImgPath}
-            alt="user-image"
-            height="32"
-            width="32"
-            className="rounded-sm"
-          />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>
-            {userAccount.activeProfile.name}
-          </DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <Link href="/manage-profile">Manage Profile</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link href="/switch-profile">Switch Profile</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link href="/account">Account</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link href="/subscription">Subscription</Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="flex justify-center border">
-            <SignOutButton />
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </>
+    <DropdownMenu>
+      <DropdownMenuTrigger>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={userAccount.activeProfile.profileImgPath}
+          alt="user-image"
+          height="32"
+          width="32"
+          className="rounded-sm"
+        />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>{userAccount.activeProfile.name}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <Link href="/manage-profile">Manage Profile</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href="/switch-profile">Switch Profile</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href="/account">Account</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href="/subscription">Subscription</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem className="flex justify-center border">
+          <SignOutButton />
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 

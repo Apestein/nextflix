@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       signature,
       process.env.NODE_ENV === "production"
         ? env.STRIPE_WEBHOOK_SECRET
-        : "whsec_c4aed9ff845d5c080f80706e999aafec5e49c958e4362a44d7c97df124478c54",
+        : env.STRIPE_DEV_WEBHOOK_SECRET,
     )
   } catch (error) {
     return new Response(
@@ -55,9 +55,6 @@ export async function POST(req: Request) {
       })
       .where(eq(accounts.id, userId))
   }
-
-  // if (event.type === "invoice.payment_succeeded") {
-  // }
 
   return NextResponse.json({ message: "Received" }, { status: 200 })
 }

@@ -1,32 +1,34 @@
+import { z } from "zod"
 import { db } from "~/db/client"
 import { accounts, profiles } from "~/db/schema"
-import { raise, ERR } from "~/lib/utils"
 
-type ClerkEvent = {
-  data: {
-    id: string
-    email_addresses: {
-      email_address: string
-    }[]
-    username: string
-    profile_image_url: string
-  }
-}
+export const ClerkEventSchema = z.object({
+  data: z.object({
+    id: z.string(),
+    email_addresses: z.array(z.object({ email_address: z.string() })),
+    username: z.string(),
+    profile_image_url: z.string(),
+    first_name: z.string(),
+    last_name: z.string(),
+  }),
+})
+
 export async function POST(request: Request) {
-  const event = (await request.json()) as ClerkEvent
-  const user = event.data
+  const event = (await request.json()) as unknown
+  const res = ClerkEventSchema.parse(event)
+  const user = res.data
   await db.insert(accounts).values({
     id: user.id,
-    email: user.email_addresses[0]?.email_address ?? raise(ERR.undefined),
+    email: user.email_addresses[0]!.email_address,
     activeProfileId: user.id + "/1",
   })
   await db.insert(profiles).values({
     id: user.id + "/1",
     accountId: user.id,
     profileImgPath: `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${
-      user.username ?? "John Doe"
+      user.username ?? `${user.first_name}_${user.last_name}`
     }`,
-    name: user.username ?? "John Doe",
+    name: user.username ?? `${user.first_name} ${user.last_name}`,
   })
 }
 
