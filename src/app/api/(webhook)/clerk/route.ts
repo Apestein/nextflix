@@ -8,8 +8,8 @@ const ClerkEventSchema = z.object({
     email_addresses: z.array(z.object({ email_address: z.string() })),
     username: z.string(),
     profile_image_url: z.string(),
-    first_name: z.string(),
-    last_name: z.string(),
+    first_name: z.string().nullish(),
+    last_name: z.string().nullish(),
   }),
 })
 
@@ -26,9 +26,11 @@ export async function POST(request: Request) {
     id: user.id + "/1",
     accountId: user.id,
     profileImgPath: `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${
-      user.username ?? `${user.first_name}_${user.last_name}`
+      user.username ?? `${user.first_name ?? "John"}_${user.last_name ?? "Doe"}`
     }`,
-    name: user.username ?? `${user.first_name} ${user.last_name}`,
+    name:
+      user.username ??
+      `${user.first_name ?? "John"} ${user.last_name ?? "Doe"}`,
   })
 }
 
