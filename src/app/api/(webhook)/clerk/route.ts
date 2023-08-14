@@ -2,7 +2,7 @@ import { z } from "zod"
 import { db } from "~/db/client"
 import { accounts, profiles } from "~/db/schema"
 
-export const ClerkEventSchema = z.object({
+const ClerkEventSchema = z.object({
   data: z.object({
     id: z.string(),
     email_addresses: z.array(z.object({ email_address: z.string() })),
