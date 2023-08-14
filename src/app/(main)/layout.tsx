@@ -1,3 +1,31 @@
+import Image from "next/image"
+import Link from "next/link"
+import { LinkButton } from "~/components/link-button"
+import { currentUser, SignedOut, auth, SignOutButton } from "@clerk/nextjs"
+import { Suspense } from "react"
+import { Button } from "~/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu"
+import { Skeleton } from "~/components/ui/skeleton"
+import { db } from "~/db/client"
+import { accounts, profiles } from "~/db/schema"
+import { eq } from "drizzle-orm"
+import { ERR } from "~/lib/utils"
+import {
+  Search,
+  Bell,
+  Facebook,
+  Instagram,
+  Twitter,
+  Youtube,
+} from "lucide-react"
+
 export default function ShowsLayout({
   children,
 }: {
@@ -11,13 +39,6 @@ export default function ShowsLayout({
     </div>
   )
 }
-
-import Image from "next/image"
-import { Search, Bell } from "lucide-react"
-import Link from "next/link"
-import { Button } from "~/components/ui/button"
-import { SignedOut, SignedIn } from "@clerk/nextjs"
-import { LinkButton } from "~/components/link-button"
 
 function Header() {
   return (
@@ -46,9 +67,9 @@ function Header() {
           <Search />
         </Link>
         <Bell />
-        <SignedIn>
+        <Suspense fallback={<Skeleton className="h-8 w-8" />}>
           <CustomeUserButton />
-        </SignedIn>
+        </Suspense>
         <SignedOut>
           <Button
             asChild
@@ -62,28 +83,14 @@ function Header() {
   )
 }
 
-import { auth, SignOutButton } from "@clerk/nextjs"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu"
-import { db } from "~/db/client"
-import { eq } from "drizzle-orm"
-import { accounts } from "~/db/schema"
-import { ForceFresh } from "~/components/force-refresh"
-
 async function CustomeUserButton() {
   const { userId } = auth()
   if (!userId) return
-  const userAccount = await db.query.accounts.findFirst({
-    where: eq(accounts.id, userId),
-    with: { activeProfile: true },
-  })
-  if (!userAccount) return <ForceFresh />
+  const existingAccount = await getAccount(userId)
+  const userAccount = existingAccount
+    ? existingAccount
+    : await createAccountAndProfile()
+  if (!userAccount) throw new Error(ERR.db)
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -118,8 +125,6 @@ async function CustomeUserButton() {
     </DropdownMenu>
   )
 }
-
-import { Facebook, Instagram, Twitter, Youtube } from "lucide-react"
 
 function Footer() {
   return (
@@ -163,4 +168,37 @@ function Footer() {
       <div className="font-semibold">Copyright © 2023 Nextflix</div>
     </footer>
   )
+}
+
+function getAccount(userId: string) {
+  return db.query.accounts.findFirst({
+    where: eq(accounts.id, userId),
+    with: { activeProfile: true },
+  })
+}
+
+async function createAccountAndProfile() {
+  const user = await currentUser()
+  if (!user) throw new Error(ERR.fetch)
+  await db
+    .insert(accounts)
+    .values({
+      id: user.id,
+      email: user.emailAddresses[0]!.emailAddress,
+      activeProfileId: user.id + "/1",
+    })
+    .returning()
+    .onConflictDoNothing()
+  await db
+    .insert(profiles)
+    .values({
+      id: user.id + "/1",
+      accountId: user.id,
+      profileImgPath: `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${
+        user.username ?? `${user.firstName!}_${user.lastName!}`
+      }`,
+      name: user.username ?? `${user.firstName!} ${user.lastName!}`,
+    })
+    .onConflictDoNothing()
+  return getAccount(user.id)
 }
