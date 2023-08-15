@@ -6,30 +6,30 @@ import {
   timestamp,
   pgEnum,
   primaryKey,
-  // json,
-  // serial,
-  // text,
-  // real,
+  uniqueIndex,
+  index,
 } from "drizzle-orm/pg-core"
 import { planTuple } from "~/lib/configs"
-// import type { InferModel } from "drizzle-orm"
-// import type { PlanName } from "~/types"
 
 export const membershipEnum = pgEnum("membership", planTuple)
-export const accounts = pgTable("accounts", {
-  id: varchar("id", { length: 256 }).primaryKey(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  email: varchar("email", { length: 256 }).notNull(),
-  membership: membershipEnum("membership").notNull().default("free"),
-  stripeCustomerId: varchar("stripe_customer_id", { length: 256 }),
-  // memebership: json("membership")
-  //   .$type<{
-  //     plan: PlanName
-  //     stripeCustomerId: string | null
-  //   }>()
-  //   .notNull(),
-  activeProfileId: varchar("active_profile_id", { length: 256 }).notNull(),
-})
+export const accounts = pgTable(
+  "accounts",
+  {
+    id: varchar("id", { length: 256 }).primaryKey(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    email: varchar("email", { length: 256 }).notNull(),
+    membership: membershipEnum("membership").notNull().default("free"),
+    stripeCustomerId: varchar("stripe_customer_id", { length: 256 }),
+    activeProfileId: varchar("active_profile_id", { length: 256 }).notNull(),
+  },
+  (table) => {
+    return {
+      activeProfileIdx: uniqueIndex("active_profile_idx").on(
+        table.activeProfileId,
+      ),
+    }
+  },
+)
 export const accountsRelations = relations(accounts, ({ many, one }) => ({
   profiles: many(profiles),
   activeProfile: one(profiles, {
@@ -37,16 +37,23 @@ export const accountsRelations = relations(accounts, ({ many, one }) => ({
     references: [profiles.id],
   }),
 }))
-// type accountType = InferModel<typeof accounts>
 
-export const profiles = pgTable("profiles", {
-  id: varchar("id", { length: 256 }).primaryKey(),
-  accountId: varchar("account_id", { length: 256 })
-    .references(() => accounts.id, { onDelete: "cascade" })
-    .notNull(),
-  profileImgPath: varchar("profile_img_path", { length: 256 }).notNull(),
-  name: varchar("name", { length: 256 }).notNull(),
-})
+export const profiles = pgTable(
+  "profiles",
+  {
+    id: varchar("id", { length: 256 }).primaryKey(),
+    accountId: varchar("account_id", { length: 256 })
+      .references(() => accounts.id, { onDelete: "cascade" })
+      .notNull(),
+    profileImgPath: varchar("profile_img_path", { length: 256 }).notNull(),
+    name: varchar("name", { length: 256 }).notNull(),
+  },
+  (table) => {
+    return {
+      accountIdIdx: index("account_id_idx").on(table.accountId),
+    }
+  },
+)
 export const profilesRelation = relations(profiles, ({ one, many }) => ({
   ownerAccount: one(accounts, {
     fields: [profiles.accountId],
@@ -65,7 +72,12 @@ export const myShows = pgTable(
       .references(() => profiles.id, { onDelete: "cascade" })
       .notNull(),
   },
-  (t) => ({ pk: primaryKey(t.id, t.profileId) }),
+  (table) => {
+    return {
+      profileIdIdx: index("profile_id_idx").on(table.profileId),
+      pk: primaryKey(table.id, table.profileId),
+    }
+  },
 )
 export const myShowsRelation = relations(myShows, ({ one }) => ({
   profile: one(profiles, {
