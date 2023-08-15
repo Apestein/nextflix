@@ -86,7 +86,6 @@ function Header() {
 async function CustomeUserButton() {
   const { userId } = auth()
   if (!userId) return
-  console.count()
   const existingAccount = await getAccount(userId)
   const account = existingAccount
     ? existingAccount
@@ -166,7 +165,17 @@ function Footer() {
           <Link href="/">Contact Us</Link>
         </div>
       </div>
-      <div className="font-semibold">Copyright © 2023 Nextflix</div>
+      <div className="text-center font-semibold text-neutral-300">
+        Built by Apestein. The source code is available on&nbsp;
+        <a
+          href="https://github.com/Apestein/nextflix"
+          target="_blank"
+          rel="noreferrer"
+          className="font-medium underline underline-offset-4"
+        >
+          Github
+        </a>
+      </div>
     </footer>
   )
 }
