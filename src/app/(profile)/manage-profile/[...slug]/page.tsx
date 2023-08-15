@@ -4,7 +4,6 @@ import { useZact } from "~/lib/zact/client"
 import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { useRouter } from "next/navigation"
-import { raise, ERR } from "~/lib/utils"
 import { useToast } from "~/components/ui/use-toast"
 import { Input } from "~/components/ui/input"
 import { ArrowLeft } from "lucide-react"
@@ -18,7 +17,7 @@ export default function ProfilePage({
   params: { slug: string[] }
   searchParams: { profileId: string }
 }) {
-  const [name, setName] = useState(params.slug[0] ?? raise(ERR.undefined))
+  const [name, setName] = useState(params.slug[0]!)
   const { execute: executeUpdate } = useZact(sa.profile.updateProfile)
   const { execute: executeDelete } = useZact(sa.profile.deleteProfile)
   const debounced = useDebouncedCallback((value: string) => {

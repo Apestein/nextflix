@@ -6,7 +6,6 @@ import { accounts } from "~/db/schema"
 import { eq } from "drizzle-orm"
 import { headers } from "next/headers"
 import { env } from "~/env.mjs"
-import { raise, ERR } from "~/lib/utils"
 import { planTuple } from "~/lib/configs"
 import { z } from "zod"
 
@@ -42,8 +41,8 @@ export async function POST(req: Request) {
     )
 
     // Update the user stripe into in our database.
-    const userId = session.metadata?.userId ?? raise(ERR.undefined)
-    const plan = session.metadata?.planName
+    const userId = session.metadata!.userId!
+    const plan = session.metadata!.planName!
     const planSchema = z.enum(planTuple)
     const validatedPlan = planSchema.parse(plan)
 

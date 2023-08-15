@@ -10,8 +10,8 @@ import { cn } from "~/lib/utils"
 
 export default async function Home() {
   const allShows = await getShows("movie")
-
   const randomShow = pickRandomShow(allShows.trending)
+
   return (
     <>
       <div

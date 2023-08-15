@@ -86,17 +86,18 @@ function Header() {
 async function CustomeUserButton() {
   const { userId } = auth()
   if (!userId) return
+  console.count()
   const existingAccount = await getAccount(userId)
-  const userAccount = existingAccount
+  const account = existingAccount
     ? existingAccount
     : await createAccountAndProfile()
-  if (!userAccount) throw new Error(ERR.db)
+  if (!account) throw new Error(ERR.db)
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={userAccount.activeProfile.profileImgPath}
+          src={account.activeProfile.profileImgPath}
           alt="user-image"
           height="32"
           width="32"
@@ -104,7 +105,7 @@ async function CustomeUserButton() {
         />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>{userAccount.activeProfile.name}</DropdownMenuLabel>
+        <DropdownMenuLabel>{account.activeProfile.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Link href="/manage-profile">Manage Profile</Link>
@@ -179,20 +180,19 @@ function getAccount(userId: string) {
 
 async function createAccountAndProfile() {
   const user = await currentUser()
-  if (!user) throw new Error(ERR.fetch)
+  if (!user) throw new Error(ERR.unauthenticated)
   await db
     .insert(accounts)
     .values({
       id: user.id,
       email: user.emailAddresses[0]!.emailAddress,
-      activeProfileId: user.id + "/1",
+      activeProfileId: user.id + "-1",
     })
-    .returning()
     .onConflictDoNothing()
   await db
     .insert(profiles)
     .values({
-      id: user.id + "/1",
+      id: user.id + "-1",
       accountId: user.id,
       profileImgPath: `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${
         user.username ?? `${user.firstName!}_${user.lastName!}`

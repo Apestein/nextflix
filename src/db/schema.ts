@@ -42,7 +42,7 @@ export const accountsRelations = relations(accounts, ({ many, one }) => ({
 export const profiles = pgTable("profiles", {
   id: varchar("id", { length: 256 }).primaryKey(),
   accountId: varchar("account_id", { length: 256 })
-    .references(() => accounts.id)
+    .references(() => accounts.id, { onDelete: "cascade" })
     .notNull(),
   profileImgPath: varchar("profile_img_path", { length: 256 }).notNull(),
   name: varchar("name", { length: 256 }).notNull(),
@@ -62,7 +62,7 @@ export const myShows = pgTable(
     id: integer("id").notNull(),
     mediaType: mediaTypeEnum("media_type").notNull(),
     profileId: varchar("profile_id", { length: 256 })
-      .references(() => profiles.id)
+      .references(() => profiles.id, { onDelete: "cascade" })
       .notNull(),
   },
   (t) => ({ pk: primaryKey(t.id, t.profileId) }),
