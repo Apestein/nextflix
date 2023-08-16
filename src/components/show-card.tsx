@@ -11,12 +11,12 @@ import {
 } from "~/components/ui/dialog"
 import { Skeleton } from "./ui/skeleton"
 import { PlusCircle, CheckCircle } from "lucide-react"
-import { type LucideProps } from "lucide-react"
 import { useZact } from "~/lib/zact/client"
 import useSWR from "swr"
 import { env } from "~/env.mjs"
 import { useAuth } from "@clerk/nextjs"
 import { sa } from "~/actions"
+import { experimental_useOptimistic as useOptimistic } from "react"
 
 export function ShowCard({
   children,
@@ -62,15 +62,23 @@ function SaveOrUnsave({ show }: { show: Show }) {
     data: isSaved,
     isLoading,
     isRunning,
-  } = useZact(sa.myShow.myShowQuery, {
-    id: show.id,
-  })
+  } = useZact(
+    sa.myShow.myShowQuery,
+    {
+      id: show.id,
+    },
+    isSignedIn,
+  )
+  const [optimisticData, setOptimisticData] = useOptimistic(
+    isSaved,
+    (state) => !state,
+  )
 
   if (!isSignedIn) return
   if (isLoading) return <Skeleton className="h-6 w-6 rounded-full" />
-  if (isRunning) return <Spinner className="h-6 w-6 animate-spin" />
 
   function doUpdate() {
+    setOptimisticData(isSaved)
     void sa.myShow.toggleMyShow({
       id: show.id,
       isSaved: isSaved!,
@@ -80,11 +88,19 @@ function SaveOrUnsave({ show }: { show: Show }) {
   }
 
   return (
-    <button onClick={doUpdate}>
-      {isSaved ? (
-        <CheckCircle className="h-6 w-6 cursor-pointer" strokeWidth="1.5" />
+    <button onClick={doUpdate} disabled={isRunning}>
+      {optimisticData ? (
+        <CheckCircle
+          className="h-6 w-6 cursor-pointer"
+          strokeWidth="1.5"
+          opacity={isRunning ? 0.5 : 1}
+        />
       ) : (
-        <PlusCircle className="h-6 w-6 cursor-pointer" strokeWidth="1.5" />
+        <PlusCircle
+          className="h-6 w-6 cursor-pointer"
+          strokeWidth="1.5"
+          opacity={isRunning ? 0.5 : 1}
+        />
       )}
     </button>
   )
@@ -134,19 +150,19 @@ export function useShowWithVideoAndGenre(show: Show) {
   return { data, isLoading, error }
 }
 
-const Spinner = ({ ...props }: LucideProps) => (
-  <svg viewBox="0 0 24 24" fill="none" {...props}>
-    <circle
-      cx="12"
-      cy="12"
-      r="10"
-      className="stroke-slate-200"
-      strokeWidth="4"
-    />
-    <path
-      d="M12 22C14.6522 22 17.1957 20.9464 19.0711 19.0711C20.9464 17.1957 22 14.6522 22 12C22 9.34784 20.9464 6.8043 19.0711 4.92893C17.1957 3.05357 14.6522 2 12 2"
-      className="stroke-emerald-500"
-      strokeWidth="4"
-    />
-  </svg>
-)
+// const Spinner = ({ ...props }: LucideProps) => (
+//   <svg viewBox="0 0 24 24" fill="none" {...props}>
+//     <circle
+//       cx="12"
+//       cy="12"
+//       r="10"
+//       className="stroke-slate-200"
+//       strokeWidth="4"
+//     />
+//     <path
+//       d="M12 22C14.6522 22 17.1957 20.9464 19.0711 19.0711C20.9464 17.1957 22 14.6522 22 12C22 9.34784 20.9464 6.8043 19.0711 4.92893C17.1957 3.05357 14.6522 2 12 2"
+//       className="stroke-emerald-500"
+//       strokeWidth="4"
+//     />
+//   </svg>
+// )

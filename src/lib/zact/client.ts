@@ -9,9 +9,14 @@ import { useMemo, useRef, useState, useEffect } from "react"
 export function useZact<
   InputType extends z.ZodTypeAny,
   ResponseType extends any,
->(action: ZactAction<InputType, ResponseType>, query?: z.infer<InputType>) {
+>(
+  action: ZactAction<InputType, ResponseType>,
+  query?: z.infer<InputType>,
+  conditional?: boolean,
+) {
   const actionRef = useRef(action)
   const queryRef = useRef(query)
+  const conditionalRef = useRef(conditional)
 
   const [data, setData] = useState<ResponseType | null>(null)
   const [isLoading, setLoading] = useState(false)
@@ -49,7 +54,7 @@ export function useZact<
         setLoading(false)
       }
     }
-    if (queryRef.current) void doQuery()
+    if (queryRef.current && conditionalRef.current !== false) void doQuery()
   }, [])
 
   return {
