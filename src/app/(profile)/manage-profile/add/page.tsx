@@ -1,18 +1,16 @@
 "use client"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
-import { useZact } from "~/lib/zact/client"
 import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { useToast } from "~/components/ui/use-toast"
-import { sa } from "~/actions"
+import { createProfile } from "~/actions/safe-action"
 
 export default function AddProfilePage() {
   const [name, setName] = useState("")
-  const { execute } = useZact(sa.profile.addProfile)
   const debounced = useDebouncedCallback((value: string) => {
     setName(value)
   }, 500)
@@ -20,11 +18,11 @@ export default function AddProfilePage() {
   const { toast } = useToast()
 
   async function doAdd() {
-    const res = await execute({ name })
+    const { data, validationError } = await createProfile({ name })
     toast({
-      description: res.message,
+      description: data?.message ?? validationError?.name,
     })
-    router.replace("/manage-profile")
+    if (data) router.replace("/manage-profile")
   }
 
   return (
