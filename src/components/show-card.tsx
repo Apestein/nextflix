@@ -11,12 +11,12 @@ import {
 } from "~/components/ui/dialog"
 import { Skeleton } from "./ui/skeleton"
 import { PlusCircle, CheckCircle } from "lucide-react"
-import { useZact } from "~/lib/zact/client"
+import { useEffect } from "react"
 import useSWR from "swr"
 import { env } from "~/env.mjs"
 import { useAuth } from "@clerk/nextjs"
-import { sa } from "~/actions"
-import { experimental_useOptimistic as useOptimistic } from "react"
+import { toggleMyShow, queryMyShow } from "~/actions/safe-action"
+import { useOptimisticAction, useAction } from "next-safe-action/hook"
 
 export function ShowCard({
   children,
@@ -57,39 +57,42 @@ export function ShowCard({
 
 function SaveOrUnsave({ show }: { show: Show }) {
   const { isSignedIn } = useAuth()
+
   const {
-    execute,
-    data: isSaved,
-    isLoading,
-    isRunning,
-  } = useZact(
-    sa.myShow.myShowQuery,
-    {
-      id: show.id,
-    },
-    isSignedIn,
-  )
-  const [optimisticData, setOptimisticData] = useOptimistic(
-    isSaved,
-    (state) => !state,
-  )
+    execute: executeQuery,
+    res: initialRes,
+    isExecuting,
+    hasExecuted,
+  } = useAction(queryMyShow)
+  const {
+    execute: executeToggle,
+    optimisticData,
+    res,
+    isExecuting: isRunning,
+  } = useOptimisticAction(toggleMyShow, { isSaved: initialRes.data?.isSaved })
+
+  useEffect(() => {
+    executeQuery({ id: show.id })
+  }, [])
 
   if (!isSignedIn) return
-  if (isLoading) return <Skeleton className="h-6 w-6 rounded-full" />
+  if (isExecuting && !hasExecuted)
+    return <Skeleton className="h-6 w-6 rounded-full" />
 
   function doUpdate() {
-    setOptimisticData(isSaved)
-    void sa.myShow.toggleMyShow({
-      id: show.id,
-      isSaved: isSaved!,
-      movieOrTv: show.title ? "movie" : "tv",
-    })
-    void execute({ id: show.id })
+    void executeToggle(
+      {
+        id: show.id,
+        isSaved: res.data?.isSaved ?? initialRes.data!.isSaved,
+        movieOrTv: show.title ? "movie" : "tv",
+      },
+      { isSaved: !res.data?.isSaved ?? !initialRes.data!.isSaved },
+    )
   }
 
   return (
     <button onClick={doUpdate} disabled={isRunning}>
-      {optimisticData ? (
+      {optimisticData.isSaved ? (
         <CheckCircle
           className="h-6 w-6 cursor-pointer"
           strokeWidth="1.5"

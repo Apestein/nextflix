@@ -1,19 +1,19 @@
 "use client"
-import { useZact } from "~/lib/zact/client"
 import type { Profile } from "~/lib/types"
 import { useRouter } from "next/navigation"
 import { useToast } from "~/components/ui/use-toast"
-import { sa } from "~/actions"
+import { switchProfile } from "~/actions/safe-action"
 
 export function ProfileSwitcher({ profile }: { profile: Profile }) {
   const router = useRouter()
   const { toast } = useToast()
-  const { execute } = useZact(sa.profile.switchProfile)
 
   async function doSwitch() {
-    const res = await execute({ profileId: profile.id })
-    toast({ description: res?.message })
-    router.replace("/")
+    const { data, validationError } = await switchProfile({
+      profileId: profile.id,
+    })
+    toast({ description: data?.message ?? validationError?.profileId })
+    if (data) router.replace("/")
   }
 
   return (

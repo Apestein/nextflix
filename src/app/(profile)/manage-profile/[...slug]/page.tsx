@@ -1,6 +1,5 @@
 "use client"
 import { Button } from "~/components/ui/button"
-import { useZact } from "~/lib/zact/client"
 import { useState } from "react"
 import { useDebouncedCallback } from "use-debounce"
 import { useRouter } from "next/navigation"
@@ -8,7 +7,7 @@ import { useToast } from "~/components/ui/use-toast"
 import { Input } from "~/components/ui/input"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
-import { sa } from "~/actions"
+import { deleteProfile, updateProfile } from "~/actions/safe-action"
 
 export default function ProfilePage({
   params,
@@ -18,8 +17,6 @@ export default function ProfilePage({
   searchParams: { profileId: string }
 }) {
   const [name, setName] = useState(params.slug[0]!)
-  const { execute: executeUpdate } = useZact(sa.profile.updateProfile)
-  const { execute: executeDelete } = useZact(sa.profile.deleteProfile)
   const debounced = useDebouncedCallback((value: string) => {
     setName(value)
   }, 500)
@@ -27,24 +24,24 @@ export default function ProfilePage({
   const { toast } = useToast()
 
   async function doDelete() {
-    const res = await executeDelete({
+    const { data, validationError } = await deleteProfile({
       profileId: searchParams.profileId,
     })
     toast({
-      description: res.message,
+      description: data?.message ?? validationError?.profileId,
     })
-    router.replace("/manage-profile")
+    if (data) router.replace("/manage-profile")
   }
 
   async function doUpdate() {
-    const res = await executeUpdate({
-      name: name,
+    const { data, validationError } = await updateProfile({
       profileId: searchParams.profileId,
+      name,
     })
     toast({
-      description: res.message,
+      description: data?.message ?? JSON.stringify(validationError, null, 4),
     })
-    router.replace("/manage-profile")
+    if (data) router.replace("/manage-profile")
   }
 
   return (
