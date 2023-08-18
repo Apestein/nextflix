@@ -1,20 +1,10 @@
-import { db } from "~/db/client"
-import { accounts } from "~/db/schema"
-import { eq } from "drizzle-orm"
-import { auth } from "@clerk/nextjs"
 import { Button } from "~/components/ui/button"
 import { PlusCircle, ArrowLeft, Pencil } from "lucide-react"
 import Link from "next/link"
-import { ERR } from "~/lib/utils"
+import { getAccountWithProfiles } from "~/lib/fetchers"
 
 export default async function ManageProfilePage() {
-  const { userId } = auth()
-  if (!userId) throw new Error(ERR.unauthenticated)
-  const userAccount = await db.query.accounts.findFirst({
-    where: eq(accounts.id, userId),
-    with: { profiles: true },
-  })
-  if (!userAccount) throw new Error(ERR.db)
+  const account = await getAccountWithProfiles()
   return (
     <>
       <Button variant="outline" asChild className="absolute ml-6 mt-6">
@@ -26,7 +16,7 @@ export default async function ManageProfilePage() {
         <section className="space-y-8">
           <h1 className="text-5xl">Manage Profiles</h1>
           <ul className="flex gap-4">
-            {userAccount.profiles.map((profile) => (
+            {account.profiles.map((profile) => (
               <div key={profile.id} className="space-y-1.5">
                 <Link
                   href={`/manage-profile/${profile.name}?profileId=${profile.id}`}
@@ -46,7 +36,7 @@ export default async function ManageProfilePage() {
                 <h3 className="text-center">{profile.name}</h3>
               </div>
             ))}
-            {userAccount.profiles.length !== 4 && (
+            {account.profiles.length !== 4 && (
               <Link href="/manage-profile/add">
                 <PlusCircle
                   className="h-24 w-24 bg-neutral-800 p-3 outline-1 hover:outline"

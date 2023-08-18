@@ -4,8 +4,7 @@ import { useState } from "react"
 import { Button } from "~/components/ui/button"
 import type { SubscriptionPlan, PlanName } from "~/lib/types"
 import { PLANS } from "~/lib/configs"
-import { useZact } from "~/lib/zact/client"
-import { sa } from "~/actions"
+import { createCheckoutSession } from "~/actions"
 
 export function PlanSelector({
   activeSubscription,
@@ -15,10 +14,9 @@ export function PlanSelector({
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan>(
     Plans[activeSubscription],
   )
-  const { execute } = useZact(sa.stripe.createCheckoutSession)
 
   function submit() {
-    void execute({
+    void createCheckoutSession({
       stripeProductId: selectedPlan.id,
       planName: selectedPlan.name,
     })

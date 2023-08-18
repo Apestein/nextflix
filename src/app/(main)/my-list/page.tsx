@@ -1,30 +1,14 @@
-import { db } from "~/db/client"
-import { accounts } from "~/db/schema"
-import { eq } from "drizzle-orm"
-import { auth } from "@clerk/nextjs"
 import { ShowCard } from "~/components/show-card"
 import type { MyShow, Show } from "~/lib/types"
 import { env } from "~/env.mjs"
 import { ERR } from "~/lib/utils"
 import Image from "next/image"
+import { getMyShows } from "~/lib/fetchers"
 
 export default async function MyShowPage() {
-  const { userId } = auth()
-  if (!userId) throw new Error(ERR.unauthenticated)
-  const userAccount = await db.query.accounts.findFirst({
-    where: eq(accounts.id, userId),
-    with: {
-      activeProfile: {
-        with: {
-          savedShows: true,
-        },
-      },
-    },
-  })
-  if (!userAccount) throw new Error(ERR.db)
-  const myShows = userAccount.activeProfile.savedShows
-
-  const shows = await getMyShows(myShows)
+  const account = await getMyShows()
+  const myShows = account.activeProfile.savedShows
+  const shows = await getMyShowsFromApi(myShows)
   return (
     <main className="pt-8">
       {!shows.length && (
@@ -54,7 +38,7 @@ export default async function MyShowPage() {
   )
 }
 
-async function getMyShows(shows: MyShow[]) {
+async function getMyShowsFromApi(shows: MyShow[]) {
   const data = await Promise.all<Show>(
     shows.map(async (show) => {
       const res = await fetch(

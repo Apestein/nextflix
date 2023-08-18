@@ -4,8 +4,11 @@ import { ERR } from "~/lib/utils"
 import { db } from "~/db/client"
 import { eq } from "drizzle-orm"
 import { accounts, profiles } from "~/db/schema"
+import { auth } from "@clerk/nextjs"
 
-export async function getAccount(userId: string) {
+export async function getAccount() {
+  const userId = auth().userId
+  if (!userId) throw new Error(ERR.unauthenticated)
   const account = await db.query.accounts.findFirst({
     where: eq(accounts.id, userId),
   })
@@ -13,7 +16,22 @@ export async function getAccount(userId: string) {
   return account
 }
 
-export async function getAccountWithProfiles(userId: string) {
+export async function getAccountWithActiveProfile() {
+  const userId = auth().userId
+  if (!userId) throw new Error(ERR.unauthenticated)
+  const account = await db.query.accounts.findFirst({
+    where: eq(accounts.id, userId),
+    with: {
+      activeProfile: true,
+    },
+  })
+  if (!account) throw new Error(ERR.db)
+  return account
+}
+
+export async function getAccountWithProfiles() {
+  const userId = auth().userId
+  if (!userId) throw new Error(ERR.unauthenticated)
   const account = await db.query.accounts.findFirst({
     where: eq(accounts.id, userId),
     with: {
@@ -30,6 +48,23 @@ export async function getProfile(profileId: string) {
   })
   if (!profile) throw new Error(ERR.db)
   return profile
+}
+
+export async function getMyShows() {
+  const userId = auth().userId
+  if (!userId) throw new Error(ERR.unauthenticated)
+  const account = await db.query.accounts.findFirst({
+    where: eq(accounts.id, userId),
+    with: {
+      activeProfile: {
+        with: {
+          savedShows: true,
+        },
+      },
+    },
+  })
+  if (!account) throw new Error(ERR.db)
+  return account
 }
 
 export async function getShows(mediaType: "movie" | "tv") {

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { useToast } from "~/components/ui/use-toast"
-import { createProfile } from "~/actions/safe-action"
+import { createProfile } from "~/actions"
 
 export default function AddProfilePage() {
   const [name, setName] = useState("")

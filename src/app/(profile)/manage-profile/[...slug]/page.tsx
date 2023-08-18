@@ -7,7 +7,7 @@ import { useToast } from "~/components/ui/use-toast"
 import { Input } from "~/components/ui/input"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
-import { deleteProfile, updateProfile } from "~/actions/safe-action"
+import { deleteProfile, updateProfile } from "~/actions"
 
 export default function ProfilePage({
   params,

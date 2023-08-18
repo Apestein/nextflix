@@ -1,6 +1,5 @@
 import Image from "next/image"
 import Link from "next/link"
-import { LinkButton } from "~/components/link-button"
 import { currentUser, SignedOut, auth, SignOutButton } from "@clerk/nextjs"
 import { Suspense } from "react"
 import { Button } from "~/components/ui/button"
@@ -25,6 +24,8 @@ import {
   Twitter,
   Youtube,
 } from "lucide-react"
+import { LinkButton } from "~/components/link-button"
+import { getAccountWithActiveProfile } from "~/lib/fetchers"
 
 export default function ShowsLayout({
   children,
@@ -86,11 +87,11 @@ function Header() {
 async function CustomeUserButton() {
   const { userId } = auth()
   if (!userId) return
-  const existingAccount = await getAccount(userId)
-  const account = existingAccount
-    ? existingAccount
-    : await createAccountAndProfile()
-  if (!account) throw new Error(ERR.db)
+  const existingAccount = await db.query.accounts.findFirst({
+    where: eq(accounts.id, userId),
+    with: { activeProfile: true },
+  })
+  const account = existingAccount ?? (await createAccountAndProfile())
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -180,13 +181,6 @@ function Footer() {
   )
 }
 
-function getAccount(userId: string) {
-  return db.query.accounts.findFirst({
-    where: eq(accounts.id, userId),
-    with: { activeProfile: true },
-  })
-}
-
 async function createAccountAndProfile() {
   const user = await currentUser()
   if (!user) throw new Error(ERR.unauthenticated)
@@ -209,5 +203,5 @@ async function createAccountAndProfile() {
       name: user.username ?? `${user.firstName!} ${user.lastName!}`,
     })
     .onConflictDoNothing()
-  return getAccount(user.id)
+  return getAccountWithActiveProfile()
 }

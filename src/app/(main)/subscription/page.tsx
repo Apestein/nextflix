@@ -1,18 +1,9 @@
 import { Check } from "lucide-react"
 import { PlanSelector } from "./plan-selector"
-import { db } from "~/db/client"
-import { eq } from "drizzle-orm"
-import { accounts } from "~/db/schema"
-import { auth } from "@clerk/nextjs"
-import { ERR } from "~/lib/utils"
+import { getAccount } from "~/lib/fetchers"
 
 export default async function SubscriptionPage() {
-  const { userId } = auth()
-  if (!userId) throw new Error(ERR.unauthenticated)
-  const userAccount = await db.query.accounts.findFirst({
-    where: eq(accounts.id, userId),
-  })
-  if (!userAccount) throw new Error(ERR.db)
+  const account = await getAccount()
   return (
     <main className="mx-auto mt-8 w-2/3 space-y-8">
       <h1 className="text-3xl font-bold sm:text-4xl">
@@ -32,7 +23,7 @@ export default async function SubscriptionPage() {
           <p>Change or cancel your plan anytime</p>
         </div>
       </div>
-      <PlanSelector activeSubscription={userAccount.membership} />
+      <PlanSelector activeSubscription={account.membership} />
       <div className="space-y-3 text-sm text-zinc-300">
         <p>
           HD (720p), Full HD (1080p), Ultra HD (4K) and HDR availability subject

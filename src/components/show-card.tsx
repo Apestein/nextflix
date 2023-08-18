@@ -14,8 +14,8 @@ import { PlusCircle, CheckCircle } from "lucide-react"
 import { useEffect } from "react"
 import useSWR from "swr"
 import { env } from "~/env.mjs"
-import { useAuth } from "@clerk/nextjs"
-import { toggleMyShow, queryMyShow } from "~/actions/safe-action"
+import { SignedIn } from "@clerk/nextjs"
+import { toggleMyShow, queryMyShow } from "~/actions"
 import { useOptimisticAction, useAction } from "next-safe-action/hook"
 
 export function ShowCard({
@@ -32,7 +32,9 @@ export function ShowCard({
         <DialogHeader className="p-4 pb-0">
           <DialogTitle className="flex items-center gap-1.5">
             {show.title ?? show.name}
-            <SaveOrUnsave show={show} />
+            <SignedIn>
+              <SaveOrUnsave show={show} />
+            </SignedIn>
           </DialogTitle>
           <div className="flex items-center gap-1.5">
             <p className="text-green-400">
@@ -56,8 +58,6 @@ export function ShowCard({
 }
 
 function SaveOrUnsave({ show }: { show: Show }) {
-  const { isSignedIn } = useAuth()
-
   const {
     execute: executeQuery,
     res: initialRes,
@@ -75,7 +75,6 @@ function SaveOrUnsave({ show }: { show: Show }) {
     executeQuery({ id: show.id })
   }, [])
 
-  if (!isSignedIn) return
   if (isExecuting && !hasExecuted)
     return <Skeleton className="h-6 w-6 rounded-full" />
 

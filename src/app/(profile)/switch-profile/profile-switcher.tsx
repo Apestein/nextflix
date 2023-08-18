@@ -2,7 +2,7 @@
 import type { Profile } from "~/lib/types"
 import { useRouter } from "next/navigation"
 import { useToast } from "~/components/ui/use-toast"
-import { switchProfile } from "~/actions/safe-action"
+import { switchProfile } from "~/actions"
 
 export function ProfileSwitcher({ profile }: { profile: Profile }) {
   const router = useRouter()
