@@ -123,6 +123,7 @@ function ShowGenres({ show }: { show: Show }) {
 function ShowTrailer({ show }: { show: Show }) {
   const { data } = useShowWithVideoAndGenre(show)
   if (data === undefined) return <Skeleton className="aspect-video w-full" />
+  if ("status_message" in data) notFound()
   return (
     <iframe
       src={`https://www.youtube.com/embed/${findTrailer(data)}`}
