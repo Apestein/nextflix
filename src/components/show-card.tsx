@@ -17,6 +17,7 @@ import { env } from "~/env.mjs"
 import { SignedIn } from "@clerk/nextjs"
 import { toggleMyShow, queryMyShow } from "~/actions"
 import { useOptimisticAction, useAction } from "next-safe-action/hook"
+import { notFound } from "next/navigation"
 
 export function ShowCard({
   children,
@@ -111,6 +112,7 @@ function SaveOrUnsave({ show }: { show: Show }) {
 function ShowGenres({ show }: { show: Show }) {
   const { data } = useShowWithVideoAndGenre(show)
   if (data === undefined) return <Skeleton className="h-5 w-full" />
+  if ("status_message" in data) notFound()
   return (
     <p className="text-sm">
       {data.genres.map((genre) => genre.name).join(", ")}
@@ -139,7 +141,7 @@ function findTrailer(show: ShowWithVideoAndGenre) {
 }
 
 export function useShowWithVideoAndGenre(show: Show) {
-  const { data, isLoading, error } = useSWR<ShowWithVideoAndGenre, Error>(
+  const { data } = useSWR<ShowWithVideoAndGenre | { status_message: string }>(
     `https://api.themoviedb.org/3/movie/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`,
     (url: string) => fetch(url).then((r) => r.json()),
     {
@@ -149,7 +151,7 @@ export function useShowWithVideoAndGenre(show: Show) {
     },
   )
 
-  return { data, isLoading, error }
+  return { data }
 }
 
 // const Spinner = ({ ...props }: LucideProps) => (
