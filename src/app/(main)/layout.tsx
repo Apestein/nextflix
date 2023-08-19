@@ -58,7 +58,7 @@ function Header() {
         <div className="flex gap-6 text-sm">
           <Link href="/">Home</Link>
           <Link href="/tv-shows">TV Shows</Link>
-          <Link href="/movies">Movies</Link>
+          <Link href="/">Movies</Link>
           <Link href="/new-and-popular">New & Popular</Link>
           <LinkButton href="/my-list">My List</LinkButton>
         </div>
