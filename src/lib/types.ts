@@ -1,4 +1,4 @@
-import type { myShows, profiles, accounts } from "~/db/schema"
+import type { myShows, profiles } from "~/db/schema"
 import type { InferModel } from "drizzle-orm"
 import type { PLANS } from "~/lib/configs"
 

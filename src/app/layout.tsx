@@ -5,6 +5,7 @@ import { ThemeProvider } from "~/components/theme-provider"
 import { ClerkProvider } from "@clerk/nextjs"
 import { Toaster } from "~/components/ui/toaster"
 
+export const runtime = "edge"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
