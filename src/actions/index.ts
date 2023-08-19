@@ -6,7 +6,12 @@ import { eq } from "drizzle-orm"
 import { accounts, profiles, myShows } from "~/db/schema"
 import { ERR } from "~/lib/utils"
 import { revalidatePath } from "next/cache"
-import { getAccount, getAccountWithProfiles, getProfile } from "~/lib/fetchers"
+import {
+  getAccount,
+  getAccountWithProfiles,
+  getProfile,
+  getAccountWithActiveProfile,
+} from "~/lib/fetchers"
 import { stripe } from "~/lib/stripe"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
@@ -171,5 +176,27 @@ export const createCheckoutSession = authAction(
         return_url: `${siteUrl}/subscription`,
       })
     redirect(checkoutSession.url!)
+  },
+)
+
+export const getMyShowsInfinite = authAction(
+  z.object({
+    index: z.number(),
+    limit: z.number().min(2).max(50),
+  }),
+  async (input) => {
+    const account = await getAccountWithActiveProfile()
+    const shows = await db.query.myShows.findMany({
+      where: eq(myShows.profileId, account.activeProfileId),
+      limit: input.limit,
+      offset: input.index * input.limit,
+    })
+
+    return {
+      index: input.index,
+      limit: input.limit,
+      myShows: shows,
+      hasMore: shows.length === input.limit ? true : false,
+    }
   },
 )
