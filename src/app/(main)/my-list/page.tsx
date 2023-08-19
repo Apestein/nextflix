@@ -1,7 +1,6 @@
 import { ShowCard } from "~/components/show-card"
 import type { MyShow, Show } from "~/lib/types"
 import { env } from "~/env.mjs"
-import { ERR } from "~/lib/utils"
 import Image from "next/image"
 import { getMyShows } from "~/lib/fetchers"
 
@@ -39,14 +38,15 @@ export default async function MyShowPage() {
 }
 
 async function getMyShowsFromApi(shows: MyShow[]) {
-  const data = await Promise.all<Show>(
+  const data = await Promise.all<Show | null>(
     shows.map(async (show) => {
       const res = await fetch(
         `https://api.themoviedb.org/3/${show.mediaType}/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
       )
-      if (!res.ok) throw new Error(ERR.fetch)
+      if (!res.ok) return null
       return res.json()
     }),
   )
-  return data
+  const filterNull = data.filter((el): el is Show => !!el)
+  return filterNull
 }
