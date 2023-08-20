@@ -15,7 +15,7 @@ import { useEffect } from "react"
 import useSWR from "swr"
 import { env } from "~/env.mjs"
 import { SignedIn } from "@clerk/nextjs"
-import { toggleMyShow, queryMyShow } from "~/actions"
+import { toggleMyShow, getMyShowStatus } from "~/actions"
 import { useOptimisticAction, useAction } from "next-safe-action/hook"
 import { notFound } from "next/navigation"
 
@@ -64,7 +64,7 @@ function SaveOrUnsave({ show }: { show: Show }) {
     res: initialRes,
     isExecuting,
     hasExecuted,
-  } = useAction(queryMyShow)
+  } = useAction(getMyShowStatus)
   const {
     execute: executeToggle,
     optimisticData,

@@ -19,7 +19,7 @@ export default function Error({
     <main className="grid min-h-screen place-content-center space-y-5 text-center">
       <h1 className="text-3xl font-semibold">There was a problem</h1>
       <p>{error.message}</p>
-      <section className="grid grid-cols-2 gap-3">
+      <section className="space-x-8">
         <Button onClick={() => reset()} className="font-semibold">
           Try again
         </Button>

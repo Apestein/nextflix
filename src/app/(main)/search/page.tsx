@@ -20,7 +20,7 @@ export default async function SearchPage({
   return (
     <main>
       <SearchInput initialQuery={searchParams.keyword} className="my-8" />
-      <div className="grid grid-cols-[repeat(auto-fill,_minmax(200px,_1fr))] gap-4">
+      <div className="grid grid-cols-[repeat(auto-fill,_minmax(240px,_1fr))] gap-4">
         {shows.map((show) => (
           <ShowCard key={show.id} show={show}>
             <Image

@@ -119,7 +119,7 @@ export const toggleMyShow = authAction(
   },
 )
 
-export const queryMyShow = authAction(
+export const getMyShowStatus = authAction(
   z.object({
     id: z.number(),
   }),

@@ -51,8 +51,6 @@ export async function getProfile(profileId: string) {
 }
 
 export async function getMyShows(limit: number) {
-  const userId = auth().userId
-  if (!userId) throw new Error(ERR.unauthenticated)
   const account = await getAccountWithActiveProfile()
   const shows = await db.query.myShows.findMany({
     where: eq(myShows.profileId, account.activeProfileId),

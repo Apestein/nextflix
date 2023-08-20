@@ -51,7 +51,7 @@ export function ShowScroller({
   }, [])
 
   return (
-    <section className="space-y-1.5 [overflow-anchor:none]">
+    <main className="space-y-1.5 [overflow-anchor:none]">
       <ul className="grid grid-cols-[repeat(auto-fill,_minmax(240px,_1fr))] gap-5">
         {shows.map((show) => (
           <ShowCard key={show.id} show={show}>
@@ -68,7 +68,7 @@ export function ShowScroller({
         ))}
       </ul>
       <div ref={observerTarget}></div>
-      {hasNextPageRef.current && (
+      {hasNextPageRef.current ? (
         <Button
           variant="outline"
           className="w-full animate-pulse"
@@ -77,13 +77,12 @@ export function ShowScroller({
         >
           Loading...
         </Button>
-      )}
-      {!hasNextPageRef.current && (
+      ) : (
         <Button variant="outline" className="w-full">
           You have reached the end of your saved shows
         </Button>
       )}
-    </section>
+    </main>
   )
 }
 
