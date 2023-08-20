@@ -181,7 +181,7 @@ export const createCheckoutSession = authAction(
 
 export const getMyShowsInfinite = authAction(
   z.object({
-    index: z.number(),
+    index: z.number().min(0),
     limit: z.number().min(2).max(50),
   }),
   async (input) => {
@@ -191,12 +191,6 @@ export const getMyShowsInfinite = authAction(
       limit: input.limit,
       offset: input.index * input.limit,
     })
-
-    return {
-      index: input.index,
-      limit: input.limit,
-      myShows: shows,
-      hasMore: shows.length === input.limit ? true : false,
-    }
+    return shows
   },
 )

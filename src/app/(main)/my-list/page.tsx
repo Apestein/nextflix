@@ -1,13 +1,10 @@
-import { ShowCard } from "~/components/show-card"
-import type { MyShow, Show } from "~/lib/types"
-import { env } from "~/env.mjs"
-import Image from "next/image"
-import { getMyShows } from "~/lib/fetchers"
+import { ShowScroller } from "./infinite-scroller"
+import { getMyShows, getMyShowsFromTmdb } from "~/lib/fetchers"
 
 export default async function MyShowPage() {
-  const account = await getMyShows()
-  const myShows = account.activeProfile.savedShows
-  const shows = await getMyShowsFromApi(myShows)
+  const LIMIT = 30
+  const data = await getMyShows(LIMIT)
+  const shows = await getMyShowsFromTmdb(data)
   return (
     <main className="pt-8">
       {!shows.length && (
@@ -18,35 +15,11 @@ export default async function MyShowPage() {
           </p>
         </div>
       )}
-      <div className="grid grid-cols-[repeat(auto-fill,_minmax(240px,_1fr))] gap-5">
-        {shows.map((show) => (
-          <ShowCard key={show.id} show={show}>
-            <Image
-              src={`https://image.tmdb.org/t/p/w500${
-                show.backdrop_path ?? show.poster_path
-              }`}
-              alt="show-backdrop"
-              width={240}
-              height={135}
-              className="aspect-video w-full cursor-pointer object-cover transition-transform hover:scale-110"
-            />
-          </ShowCard>
-        ))}
-      </div>
+      <ShowScroller
+        initialShows={shows}
+        initialHasNextPage={data.length === LIMIT ? true : false}
+        limit={LIMIT}
+      />
     </main>
   )
-}
-
-async function getMyShowsFromApi(shows: MyShow[]) {
-  const data = await Promise.all<Show | null>(
-    shows.map(async (show) => {
-      const res = await fetch(
-        `https://api.themoviedb.org/3/${show.mediaType}/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
-      )
-      if (!res.ok) return null
-      return res.json()
-    }),
-  )
-  const filterNull = data.filter((el): el is Show => !!el)
-  return filterNull
 }

@@ -81,7 +81,7 @@ export default async function Home() {
   )
 }
 
-function pickRandomShow(shows: Show[]) {
+export function pickRandomShow(shows: Show[]) {
   const show = shows[Math.floor(Math.random() * shows.length)]
   if (show) return show
   else throw new Error(ERR.undefined)

@@ -5,11 +5,12 @@ import { Play } from "lucide-react"
 import Image from "next/image"
 import { ERR } from "~/lib/utils"
 import { env } from "~/env.mjs"
+import { pickRandomShow } from "../page"
 
 export default async function NewAndPopular() {
   const newAndPopularShows = await getNewAndPopularShows()
-
   const randomShow = pickRandomShow(newAndPopularShows.trendingMovies)
+
   return (
     <>
       <div
@@ -111,10 +112,4 @@ async function getNewAndPopularShows() {
     trendingTvs: trendingTvs.results,
     trendingMovies: trendingMovies.results,
   }
-}
-
-function pickRandomShow(shows: Show[]) {
-  const show = shows[Math.floor(Math.random() * shows.length)]
-  if (show) return show
-  else throw new Error(ERR.undefined)
 }

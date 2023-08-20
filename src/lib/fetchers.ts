@@ -1,9 +1,9 @@
 import { env } from "~/env.mjs"
-import { type Show } from "~/lib/types"
+import type { Show, MyShow } from "~/lib/types"
 import { ERR } from "~/lib/utils"
 import { db } from "~/db/client"
 import { eq } from "drizzle-orm"
-import { accounts, profiles } from "~/db/schema"
+import { accounts, profiles, myShows } from "~/db/schema"
 import { auth } from "@clerk/nextjs"
 
 export async function getAccount() {
@@ -50,21 +50,29 @@ export async function getProfile(profileId: string) {
   return profile
 }
 
-export async function getMyShows() {
+export async function getMyShows(limit: number) {
   const userId = auth().userId
   if (!userId) throw new Error(ERR.unauthenticated)
-  const account = await db.query.accounts.findFirst({
-    where: eq(accounts.id, userId),
-    with: {
-      activeProfile: {
-        with: {
-          savedShows: true,
-        },
-      },
-    },
+  const account = await getAccountWithActiveProfile()
+  const shows = await db.query.myShows.findMany({
+    where: eq(myShows.profileId, account.activeProfileId),
+    limit,
   })
-  if (!account) throw new Error(ERR.db)
-  return account
+  return shows
+}
+
+export async function getMyShowsFromTmdb(shows: MyShow[]) {
+  const data = await Promise.all<Show | null>(
+    shows.map(async (show) => {
+      const res = await fetch(
+        `https://api.themoviedb.org/3/${show.mediaType}/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
+      )
+      if (!res.ok) return null
+      return res.json()
+    }),
+  )
+  const filterNull = data.filter((el): el is Show => !!el)
+  return filterNull
 }
 
 export async function getShows(mediaType: "movie" | "tv") {

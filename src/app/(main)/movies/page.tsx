@@ -1,15 +1,14 @@
-import { type Show } from "~/lib/types"
 import { Button } from "~/components/ui/button"
 import { ShowsCarousel } from "~/components/show-carousel"
 import { Play } from "lucide-react"
 import Image from "next/image"
-import { ERR } from "~/lib/utils"
 import { getShows } from "~/lib/fetchers"
+import { pickRandomShow } from "../page"
 
 export default async function Movies() {
   const allShows = await getShows("movie")
-
   const randomShow = pickRandomShow(allShows.trending)
+
   return (
     <>
       <div
@@ -60,10 +59,4 @@ export default async function Movies() {
       </main>
     </>
   )
-}
-
-function pickRandomShow(shows: Show[]) {
-  const show = shows[Math.floor(Math.random() * shows.length)]
-  if (show) return show
-  else throw new Error(ERR.undefined)
 }
