@@ -23,6 +23,15 @@ import {
   Instagram,
   Twitter,
   Youtube,
+  Home,
+  Clapperboard,
+  Film,
+  TrendingUp,
+  List,
+  Pencil,
+  ArrowLeftRight,
+  User,
+  BadgeCheck,
 } from "lucide-react"
 import { LinkButton } from "~/components/link-button"
 import { getAccountWithActiveProfile } from "~/lib/fetchers"
@@ -42,11 +51,19 @@ export default function ShowsLayout({
 }
 
 const NAVINFO = [
-  { name: "Home", href: "/" },
-  { name: "TV Shows", href: "/tv-shows" },
-  { name: "Movies", href: "/movies" },
-  { name: "New & Popular", href: "/new-and-popular" },
-  { name: "My List", href: "/my-list" },
+  { name: "Home", href: "/", icon: <Home className="w-5" /> },
+  {
+    name: "TV Shows",
+    href: "/tv-shows",
+    icon: <Clapperboard className="w-5" />,
+  },
+  { name: "Movies", href: "/movies", icon: <Film className="w-5" /> },
+  {
+    name: "New & Popular",
+    href: "/new-and-popular",
+    icon: <TrendingUp className="w-5" />,
+  },
+  { name: "My List", href: "/my-list", icon: <List className="w-5" /> },
 ]
 
 function Header() {
@@ -123,19 +140,33 @@ async function CustomeUserButton() {
         <DropdownMenuLabel>{account.activeProfile.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Link href="/manage-profile">Manage Profile</Link>
+          <Link className="flex gap-1.5" href="/manage-profile">
+            <Pencil className="w-5" />
+            Manage Profile
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href="/switch-profile">Switch Profile</Link>
+          <Link className="flex gap-1.5" href="/switch-profile">
+            <ArrowLeftRight className="w-5" />
+            Switch Profile
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href="/account">Account</Link>
+          <Link className="flex gap-1.5" href="/account">
+            <User className="w-5" />
+            Account
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href="/subscription">Subscription</Link>
+          <Link className="flex gap-1.5" href="/subscription">
+            <BadgeCheck className="w-5" />
+            Subscription
+          </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem className="flex justify-center border">
-          <SignOutButton />
+        <DropdownMenuItem>
+          <SignOutButton>
+            <Button className="w-full font-semibold">Sign Out</Button>
+          </SignOutButton>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -156,7 +187,7 @@ function MainMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuLabel className="flex gap-1.5">
-          <svg viewBox="0 0 24 24" className="h-5 w-5 text-red-600">
+          <svg viewBox="0 0 24 24" className="w-5 text-red-600">
             <path
               fill="currentColor"
               d="M5.398 0v.006c3.028 8.556 5.37 15.175 8.348 23.596 2.344.058 4.85.398 4.854.398-2.8-7.924-5.923-16.747-8.487-24zm8.489 0v9.63L18.6 22.951c-.043-7.86-.004-15.913.002-22.95zM5.398 1.05V24c1.873-.225 2.81-.312 4.715-.398v-9.22z"
@@ -166,7 +197,8 @@ function MainMenu() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {NAVINFO.map((el) => (
-          <DropdownMenuItem key={el.name}>
+          <DropdownMenuItem key={el.name} className="gap-1.5">
+            {el.icon}
             <Link href={el.href}>{el.name}</Link>
           </DropdownMenuItem>
         ))}
