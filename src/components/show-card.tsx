@@ -49,7 +49,9 @@ export function ShowCard({
               EN
             </p>
           </div>
-          <DialogDescription>{show.overview}</DialogDescription>
+          <DialogDescription className="text-left">
+            {show.overview}
+          </DialogDescription>
           <ShowGenres show={show} />
         </DialogHeader>
         <ShowTrailer show={show} />
@@ -114,7 +116,7 @@ function ShowGenres({ show }: { show: Show }) {
   if (data === undefined) return <Skeleton className="h-5 w-full" />
   if ("status_message" in data) notFound()
   return (
-    <p className="text-sm">
+    <p className="text-left text-sm">
       {data.genres.map((genre) => genre.name).join(", ")}
     </p>
   )

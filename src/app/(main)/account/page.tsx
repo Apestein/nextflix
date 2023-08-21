@@ -6,8 +6,8 @@ import { getAccountWithProfiles } from "~/lib/fetchers"
 export default async function AccountPage() {
   const account = await getAccountWithProfiles()
   return (
-    <main className="my-12 flex justify-center">
-      <div className="space-y-5 md:min-w-[500px]">
+    <main className="mt-[2.5%] flex justify-center ">
+      <div className="space-y-5 md:w-[500px]">
         <section className="space-y-2">
           <h1 className="text-4xl">Account</h1>
           <p className="flex items-center gap-2 text-sm text-neutral-400">
@@ -47,18 +47,18 @@ export default async function AccountPage() {
         </p>
         <div aria-label="divider" className="h-px w-full bg-white/25" />
         <p className="text-2xl text-neutral-400">Profiles</p>
-        <div className="flex gap-5">
+        <div className="flex gap-4 md:gap-8">
           {account.profiles.map((profile) => (
             <div key={profile.id} className="space-y-1.5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={profile.profileImgPath}
-                width="100"
-                height="100"
                 alt="profile-img"
-                className="rounded-lg"
+                className="w-14 rounded-lg md:w-24"
               />
-              <h3 className="text-center">{profile.name}</h3>
+              <h3 className="text-center text-sm md:text-base">
+                {profile.name}
+              </h3>
             </div>
           ))}
         </div>

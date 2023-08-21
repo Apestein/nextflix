@@ -52,7 +52,7 @@ export function ShowScroller({
 
   return (
     <main className="space-y-1.5 [overflow-anchor:none]">
-      <ul className="grid grid-cols-[repeat(auto-fill,_minmax(240px,_1fr))] gap-5">
+      <ul className="grid grid-cols-[repeat(auto-fill,_minmax(160px,_1fr))] gap-5 md:grid-cols-[repeat(auto-fill,_minmax(240px,_1fr))]">
         {shows.map((show) => (
           <ShowCard key={show.id} show={show}>
             <Image

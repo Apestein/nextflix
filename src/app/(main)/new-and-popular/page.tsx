@@ -28,7 +28,9 @@ export default async function NewAndPopular() {
       </div>
       <main>
         <div className="flex min-h-[384px] max-w-lg flex-col justify-center space-y-3">
-          <p className="text-3xl font-bold md:text-4xl">{randomShow.title}</p>
+          <p className="text-3xl font-bold md:text-4xl">
+            {randomShow.title ?? randomShow.name}
+          </p>
           <div className="flex space-x-2 text-xs font-semibold md:text-sm">
             <p className="text-green-600">
               {Math.round((randomShow.vote_average * 100) / 10)}% Match

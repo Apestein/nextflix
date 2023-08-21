@@ -14,8 +14,8 @@ export default async function ManageProfilePage() {
       </Button>
       <main className="grid min-h-screen place-content-center">
         <section className="space-y-8">
-          <h1 className="text-5xl">Manage Profiles</h1>
-          <ul className="flex gap-4">
+          <h1 className="text-center text-3xl md:text-5xl">Manage Profiles</h1>
+          <ul className="grid grid-cols-2 gap-4 md:flex">
             {account.profiles.map((profile) => (
               <div key={profile.id} className="space-y-1.5">
                 <Link
@@ -29,7 +29,7 @@ export default async function ManageProfilePage() {
                     width="96"
                     height="96"
                   />
-                  <div className="absolute inset-0 grid h-full w-full place-items-center bg-black/25 hover:bg-transparent">
+                  <div className="absolute inset-0 grid h-full w-24 place-items-center bg-black/25 hover:bg-transparent">
                     <Pencil />
                   </div>
                 </Link>

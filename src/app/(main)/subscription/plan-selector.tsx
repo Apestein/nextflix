@@ -24,12 +24,12 @@ export function PlanSelector({
 
   return (
     <>
-      <div className="flex justify-end gap-8">
+      <div className="flex justify-end gap-1.5 md:gap-8">
         {PLANS.map((plan) => (
           <div
             key={plan.id}
             className={cn(
-              "grid aspect-square w-28 cursor-pointer place-content-center rounded-lg font-semibold",
+              "grid aspect-square w-20 shrink-0 cursor-pointer place-content-center rounded-lg font-semibold md:w-24",
               selectedPlan.name === plan.name
                 ? "bg-red-600"
                 : "bg-red-900 hover:bg-red-700",

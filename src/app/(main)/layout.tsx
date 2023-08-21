@@ -33,7 +33,7 @@ export default function ShowsLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="container flex min-h-screen flex-col">
+    <div className="container flex min-h-screen flex-col px-4 md:px-8">
       <Header />
       {children}
       <Footer />
@@ -41,11 +41,19 @@ export default function ShowsLayout({
   )
 }
 
+const NAVINFO = [
+  { name: "Home", href: "/" },
+  { name: "TV Shows", href: "/tv-shows" },
+  { name: "Movies", href: "/movies" },
+  { name: "New & Popular", href: "/new-and-popular" },
+  { name: "My List", href: "/my-list" },
+]
+
 function Header() {
   return (
     <header className="flex h-16 justify-between">
       <div className="flex items-center gap-12">
-        <Link href="/">
+        <Link href="/" className="hidden md:block">
           <Image
             src="/netflix-logo.svg"
             alt="netflix-logo"
@@ -55,13 +63,20 @@ function Header() {
             className="h-auto w-28 transition-opacity hover:opacity-80 active:opacity-100"
           />
         </Link>
-        <div className="flex gap-6 text-sm">
-          <Link href="/">Home</Link>
-          <Link href="/tv-shows">TV Shows</Link>
-          <Link href="/movies">Movies</Link>
-          <Link href="/new-and-popular">New & Popular</Link>
-          <LinkButton href="/my-list">My List</LinkButton>
-        </div>
+        <MainMenu />
+        <nav className="hidden gap-6 text-sm md:flex">
+          {NAVINFO.map((el) =>
+            el.name === "My List" ? (
+              <LinkButton href={el.href} key={el.name}>
+                {el.name}
+              </LinkButton>
+            ) : (
+              <Link href={el.href} key={el.name}>
+                {el.name}
+              </Link>
+            ),
+          )}
+        </nav>
       </div>
       <div className="flex items-center gap-6">
         <Link href="/search?keyword=">
@@ -127,6 +142,39 @@ async function CustomeUserButton() {
   )
 }
 
+function MainMenu() {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger className="flex items-center gap-1.5 md:hidden">
+        <svg viewBox="0 0 24 24" className="h-5 w-5 text-red-600">
+          <path
+            fill="currentColor"
+            d="M5.398 0v.006c3.028 8.556 5.37 15.175 8.348 23.596 2.344.058 4.85.398 4.854.398-2.8-7.924-5.923-16.747-8.487-24zm8.489 0v9.63L18.6 22.951c-.043-7.86-.004-15.913.002-22.95zM5.398 1.05V24c1.873-.225 2.81-.312 4.715-.398v-9.22z"
+          ></path>
+        </svg>
+        <h2 className="font-semibold">Menu</h2>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel className="flex gap-1.5">
+          <svg viewBox="0 0 24 24" className="h-5 w-5 text-red-600">
+            <path
+              fill="currentColor"
+              d="M5.398 0v.006c3.028 8.556 5.37 15.175 8.348 23.596 2.344.058 4.85.398 4.854.398-2.8-7.924-5.923-16.747-8.487-24zm8.489 0v9.63L18.6 22.951c-.043-7.86-.004-15.913.002-22.95zM5.398 1.05V24c1.873-.225 2.81-.312 4.715-.398v-9.22z"
+            ></path>
+          </svg>
+          Netflix
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        {NAVINFO.map((el) => (
+          <DropdownMenuItem key={el.name}>
+            <Link href={el.href}>{el.name}</Link>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
 function Footer() {
   return (
     <footer className="mt-auto pb-3 pt-12 text-sm">
@@ -144,7 +192,7 @@ function Footer() {
           <Youtube />
         </Link>
       </i>
-      <div className="flex justify-between py-3 text-white/50">
+      <div className="grid grid-cols-2 justify-between gap-y-3 py-3 text-xs text-white/50 md:flex md:text-sm">
         <div className="flex flex-col gap-3">
           <Link href="/">Audio Description</Link>
           <Link href="/">Investor Relations</Link>

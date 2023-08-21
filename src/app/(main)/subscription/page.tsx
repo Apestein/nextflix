@@ -5,7 +5,7 @@ import { getAccount } from "~/lib/fetchers"
 export default async function SubscriptionPage() {
   const account = await getAccount()
   return (
-    <main className="mx-auto mt-8 w-2/3 space-y-8">
+    <main className="mt-8 space-y-8 md:px-24">
       <h1 className="text-3xl font-bold sm:text-4xl">
         Choose the plan that&apos;s right for you
       </h1>

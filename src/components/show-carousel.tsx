@@ -56,7 +56,7 @@ export const ShowsCarousel = ({ title, shows }: ComponentProps) => {
                   aria-label="Scroll to right"
                   variant="ghost"
                   className={cn(
-                    "absolute left-0 top-0 z-10 h-[8.5rem] rounded-none rounded-r bg-slate-950/50 px-2 py-0 opacity-0 hover:bg-slate-950/50 active:scale-100 group-hover:opacity-100 dark:hover:bg-slate-950/50",
+                    "absolute left-0 z-10 h-full rounded-none rounded-r bg-slate-950/50 px-2 py-0 opacity-0 hover:bg-slate-950/50 active:scale-100 group-hover:opacity-100 dark:hover:bg-slate-950/50",
                     isScrollable ? "block" : "hidden",
                   )}
                   onClick={() => scrollToDirection("left")}
@@ -69,7 +69,7 @@ export const ShowsCarousel = ({ title, shows }: ComponentProps) => {
                 <Button
                   aria-label="Scroll to left"
                   variant="ghost"
-                  className="absolute right-0 top-0 z-10 h-[8.5rem] rounded-none rounded-l bg-slate-950/50 px-2 py-0 opacity-0 hover:bg-slate-950/50 active:scale-100 group-hover:opacity-100 dark:hover:bg-slate-950/50"
+                  className="absolute right-0 z-10 h-full rounded-none rounded-l bg-slate-950/50 px-2 py-0 opacity-0 hover:bg-slate-950/50 active:scale-100 group-hover:opacity-100 dark:hover:bg-slate-950/50"
                   onClick={() => scrollToDirection("right")}
                 >
                   <ChevronRight
@@ -89,7 +89,7 @@ export const ShowsCarousel = ({ title, shows }: ComponentProps) => {
                     alt="show-backdrop"
                     width={240}
                     height={135}
-                    className="h-[135px] min-w-[240px] cursor-pointer object-cover transition-transform hover:scale-110"
+                    className="aspect-video min-w-[160px] cursor-pointer object-cover transition-transform hover:scale-110 md:min-w-[240px]"
                   />
                 </ShowCard>
               ))}

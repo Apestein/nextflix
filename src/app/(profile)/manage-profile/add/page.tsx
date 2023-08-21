@@ -33,8 +33,8 @@ export default function AddProfilePage() {
         </Link>
       </Button>
       <main className="grid min-h-screen place-content-center place-items-center gap-y-8">
-        <div className="w-full space-y-3 border-b border-white/25 pb-3">
-          <h1 className="text-5xl">Add Profile</h1>
+        <div className="w-full space-y-3 border-b border-white/25 pb-3 text-center">
+          <h1 className="text-3xl md:text-5xl">Add Profile</h1>
           <p className="text-white/60">
             Add a profile for another person watching Netflix.
           </p>

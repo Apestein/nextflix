@@ -15,8 +15,10 @@ export default async function SwitchProfilePage() {
       </Button>
       <main className="grid min-h-screen place-content-center">
         <section className="space-y-8">
-          <h1 className="text-5xl">Who&apos;s Watching</h1>
-          <ul className="flex gap-4">
+          <h1 className="text-center text-3xl md:text-5xl">
+            Who&apos;s Watching
+          </h1>
+          <ul className="grid grid-cols-2 gap-4 md:flex">
             {account.profiles.map((profile) => (
               <ProfileSwitcher key={profile.id} profile={profile} />
             ))}

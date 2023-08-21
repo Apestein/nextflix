@@ -52,8 +52,8 @@ export default function ProfilePage({
         </Link>
       </Button>
       <main className="grid min-h-screen place-content-center place-items-center gap-y-8">
-        <div className="w-full space-y-3 border-b border-white/25 pb-3">
-          <h1 className="text-5xl">Update Profile</h1>
+        <div className="w-full space-y-3 border-b border-white/25 pb-3 text-center">
+          <h1 className="text-3xl md:text-5xl">Update Profile</h1>
           <p className="text-white/60">
             Update a profile with a new name and avatar.
           </p>
@@ -62,7 +62,7 @@ export default function ProfilePage({
         <img
           src={`https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${name}`}
           alt="profile-image"
-          width="240"
+          width="135"
           height="135"
         />
         <Input
