@@ -13,7 +13,6 @@
 - SWR
 - Lucide Icons
 - Zod Validation
-- Typescript-eslint library
 - Stripe
 
 ### Project Description

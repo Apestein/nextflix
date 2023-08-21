@@ -4,6 +4,7 @@ import { cn } from "~/lib/utils"
 import { ThemeProvider } from "~/components/theme-provider"
 import { ClerkProvider } from "@clerk/nextjs"
 import { Toaster } from "~/components/ui/toaster"
+import { Analytics } from "@vercel/analytics/react"
 
 // export const runtime = "edge"
 const inter = Inter({ subsets: ["latin"] })
@@ -31,6 +32,7 @@ export default function RootLayout({
             {children}
           </ThemeProvider>
           <Toaster />
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>
