@@ -6,14 +6,12 @@ export const PLANS = [
     description: "Free Video Stream",
   },
   {
-    // id: "price_1Nd71XBrDYSkolG53ADLYQXk",
     id: "price_1NeEIZBrDYSkolG5bjbEmccv",
     name: "basic",
     price: 5,
     description: "Basic Video Stream",
   },
   {
-    // id: "price_1Nd71ABrDYSkolG5kiBRhIHv",
     id: "price_1NeE60BrDYSkolG5PidpmNHW",
     name: "standard",
     price: 10,

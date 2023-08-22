@@ -14,7 +14,6 @@ import {
 import { Skeleton } from "~/components/ui/skeleton"
 import { db } from "~/db/client"
 import { accounts, profiles } from "~/db/schema"
-import { eq } from "drizzle-orm"
 import { ERR } from "~/lib/utils"
 import {
   Search,
@@ -119,10 +118,7 @@ function Header() {
 async function CustomeUserButton() {
   const { userId } = auth()
   if (!userId) return
-  const existingAccount = await db.query.accounts.findFirst({
-    where: eq(accounts.id, userId),
-    with: { activeProfile: true },
-  })
+  const existingAccount = await getAccountWithActiveProfile()
   const account = existingAccount ?? (await createAccountAndProfile())
   return (
     <DropdownMenu>
