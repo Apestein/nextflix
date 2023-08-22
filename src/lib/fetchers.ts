@@ -21,6 +21,7 @@ export async function getAccountWithActiveProfile() {
   if (!userId) throw new Error(ERR.unauthenticated)
   const account = await db.query.accounts.findFirst({
     where: eq(accounts.id, userId),
+    columns: { activeProfileId: true },
     with: {
       activeProfile: true,
     },

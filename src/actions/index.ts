@@ -22,7 +22,7 @@ export const createProfile = authAction(
   z.object({
     name: z.string().min(2).max(20),
   }),
-  async (input) => {
+  async (input, { userId }) => {
     const account = await getAccountWithProfiles()
     if (account.profiles.length === 4) throw new Error(ERR.not_allowed)
     const takenProfileSlots = account.profiles.map((profile) =>
@@ -33,8 +33,8 @@ export const createProfile = authAction(
     )
     if (!openProfileSlot) throw new Error(ERR.undefined)
     await db.insert(profiles).values({
-      id: `${account.id}-${openProfileSlot}`,
-      accountId: account.id,
+      id: `${userId}-${openProfileSlot}`,
+      accountId: userId,
       name: input.name,
       profileImgPath: `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${input.name}`,
     })
@@ -126,8 +126,10 @@ export const getMyShowStatus = authAction(
   async (input, { userId }) => {
     const account = await db.query.accounts.findFirst({
       where: eq(accounts.id, userId),
+      columns: {},
       with: {
         activeProfile: {
+          columns: {},
           with: {
             savedShows: {
               where: eq(myShows.id, input.id),
