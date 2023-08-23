@@ -114,7 +114,6 @@ function SaveOrUnsave({ show }: { show: Show }) {
 function ShowGenres({ show }: { show: Show }) {
   const { data } = useShowWithVideoAndGenre(show)
   if (data === undefined) return <Skeleton className="h-5 w-full" />
-  if ("status_message" in data) notFound()
   return (
     <p className="text-left text-sm">
       {data.genres.map((genre) => genre.name).join(", ")}
@@ -125,7 +124,6 @@ function ShowGenres({ show }: { show: Show }) {
 function ShowTrailer({ show }: { show: Show }) {
   const { data } = useShowWithVideoAndGenre(show)
   if (data === undefined) return <Skeleton className="aspect-video w-full" />
-  if ("status_message" in data) notFound()
   return (
     <iframe
       src={`https://www.youtube.com/embed/${findTrailer(data)}`}
@@ -144,7 +142,7 @@ function findTrailer(show: ShowWithVideoAndGenre) {
 }
 
 export function useShowWithVideoAndGenre(show: Show) {
-  const { data } = useSWR<ShowWithVideoAndGenre | { status_message: string }>(
+  const { data } = useSWR<ShowWithVideoAndGenre | { success: boolean }>(
     `https://api.themoviedb.org/3/movie/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`,
     (url: string) => fetch(url).then((r) => r.json()),
     {
@@ -153,6 +151,7 @@ export function useShowWithVideoAndGenre(show: Show) {
       revalidateOnReconnect: false,
     },
   )
+  if (data && "success" in data) notFound()
 
   return { data }
 }
