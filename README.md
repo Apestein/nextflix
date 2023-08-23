@@ -80,11 +80,9 @@ export const getMyShowsInfinite = authAction(
 ```
 Then, I use this modified [infinite scroll component](https://github.com/Apestein/better-react-infinite-scroll) that I created. See the implementation [here](https://github.com/Apestein/nextflix/blob/main/src/app/(main)/my-list/infinite-scroller.tsx). Important thing to understand is inside IntersectionObserver callback function, you must use refs instead of state. That is because of scoping, the callback is only created once and all the variables inside are snapshotted. To get around this you need to use refs. There maybe other ways, I'm just listing what I know.
 ```ts
-   const observer = new IntersectionObserver(
-      (entries) => {
-        if (!hasNextPageRef.current) return // <= must use ref, don't use state
-   )
-}
+const observer = new IntersectionObserver((entries) => {
+  if (!hasNextPageRef.current) return; // <= must use ref, don't use state
+})
 ```
 
 [scrnli_8_22_2023_12-42-31 PM3.webm](https://github.com/Apestein/nextflix/assets/107362680/e9ceae54-1ea0-4c89-97c7-0d87d12bd135)
