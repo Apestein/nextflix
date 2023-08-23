@@ -84,6 +84,7 @@ Then, I use this modified [infinite scroll component](https://github.com/Apestei
       (entries) => {
         if (!hasNextPageRef.current) return // <= must use ref, don't use state
    )
+}
 ```
 
 [scrnli_8_22_2023_12-42-31 PM3.webm](https://github.com/Apestein/nextflix/assets/107362680/e9ceae54-1ea0-4c89-97c7-0d87d12bd135)
