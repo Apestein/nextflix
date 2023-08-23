@@ -1,4 +1,4 @@
-import type { Stripe } from "stripe"
+// import type { Stripe } from "stripe"
 import { stripe } from "~/lib/stripe"
 import { ScrollArea } from "~/components/ui/scroll-area"
 
@@ -16,7 +16,7 @@ export default async function ResultPage({
       expand: ["line_items", "payment_intent"],
     },
   )
-  // const paymentIntent = checkoutSession.payment_intent as Stripe.PaymentIntent
+
   const checkoutStatus = checkoutSession.payment_status
   const currencyFormatter = new Intl.NumberFormat("en-US", {
     style: "currency",

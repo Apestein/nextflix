@@ -32,9 +32,8 @@ export async function POST(req: Request) {
     )
   }
 
-  const session = event.data.object as Stripe.Checkout.Session
-
   if (event.type === "checkout.session.completed") {
+    const session = event.data.object as Stripe.Checkout.Session
     // Retrieve the subscription details from Stripe.
     const subscription = await stripe.subscriptions.retrieve(
       session.subscription as string,
@@ -53,6 +52,15 @@ export async function POST(req: Request) {
         membership: validatedPlan,
       })
       .where(eq(accounts.id, userId))
+  }
+
+  if (event.type === "customer.subscription.updated") {
+    const data = event.data.object as Stripe.Subscription
+    if (data.canceled_at)
+      await db
+        .update(accounts)
+        .set({ membership: "free" })
+        .where(eq(accounts.stripeCustomerId, data.customer as string))
   }
 
   return NextResponse.json({ message: "Received" }, { status: 200 })
