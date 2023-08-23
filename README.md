@@ -13,10 +13,10 @@
 - Stripe
 
 ### Project Description
-Netflix clone, project inspired by [@sadmann17](https://twitter.com/sadmann17). Bootrapped with CreateT3App. Project uses 100% server actions, including for client side querying. [next-safe-action](https://github.com/TheEdoRan/next-safe-action) library for typesafe server actions. Each account can have up to 4 profiles. Each profiles have it's own avatar and list of saved shows. Feature includes ability to search show catalog, SaaS subscription service with Stripe, optimistic update, and infinite scrolling.
+Netflix clone, project inspired by [@sadmann17](https://twitter.com/sadmann17). Bootrapped with CreateT3App. Project uses 100% server actions, zero api endpoints aside for webhooks. [next-safe-action](https://github.com/TheEdoRan/next-safe-action) library for typesafe server actions. Each account can have up to 4 profiles. Each profiles have it's own avatar and list of saved shows. Feature includes ability to search show catalog, SaaS subscription service with Stripe, optimistic update, and infinite scrolling.
 
 ### Overall Thoughts
-Parallel and intercepting routes currently very broken, not worth using. But their usefullness would be immese if they actually worked correctly. Being able to show a modal that is fetched with server components is huge. I couldn't find a way to use server component with my modal so it had to be fetched with client component. Streaming ui and suspense is great. It really makes it easy to handle loading states. This is one of the most impactful things about app dir vs page dir. I saved the most important topic for last. When I first started using server actions I really didn't understand the point. They kind of felt like another way to write api endpoints and just felt like a worst version of tRPC. The Next.js docs will push you to use the server component version of server actions using forms and actions but trust me, don't use server actions with forms. If you do, you are giving up the best feature of server actions which is the tRPC like typesafety. To get the best DX out of server actions, I recommend using [next-safe-actions](https://github.com/TheEdoRan/next-safe-action/tree/main/packages/next-safe-action), this lib is a game changer. It made server actions felt just like trpc and overall was just an amazing DX. Important note, I was using [Zact](https://github.com/pingdotgg/zact) at first but it was much too limited, just use next-safe-actions instead. I think it's still too early for server actions to replace tRPC but the nice thing is that it requires zero setup. Setting tRPC up for app dir would be a headache right now. Also note, [revalidatePath/Tag currently only work with server actions](https://github.com/pingdotgg/zact) and you will definitely need them.
+Parallel and intercepting routes currently very broken, not worth using. But their usefullness would be immese if they actually worked correctly. Being able to show a modal that is fetched with server components is huge. I couldn't find a way to use server component with my modal so it had to be fetched with client component. Streaming ui and suspense is great. It really makes it easy to handle loading states. This is one of the most impactful things about app dir vs page dir. I saved the most important topic for last. When I first started using server actions I really didn't understand the point. They kind of felt like another way to write api endpoints and just felt like a worst version of tRPC. The Next.js docs will push you to use the server component version of server actions using forms but trust me, don't use server actions with forms. If you do, you are giving up the best feature of server actions which is the tRPC like typesafety. To get the best DX out of server actions, I recommend using [next-safe-actions](https://github.com/TheEdoRan/next-safe-action/tree/main/packages/next-safe-action), this lib is a game changer. It made server actions felt just like tRPC and overall was just an amazing DX. Important note, I was using [Zact](https://github.com/pingdotgg/zact) at first but it was much too limited, just use next-safe-actions instead. I think it's still too early for server actions to replace tRPC but the nice thing is that it requires zero setup. Setting tRPC up for app dir would be a headache right now. Also note, [revalidatePath/Tag currently only work with server actions](https://github.com/pingdotgg/zact) and you will definitely need them.
 
 ### Project Setup
 To bootstrap with CreateT3App, you just need to delete page dir and create app dir. And VERY important, in next.config.mjs you must delete "i18n" property.
@@ -48,7 +48,7 @@ Additionally, you should wrap the component in suspense to not block the UI and 
   <CustomeUserButton />
 </Suspense>
 ```
-#### 3. I had an object that I needed to extract a tuple from to validate with zod. Here is how.
+#### 3. I had an object that I needed to extract a tuple from to validate with zod. [Here is how](https://github.com/Apestein/nextflix/blob/main/src/lib/configs.ts).
 ```ts
 export const createCheckoutSession = authAction(
   z.object({
@@ -59,9 +59,9 @@ export const createCheckoutSession = authAction(
 ```
 ![Screenshot (78)](https://github.com/Apestein/nextflix/assets/107362680/98e2f8f8-3b44-46d7-baa6-abe95d8463fa)
 
-#### 4. Infinite scrolling can be tricky to implement yourself. Typically, I would use React Query/SWR to do this but I wanted to implement it with server actions this time.
+#### 4. Infinite scrolling can be tricky to implement yourself. Typically, I would use React Query/SWR to do this but I wanted to implement it with [server actions](https://github.com/Apestein/nextflix/blob/main/src/actions/index.ts) this time. 
 ```ts
-//server action
+// actions/index.ts 
 export const getMyShowsInfinite = authAction(
   z.object({
     index: z.number().min(0),
@@ -78,16 +78,22 @@ export const getMyShowsInfinite = authAction(
   },
 )
 ```
-Then, I use this modified [infinite scroll component](https://github.com/Apestein/better-react-infinite-scroll) that I created. See the implementation [here](https://github.com/Apestein/nextflix/blob/main/src/app/(main)/my-list/infinite-scroller.tsx).
+Then, I use this modified [infinite scroll component](https://github.com/Apestein/better-react-infinite-scroll) that I created. See the implementation [here](https://github.com/Apestein/nextflix/blob/main/src/app/(main)/my-list/infinite-scroller.tsx). Important thing to understand is inside IntersectionObserver callback function, you must use refs instead of state. That is because of scoping, the callback is only created once and all the variables inside are snapshotted. To get around this you need to use refs. There maybe other ways, I'm just listing what I know.
+```ts
+   const observer = new IntersectionObserver(
+      (entries) => {
+        if (!hasNextPageRef.current) return // <= must use ref, don't use state
+   )
+```
 
 [scrnli_8_22_2023_12-42-31 PM3.webm](https://github.com/Apestein/nextflix/assets/107362680/e9ceae54-1ea0-4c89-97c7-0d87d12bd135)
 
 
-#### 5. For Stripe intergration. Look at these 2 repo and mine also of course.
+#### 5. For Stripe intergration. Reference these 2 repos and mine also of course. Be careful with webhooks, use the Stripe CLI to forward events to your local environment when testing.
    - [Official Next.js example using server actions](https://github.com/vercel/next.js/tree/canary/examples/with-stripe-typescript)
    - [Taxonomy](https://github.com/shadcn-ui/taxonomy)
 
-#### 6. Optimistic update with server actions can be tricky. Using next-safe-action helps here. [Here is how I did it](https://github.com/Apestein/nextflix/blob/main/src/components/show-card.tsx).
+#### 6. Optimistic update with server actions can be tricky. Using next-safe-action's useOptimisticAction hook helps here. [Here is how I did it](https://github.com/Apestein/nextflix/blob/main/src/components/show-card.tsx). I decided to use server action to query initial state just to test it, but for client side querying it's probably better to use React Query/SWR.
 [scrnli_8_22_2023_12-17-36 PM.webm](https://github.com/Apestein/nextflix/assets/107362680/00f9690a-8698-498a-b639-5e45b5e5518c)
 
 #### 7. To prevent the search function from firing with every keystroke. Use the [use-debounce package](https://www.npmjs.com/package/use-debounce). [See my implementation here](https://github.com/Apestein/nextflix/blob/main/src/app/(main)/search/search-input.tsx). All data fetching can be done with server component by using router.push()/replace(). Pretty crazy pattern if you ask me🤯.  
