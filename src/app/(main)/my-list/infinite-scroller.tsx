@@ -17,10 +17,15 @@ export function ShowScroller({
   initialHasNextPage: boolean
   limit: number
 }) {
-  const [shows, setShows] = useState(initialShows)
+  const [myShows, setMyShows] = useState(initialShows)
+  const [simulatedShows, setSimulatedShows] = useState<Show[]>()
+  const getShowsReturnRef = useRef<GetShowsReturn>()
   const hasNextPageRef = useRef(initialHasNextPage)
   const indexRef = useRef(0)
   const observerTarget = useRef(null)
+
+  const shows = simulatedShows ?? myShows
+  console.log(shows)
 
   async function fetchNextPage() {
     indexRef.current += 1
@@ -28,17 +33,53 @@ export function ShowScroller({
       index: indexRef.current,
       limit,
     })
-    if (!data) throw new Error(ERR.undefined)
+    if (!data) throw new Error(ERR.db)
     const showsFromTmdb = await getMyShowsFromTmdb(data)
-    setShows((prev) => [...prev, ...showsFromTmdb])
+    setMyShows((prev) => [...prev, ...showsFromTmdb])
     hasNextPageRef.current = data.length === limit ? true : false
+  }
+
+  async function getSimulatedShows() {
+    if (getShowsReturnRef.current) {
+      window.scrollTo(0, 0)
+      getShowsReturnRef.current = undefined
+      hasNextPageRef.current = initialHasNextPage
+      setSimulatedShows(undefined)
+      return
+    }
+    window.scrollTo(0, 0)
+    const data = await getShows("movie")
+    getShowsReturnRef.current = data
+    hasNextPageRef.current = true
+    setSimulatedShows([
+      ...new Map(
+        [...data.trending, ...data.topRated].map((item) => [item.id, item]),
+      ).values(),
+    ])
   }
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries, observer) => {
-        if (!hasNextPageRef.current) observer.disconnect()
-        if (entries[0]?.isIntersecting) void fetchNextPage()
+      (entries) => {
+        if (!hasNextPageRef.current) return
+        if (entries[0]?.isIntersecting) {
+          if (getShowsReturnRef.current) {
+            setTimeout(
+              () =>
+                setSimulatedShows((prev) => [
+                  ...new Map(
+                    [
+                      ...prev!,
+                      ...getShowsReturnRef.current!.actionThriller,
+                      ...getShowsReturnRef.current!.comedy,
+                    ].map((item) => [item.id, item]),
+                  ).values(),
+                ]),
+              1000,
+            )
+            hasNextPageRef.current = false
+          } else void fetchNextPage()
+        }
       },
       { threshold: 1 },
     )
@@ -68,20 +109,26 @@ export function ShowScroller({
         ))}
       </ul>
       <div ref={observerTarget}></div>
-      {hasNextPageRef.current ? (
-        <Button
-          variant="outline"
-          className="w-full animate-pulse"
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onClick={fetchNextPage}
-        >
-          Loading...
+      <section className="flex flex-col items-center gap-4">
+        {hasNextPageRef.current ? (
+          <Button
+            variant="outline"
+            className="w-full animate-pulse"
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            onClick={fetchNextPage}
+          >
+            Loading...
+          </Button>
+        ) : (
+          <Button variant="outline" className="w-full cursor-auto">
+            You have reached the end of your saved shows
+          </Button>
+        )}
+        {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
+        <Button onClick={getSimulatedShows}>
+          {simulatedShows ? "Turn off simulation" : "Simulate many saved shows"}
         </Button>
-      ) : (
-        <Button variant="outline" className="w-full">
-          You have reached the end of your saved shows
-        </Button>
-      )}
+      </section>
     </main>
   )
 }
@@ -98,4 +145,89 @@ async function getMyShowsFromTmdb(shows: MyShow[]) {
   )
   const filterNull = data.filter((el): el is Show => !!el)
   return filterNull
+}
+
+type GetShowsReturn = Awaited<ReturnType<typeof getShows>>
+export async function getShows(mediaType: "movie" | "tv") {
+  const [
+    trendingRes,
+    topRatedRes,
+    actionThrillerRes,
+    comedyRes,
+    horrorRes,
+    romanceRes,
+    documentaryRes,
+  ] = await Promise.all([
+    fetch(
+      `https://api.themoviedb.org/3/trending/${mediaType}/week?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
+    ),
+    fetch(
+      `https://api.themoviedb.org/3/${mediaType}/top_rated?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
+    ),
+    fetch(
+      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=28`,
+    ),
+    fetch(
+      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=35`,
+    ),
+    fetch(
+      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=27`,
+    ),
+    fetch(
+      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=10749`,
+    ),
+    fetch(
+      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=99`,
+    ),
+  ])
+
+  if (
+    !trendingRes.ok ||
+    !topRatedRes.ok ||
+    !actionThrillerRes.ok ||
+    !comedyRes.ok ||
+    !horrorRes.ok ||
+    !romanceRes.ok ||
+    !documentaryRes.ok
+  )
+    throw new Error(ERR.fetch)
+
+  const [
+    trending,
+    topRated,
+    actionThriller,
+    comedy,
+    horror,
+    romance,
+    documentary,
+  ] = await Promise.all<{ results: Show[] }>([
+    trendingRes.json(),
+    topRatedRes.json(),
+    actionThrillerRes.json(),
+    comedyRes.json(),
+    horrorRes.json(),
+    romanceRes.json(),
+    documentaryRes.json(),
+  ])
+
+  if (
+    !trending ||
+    !topRated ||
+    !actionThriller ||
+    !comedy ||
+    !horror ||
+    !romance ||
+    !documentary
+  )
+    throw new Error(ERR.fetch)
+
+  return {
+    trending: trending.results,
+    topRated: topRated.results,
+    actionThriller: actionThriller.results,
+    comedy: comedy.results,
+    horror: horror.results,
+    romance: romance.results,
+    documentary: documentary.results,
+  }
 }

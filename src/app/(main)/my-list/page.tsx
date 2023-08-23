@@ -8,7 +8,7 @@ export default async function MyShowPage() {
   return (
     <main className="pt-8">
       {!shows.length && (
-        <div className="space-y-3">
+        <div className="mb-4 space-y-3">
           <p className="text-3xl font-semibold">Your list is empty</p>
           <p className="text-white/60">
             Add shows and movies to your list to watch them later
