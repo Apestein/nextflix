@@ -25,7 +25,6 @@ export function ShowScroller({
   const observerTarget = useRef(null)
 
   const shows = simulatedShows ?? myShows
-  console.log(shows)
 
   async function fetchNextPage() {
     indexRef.current += 1
