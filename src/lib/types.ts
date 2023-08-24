@@ -1,9 +1,8 @@
 import type { myShows, profiles } from "~/db/schema"
-import type { InferModel } from "drizzle-orm"
 import type { PLANS } from "~/lib/configs"
 
-export type MyShow = InferModel<typeof myShows>
-export type Profile = InferModel<typeof profiles>
+export type MyShow = typeof myShows.$inferSelect
+export type Profile = typeof profiles.$inferSelect
 export type SubscriptionPlan = (typeof PLANS)[number]
 export type PlanName = (typeof PLANS)[number]["name"]
 
