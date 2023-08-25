@@ -98,5 +98,9 @@ const observer = new IntersectionObserver((entries) => {
 #### 7. To prevent the search function from firing with every keystroke. Use the [use-debounce package](https://www.npmjs.com/package/use-debounce). [See my implementation here](https://github.com/Apestein/nextflix/blob/main/src/app/(main)/search/search-input.tsx). All data fetching can be done with server component by using router.push()/replace(). Pretty crazy pattern if you ask me🤯.  
 [scrnli_8_22_2023_12-51-37 PM4.webm](https://github.com/Apestein/nextflix/assets/107362680/3dda2e70-97f5-4d88-beca-1cfda53fc344)
 
+#### 8. Very frustrating problem I ran into was the scrollbar causing layout shift. When users navigate from a page with scrollbar to a page without scrollbar there would be an annoying layout shift. The solution is to use [scrollbar-gutter css property](https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-gutter). However, the documentation is terrible and I couldn't get it to work after many hours of debugging. I ended up just googling "scrollbar-gutter not working" and found this [stackoverflow answer](https://stackoverflow.com/questions/75732399/why-doesnt-scrollbar-gutter-stable-work-on-the-body-element) lol. Basically, I just need to place scrollbar-gutter:stable on the [HTML element](https://github.com/Apestein/nextflix/blob/main/src/app/layout.tsx)🤦‍♂️. 
+https://github.com/Apestein/nextflix/assets/107362680/4136a245-e38f-404a-b66e-2a9c4bc1b266
+
+#### 9. One problem I still haven't managed to solve is getting OG image to show up on Discord and Twitter. Strangely it works on Linkedin though. Adding OG image is suppose to be as simple as adding an [image file](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/opengraph-image). Yet, it doesn't work and I'm out of ideas. 
 
 #### Feel free to ask me questions at [@Apestein_Dev](https://twitter.com/Apestein_Dev).
