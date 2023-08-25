@@ -23,19 +23,21 @@ export default async function SearchPage({
       <div className="grid grid-cols-[repeat(auto-fill,_minmax(160px,_1fr))] gap-4 md:grid-cols-[repeat(auto-fill,_minmax(240px,_1fr))]">
         {shows.map((show) => (
           <ShowCard key={show.id} show={show}>
-            <Image
-              src={
-                show.backdrop_path ?? show.poster_path
-                  ? `https://image.tmdb.org/t/p/w500${
-                      show.backdrop_path ?? show.poster_path
-                    }`
-                  : "/nothing-to-see.webp"
-              }
-              alt="show-backdrop"
-              width={240}
-              height={135}
-              className="aspect-video w-full cursor-pointer object-cover transition-transform hover:scale-110"
-            />
+            {show.backdrop_path || show.poster_path ? (
+              <Image
+                src={`https://image.tmdb.org/t/p/w500${
+                  show.backdrop_path ?? show.poster_path
+                }`}
+                alt="show-backdrop"
+                width={240}
+                height={135}
+                className="aspect-video w-full cursor-pointer object-cover transition-transform hover:scale-110"
+              />
+            ) : (
+              <div className="grid aspect-video place-content-center text-xl font-semibold outline outline-1 outline-neutral-800">
+                No Image
+              </div>
+            )}
           </ShowCard>
         ))}
       </div>

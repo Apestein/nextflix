@@ -17,7 +17,6 @@ import { env } from "~/env.mjs"
 import { SignedIn } from "@clerk/nextjs"
 import { toggleMyShow, getMyShowStatus } from "~/actions"
 import { useOptimisticAction, useAction } from "next-safe-action/hook"
-import { notFound } from "next/navigation"
 
 export function ShowCard({
   children,
@@ -78,6 +77,7 @@ function SaveOrUnsave({ show }: { show: Show }) {
     executeQuery({ id: show.id })
   }, [])
 
+  if (!show.backdrop_path && !show.poster_path) return
   if (isExecuting && !hasExecuted)
     return <Skeleton className="h-6 w-6 rounded-full" />
 
@@ -114,6 +114,7 @@ function SaveOrUnsave({ show }: { show: Show }) {
 function ShowGenres({ show }: { show: Show }) {
   const { data } = useShowWithVideoAndGenre(show)
   if (data === undefined) return <Skeleton className="h-5 w-full" />
+  if (data === null) return
   return (
     <p className="text-left text-sm">
       {data.genres.map((genre) => genre.name).join(", ")}
@@ -124,6 +125,13 @@ function ShowGenres({ show }: { show: Show }) {
 function ShowTrailer({ show }: { show: Show }) {
   const { data } = useShowWithVideoAndGenre(show)
   if (data === undefined) return <Skeleton className="aspect-video w-full" />
+  // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
+  if (data === null || !data.videos.results)
+    return (
+      <div className="grid aspect-video animate-pulse place-content-center text-xl font-semibold">
+        No Trailer
+      </div>
+    )
   return (
     <iframe
       src={`https://www.youtube.com/embed/${findTrailer(data)}`}
@@ -151,8 +159,8 @@ export function useShowWithVideoAndGenre(show: Show) {
       revalidateOnReconnect: false,
     },
   )
-  if (data && "success" in data) notFound()
 
+  if (data && "success" in data) return { data: null }
   return { data }
 }
 
