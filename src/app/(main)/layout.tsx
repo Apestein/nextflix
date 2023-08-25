@@ -125,7 +125,7 @@ async function CustomeUserButton() {
   })
   const account = existingAccount ?? (await createAccountAndProfile())
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -175,7 +175,7 @@ async function CustomeUserButton() {
 
 function MainMenu() {
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger className="flex items-center gap-1.5 md:hidden">
         <svg viewBox="0 0 24 24" className="h-5 w-5 text-red-600">
           <path

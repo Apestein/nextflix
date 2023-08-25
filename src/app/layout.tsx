@@ -43,7 +43,11 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
+      <html
+        lang="en"
+        suppressHydrationWarning
+        className="[scrollbar-gutter:stable]"
+      >
         <body
           className={cn(
             "bg-neutral-900 text-slate-50 antialiased",
