@@ -46,7 +46,7 @@ export default function RootLayout({
       <html
         lang="en"
         suppressHydrationWarning
-        className="[scrollbar-gutter:stable]"
+        className="[&:not(:has([role='dialog'])):has([data-layout='main'])]:[scrollbar-gutter:stable]"
       >
         <body
           className={cn(

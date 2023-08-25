@@ -42,7 +42,10 @@ export default function ShowsLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="container flex min-h-screen flex-col px-4 md:px-8">
+    <div
+      className="container flex min-h-screen flex-col px-4 md:px-8"
+      data-layout="main"
+    >
       <Header />
       {children}
       <Footer />
