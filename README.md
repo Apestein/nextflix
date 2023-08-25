@@ -101,8 +101,31 @@ const observer = new IntersectionObserver((entries) => {
 #### 8. Very frustrating problem I ran into was the scrollbar causing layout shift. When users navigate from a page with scrollbar to a page without scrollbar there would be an annoying layout shift. 
 https://github.com/Apestein/nextflix/assets/107362680/4136a245-e38f-404a-b66e-2a9c4bc1b266
 
-The solution is to use [scrollbar-gutter css property](https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-gutter). However, the documentation is terrible and I couldn't get it to work after many hours of debugging. I ended up just googling "scrollbar-gutter not working" and found this [stackoverflow answer](https://stackoverflow.com/questions/75732399/why-doesnt-scrollbar-gutter-stable-work-on-the-body-element) lol. Basically, I just need to place scrollbar-gutter:stable on the [HTML element](https://github.com/Apestein/nextflix/blob/main/src/app/layout.tsx)🤦‍♂️. And if you're using Shadcn/ui or Radix DropDownMenu component you must set modal prop to false.
+The solution is to use [scrollbar-gutter css property](https://developer.mozilla.org/en-US/docs/Web/CSS/scrollbar-gutter). However, the documentation is terrible and I couldn't get it to work after many hours of debugging. I ended up just googling "scrollbar-gutter not working" and found this [stackoverflow answer](https://stackoverflow.com/questions/75732399/why-doesnt-scrollbar-gutter-stable-work-on-the-body-element) lol. Basically, I just need to place scrollbar-gutter:stable on the [HTML element](https://github.com/Apestein/nextflix/blob/main/src/app/layout.tsx)🤦‍♂️. However this introduced a new bug when using "scrollbar-gutter" with modals, specifically Shadcn/ui & Radix modals. Opening a modal causes layout shift. 
 
-#### 9. One problem I still haven't managed to solve is getting OG image to show up on Discord and Twitter. Strangely it works on Linkedin though. Adding OG image is suppose to be as simple as adding an [image file](https://nextjs.org/docs/app/api-reference/file-conventions/metadata/opengraph-image). Yet, it doesn't work and I'm out of ideas. 
+[scrnli_8_25_2023_5-58-40 PM5.webm](https://github.com/Apestein/nextflix/assets/107362680/9e5e7f93-8d1a-493f-8eba-c6dc2b283805)
+
+Moreover, since I must set "scrollbar-gutter" on the HTML element. This meant that my whole application will have a gutter (small padding on the right) on every page, we wouldn't want a gutter on our auth pages for example. After some research, here is the solution that I came up with:
+```ts
+//app/layout.tsx
+<html
+  lang="en"
+  suppressHydrationWarning
+  className="[&:not(:has([role='dialog'])):has([data-layout='main'])]:[scrollbar-gutter:stable]"
+  //Basically, this means only set "scrollbar-gutter:stable" when current page has both element with attribute NOT [role="dialog"] (ie. when modal is NOT open) and element with atrribute [data-layout=main] (ie. when we are in page of "(main)" route group). Wow, who knew CSS could be so powerful🤯
+>...</html>
+```
+```ts
+//app/(main)/layout.tsx
+<div
+  className="container flex min-h-screen flex-col px-4 md:px-8"
+  data-layout="main" //<= add this
+>
+  <Header />
+  {children}
+  <Footer />
+</div>
+```
+Though I must admit, this feels very hacky. Feel free to recommended a better solution.
 
 #### Feel free to ask me questions at [@Apestein_Dev](https://twitter.com/Apestein_Dev).
