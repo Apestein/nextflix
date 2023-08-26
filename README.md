@@ -28,7 +28,7 @@ If your site is complex you will probably need many different layout. Your root 
 
 ### Tricky Things To Consider (I will be going over things I found tricky or difficult in this section)
 
-#### 1. Revalidate/Tag causes the current page to refresh. I don't know why Next.js decided to do this but get around this I use this [LinkButton](https://github.com/Apestein/nextflix/blob/main/src/components/link-button.tsx) component. If you don't use this you will see the problem below.
+#### 1. You will no doubt run into problems with Next.js aggressive caching. To invalidate router cache, you must use [RevalidatePath/Tage in server action](https://nextjs.org/docs/app/building-your-application/caching#invalidation-1). However, Revalidate/Tag also causes the current page to refresh. I don't know why Next.js decided to do this but get around this I use this [LinkButton](https://github.com/Apestein/nextflix/blob/main/src/components/link-button.tsx) component. See the problem below when.
 [scrnli_8_22_2023_12-30-04 PM2.webm](https://github.com/Apestein/nextflix/assets/107362680/da7dd256-0a91-4ce5-99c6-698bc37d8013)
 
 
