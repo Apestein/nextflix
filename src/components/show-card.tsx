@@ -151,7 +151,9 @@ function findTrailer(show: ShowWithVideoAndGenre) {
 
 export function useShowWithVideoAndGenre(show: Show) {
   const { data } = useSWR<ShowWithVideoAndGenre | { success: boolean }>(
-    `https://api.themoviedb.org/3/movie/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`,
+    `https://api.themoviedb.org/3/${show.title ? "movie" : "tv"}/${
+      show.id
+    }?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`,
     (url: string) => fetch(url).then((r) => r.json()),
     {
       revalidateIfStale: false,
