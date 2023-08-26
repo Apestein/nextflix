@@ -20,7 +20,8 @@ export default function AddProfilePage() {
   async function doAdd() {
     const { data, validationError } = await createProfile({ name })
     toast({
-      description: data?.message ?? validationError?.name,
+      description:
+        data?.message ?? validationError?.name ?? "Name must be unique",
     })
     if (data) router.replace("/manage-profile")
   }

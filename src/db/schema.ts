@@ -8,6 +8,7 @@ import {
   primaryKey,
   uniqueIndex,
   index,
+  unique,
 } from "drizzle-orm/pg-core"
 import { planTuple } from "~/lib/configs"
 
@@ -50,6 +51,7 @@ export const profiles = pgTable(
   },
   (table) => {
     return {
+      unq: unique().on(table.accountId, table.name),
       accountIdIdx: index("account_id_idx").on(table.accountId),
     }
   },
