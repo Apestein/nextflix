@@ -40,14 +40,10 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html
-        lang="en"
-        suppressHydrationWarning
-        className="[&:not(:has([role='dialog'])):has([data-layout='main'])]:[scrollbar-gutter:stable]"
-      >
+      <html lang="en" suppressHydrationWarning>
         <body
           className={cn(
-            "bg-neutral-900 text-slate-50 antialiased",
+            "bg-neutral-900 text-slate-50 antialiased [&:has([data-layout='main'])]:overflow-y-scroll",
             inter.className,
           )}
         >
