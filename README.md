@@ -126,6 +126,12 @@ Moreover, since I must set "scrollbar-gutter" on the HTML element. This meant th
   <Footer />
 </div>
 ```
-Though I must admit, this feels very hacky. Feel free to recommended a better solution.
+Edit: Unfortunately, the solution above introduced some new layout shift. But I think the solution is cool so I will leave it here. This is the new solution, I just force a scrollbar on the (main) route group. Not the perfect solution but it's the best I can up come with. 
+```ts
+//app/layout.tsx
+ <body
+   className={cn("bg-neutral-900 text-slate-50 antialiased [&:has([data-layout='main'])]:overflow-y-scroll", inter.className)}
+>...</body>
+```
 
 #### Feel free to ask me questions at [@Apestein_Dev](https://twitter.com/Apestein_Dev).
