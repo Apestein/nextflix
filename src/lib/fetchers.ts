@@ -55,9 +55,12 @@ export async function getMyShows(limit: number) {
   const account = await getAccountWithActiveProfile()
   const shows = await db.query.myShows.findMany({
     where: eq(myShows.profileId, account.activeProfileId),
-    limit,
+    limit: limit + 1,
   })
-  return shows
+  const hasNextPage = shows.length > limit ? true : false
+  shows.pop()
+  const filteredShows = await getMyShowsFromTmdb(shows)
+  return { shows: filteredShows, hasNextPage }
 }
 
 export async function getMyShowsFromTmdb(shows: MyShow[]) {
@@ -70,8 +73,8 @@ export async function getMyShowsFromTmdb(shows: MyShow[]) {
       return res.json()
     }),
   )
-  const filterNull = data.filter((el): el is Show => !!el)
-  return filterNull
+  const filteredShows = data.filter((el): el is Show => !!el)
+  return filteredShows
 }
 
 export async function getShows(mediaType: "movie" | "tv") {

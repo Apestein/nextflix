@@ -20,7 +20,7 @@ export function ShowScroller({
   const [myShows, setMyShows] = useState(initialShows)
   const [simulatedShows, setSimulatedShows] = useState<Show[]>()
   const getShowsReturnRef = useRef<GetShowsReturn>()
-  const hasNextPageRef = useRef(initialHasNextPage)
+  // const hasNextPageRef = useRef(initialHasNextPage)
   const indexRef = useRef(0)
   const observerTarget = useRef(null)
 
@@ -33,9 +33,8 @@ export function ShowScroller({
       limit,
     })
     if (!data) throw new Error(ERR.db)
-    const showsFromTmdb = await getMyShowsFromTmdb(data)
-    setMyShows((prev) => [...prev, ...showsFromTmdb])
-    hasNextPageRef.current = data.length === limit ? true : false
+    setMyShows((prev) => [...prev, ...data.shows])
+    // hasNextPageRef.current = data.length === limit ? true : false
   }
 
   async function getSimulatedShows() {
