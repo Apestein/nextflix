@@ -71,14 +71,17 @@ export const getMyShowsInfinite = authAction(
     const account = await getAccountWithActiveProfile()
     const shows = await db.query.myShows.findMany({
       where: eq(myShows.profileId, account.activeProfileId),
-      limit: input.limit,
+      limit: input.limit + 1,
       offset: input.index * input.limit,
     })
-    return shows
+    const hasNextPage = shows.length > input.limit ? true : false
+    shows.pop()
+    const filteredShows = await getMyShowsFromTmdb(shows)
+    return { shows: filteredShows, hasNextPage }
   },
 )
 ```
-Then, I use this modified [infinite scroll component](https://github.com/Apestein/better-react-infinite-scroll) that I created. See the implementation [here](https://github.com/Apestein/nextflix/blob/main/src/app/(main)/my-list/infinite-scroller.tsx). Important thing to understand is inside IntersectionObserver callback function, you must use refs instead of state. That is because of scoping, the callback is only created once and all the variables inside are snapshotted. To get around this you need to use refs. There maybe other ways, I'm just listing what I know.
+Then, I use this modified [infinite scroll component](https://github.com/Apestein/better-react-infinite-scroll) that I created. See the implementation [here](https://github.com/Apestein/nextflix/blob/main/src/app/(main)/my-list/infinite-scroller.tsx), ignore the stuff about simulated shows. Important thing to understand is inside IntersectionObserver callback function, you must use refs instead of state. That is because of scoping, the callback is only created once and all the variables inside are snapshotted. To get around this you need to use refs. There maybe other ways, I'm just listing what I know.
 ```ts
 const observer = new IntersectionObserver((entries) => {
   if (!hasNextPageRef.current) return; // <= must use ref, don't use state
