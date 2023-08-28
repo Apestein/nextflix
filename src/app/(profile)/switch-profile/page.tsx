@@ -2,7 +2,7 @@ import { Button } from "~/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { ProfileSwitcher } from "./profile-switcher"
-import { getAccountWithProfiles } from "~/lib/fetchers"
+import { getAccountWithProfiles } from "~/lib/server-fetchers"
 
 export default async function SwitchProfilePage() {
   const account = await getAccountWithProfiles()

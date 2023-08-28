@@ -4,7 +4,7 @@ import { ShowsCarousel } from "~/components/show-carousel"
 import { Play, Info } from "lucide-react"
 import Image from "next/image"
 import { ERR } from "~/lib/utils"
-import { getShows } from "~/lib/fetchers"
+import { getShows } from "~/lib/client-fetchers"
 import { ShowCard } from "~/components/show-card"
 import { cn } from "~/lib/utils"
 

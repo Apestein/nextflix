@@ -1,5 +1,5 @@
 import { ShowScroller } from "./infinite-scroller"
-import { getMyShows } from "~/lib/fetchers"
+import { getMyShows } from "~/lib/server-fetchers"
 
 export default async function MyShowPage() {
   const LIMIT = 30

@@ -12,7 +12,7 @@ import {
   getProfile,
   getAccountWithActiveProfile,
   getMyShowsFromTmdb,
-} from "~/lib/fetchers"
+} from "~/lib/server-fetchers"
 import { stripe } from "~/lib/stripe"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"

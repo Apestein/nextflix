@@ -1,7 +1,7 @@
 import { CreditCard, ChevronRight } from "lucide-react"
 import { Button } from "~/components/ui/button"
 import Link from "next/link"
-import { getAccountWithProfiles } from "~/lib/fetchers"
+import { getAccountWithProfiles } from "~/lib/server-fetchers"
 
 export default async function AccountPage() {
   const account = await getAccountWithProfiles()

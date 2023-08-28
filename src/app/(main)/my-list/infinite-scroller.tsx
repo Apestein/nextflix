@@ -1,10 +1,10 @@
 "use client"
 import { useEffect, useRef, useState } from "react"
-import type { Show, MyShow } from "~/lib/types"
+import type { Show } from "~/lib/types"
 import { ShowCard } from "~/components/show-card"
 import Image from "next/image"
 import { getMyShowsInfinite } from "~/actions"
-import { env } from "~/env.mjs"
+import { getShows } from "~/lib/client-fetchers"
 import { ERR } from "~/lib/utils"
 import { Button } from "~/components/ui/button"
 
@@ -19,8 +19,8 @@ export function ShowScroller({
 }) {
   const [myShows, setMyShows] = useState(initialShows)
   const [simulatedShows, setSimulatedShows] = useState<Show[]>()
-  const getShowsReturnRef = useRef<GetShowsReturn>()
-  // const hasNextPageRef = useRef(initialHasNextPage)
+  const getShowsReturnRef = useRef<Awaited<ReturnType<typeof getShows>>>()
+  const hasNextPageRef = useRef(initialHasNextPage)
   const indexRef = useRef(0)
   const observerTarget = useRef(null)
 
@@ -34,7 +34,7 @@ export function ShowScroller({
     })
     if (!data) throw new Error(ERR.db)
     setMyShows((prev) => [...prev, ...data.shows])
-    // hasNextPageRef.current = data.length === limit ? true : false
+    hasNextPageRef.current = data.hasNextPage
   }
 
   async function getSimulatedShows() {
@@ -129,103 +129,4 @@ export function ShowScroller({
       </section>
     </main>
   )
-}
-
-async function getMyShowsFromTmdb(shows: MyShow[]) {
-  const data = await Promise.all<Show | null>(
-    shows.map(async (show) => {
-      const res = await fetch(
-        `https://api.themoviedb.org/3/${show.mediaType}/${show.id}?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
-      )
-      if (!res.ok) return null
-      return res.json()
-    }),
-  )
-  const filterNull = data.filter((el): el is Show => !!el)
-  return filterNull
-}
-
-type GetShowsReturn = Awaited<ReturnType<typeof getShows>>
-export async function getShows(mediaType: "movie" | "tv") {
-  const [
-    trendingRes,
-    topRatedRes,
-    actionThrillerRes,
-    comedyRes,
-    horrorRes,
-    romanceRes,
-    documentaryRes,
-  ] = await Promise.all([
-    fetch(
-      `https://api.themoviedb.org/3/trending/${mediaType}/week?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
-    ),
-    fetch(
-      `https://api.themoviedb.org/3/${mediaType}/top_rated?api_key=${env.NEXT_PUBLIC_TMDB_API}`,
-    ),
-    fetch(
-      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=28`,
-    ),
-    fetch(
-      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=35`,
-    ),
-    fetch(
-      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=27`,
-    ),
-    fetch(
-      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=10749`,
-    ),
-    fetch(
-      `https://api.themoviedb.org/3/discover/${mediaType}?api_key=${env.NEXT_PUBLIC_TMDB_API}&with_genres=99`,
-    ),
-  ])
-
-  if (
-    !trendingRes.ok ||
-    !topRatedRes.ok ||
-    !actionThrillerRes.ok ||
-    !comedyRes.ok ||
-    !horrorRes.ok ||
-    !romanceRes.ok ||
-    !documentaryRes.ok
-  )
-    throw new Error(ERR.fetch)
-
-  const [
-    trending,
-    topRated,
-    actionThriller,
-    comedy,
-    horror,
-    romance,
-    documentary,
-  ] = await Promise.all<{ results: Show[] }>([
-    trendingRes.json(),
-    topRatedRes.json(),
-    actionThrillerRes.json(),
-    comedyRes.json(),
-    horrorRes.json(),
-    romanceRes.json(),
-    documentaryRes.json(),
-  ])
-
-  if (
-    !trending ||
-    !topRated ||
-    !actionThriller ||
-    !comedy ||
-    !horror ||
-    !romance ||
-    !documentary
-  )
-    throw new Error(ERR.fetch)
-
-  return {
-    trending: trending.results,
-    topRated: topRated.results,
-    actionThriller: actionThriller.results,
-    comedy: comedy.results,
-    horror: horror.results,
-    romance: romance.results,
-    documentary: documentary.results,
-  }
 }
