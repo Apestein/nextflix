@@ -11,7 +11,8 @@ import {
   getAccountWithProfiles,
   getProfile,
   getAccountWithActiveProfile,
-} from "~/lib/fetchers"
+  getMyShowsFromTmdb,
+} from "~/lib/server-fetchers"
 import { stripe } from "~/lib/stripe"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
@@ -190,9 +191,12 @@ export const getMyShowsInfinite = authAction(
     const account = await getAccountWithActiveProfile()
     const shows = await db.query.myShows.findMany({
       where: eq(myShows.profileId, account.activeProfileId),
-      limit: input.limit,
+      limit: input.limit + 1,
       offset: input.index * input.limit,
     })
-    return shows
+    const hasNextPage = shows.length > input.limit ? true : false
+    shows.pop()
+    const filteredShows = await getMyShowsFromTmdb(shows)
+    return { shows: filteredShows, hasNextPage }
   },
 )

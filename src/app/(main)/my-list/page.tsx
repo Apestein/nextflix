@@ -1,13 +1,12 @@
 import { ShowScroller } from "./infinite-scroller"
-import { getMyShows, getMyShowsFromTmdb } from "~/lib/fetchers"
+import { getMyShows } from "~/lib/server-fetchers"
 
 export default async function MyShowPage() {
   const LIMIT = 30
   const data = await getMyShows(LIMIT)
-  const shows = await getMyShowsFromTmdb(data)
   return (
     <main className="pt-8">
-      {!shows.length && (
+      {!data.shows.length && (
         <div className="mb-4 space-y-3">
           <p className="text-3xl font-semibold">Your list is empty</p>
           <p className="text-white/60">
@@ -16,8 +15,8 @@ export default async function MyShowPage() {
         </div>
       )}
       <ShowScroller
-        initialShows={shows}
-        initialHasNextPage={data.length === LIMIT ? true : false}
+        initialShows={data.shows}
+        initialHasNextPage={data.hasNextPage}
         limit={LIMIT}
       />
     </main>

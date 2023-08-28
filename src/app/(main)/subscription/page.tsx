@@ -1,6 +1,6 @@
 import { Check } from "lucide-react"
 import { PlanSelector } from "./plan-selector"
-import { getAccount } from "~/lib/fetchers"
+import { getAccount } from "~/lib/server-fetchers"
 
 export default async function SubscriptionPage() {
   const account = await getAccount()

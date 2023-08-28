@@ -2,7 +2,7 @@ import { Button } from "~/components/ui/button"
 import { ShowsCarousel } from "~/components/show-carousel"
 import { Play } from "lucide-react"
 import Image from "next/image"
-import { getShows } from "~/lib/fetchers"
+import { getShows } from "~/lib/client-fetchers"
 import { pickRandomShow } from "../page"
 
 export default async function Movies() {

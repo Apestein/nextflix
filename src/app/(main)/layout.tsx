@@ -34,7 +34,7 @@ import {
   BadgeCheck,
 } from "lucide-react"
 import { LinkButton } from "~/components/link-button"
-import { getAccountWithActiveProfile } from "~/lib/fetchers"
+import { getAccountWithActiveProfile } from "~/lib/server-fetchers"
 
 export default function ShowsLayout({
   children,

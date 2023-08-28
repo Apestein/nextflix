@@ -1,7 +1,7 @@
 import { Button } from "~/components/ui/button"
 import { PlusCircle, ArrowLeft, Pencil } from "lucide-react"
 import Link from "next/link"
-import { getAccountWithProfiles } from "~/lib/fetchers"
+import { getAccountWithProfiles } from "~/lib/server-fetchers"
 
 export default async function ManageProfilePage() {
   const account = await getAccountWithProfiles()
