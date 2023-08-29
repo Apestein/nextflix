@@ -25,7 +25,7 @@ Clerk was amazing to work with in terms of DX. Extremely easy to setup and get r
 - Clerk does not currently work with edge runtime. Clerk claims they are edge ready but it doesn't work for me. Might be a problem on my end but I also saw other people having this issue so it's not just me. I also did a refresh create-next-app install and was able to recreate the issue so I'm almost 100% certain it's a problem with Clerk currently. 
 
 ### Thoughts about Neon
-- Overally great. Foreign key contraint is nice to have compared to Planetscale. The biggest pro is that [data branching](https://planetscale.com/docs/concepts/data-branching) feature is free. On Planetscale you need "Scaler Pro" for this feature. Data branching makes a huge difference for development/debugging. However, I do miss not having Planetscale's "Slowest queries during the last 24 hours" panel in the dashboard.
+- Overall great. Foreign key contraint is nice to have compared to Planetscale. The biggest pro is the [data branching](https://planetscale.com/docs/concepts/data-branching) feature is free. On Planetscale you need "Scaler Pro" for this feature. Data branching makes a huge difference for development/debugging. However, I do miss not having Planetscale's "Slowest queries during the last 24 hours" panel in the dashboard.
 
 ### Thoughts about Drizzle
 Fantastic. Noticably faster than Prisma. Schema file being in typescript results in superior DX. Their docs are a little lacking though.
