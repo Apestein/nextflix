@@ -1,6 +1,6 @@
 ## Open source project using bleeding-edge stack. Drizzle ORM + Neon postgres + Clerk auth + Shadcn/ui + everything new in Next.js 13 (server components, server actions, streaming ui, parallel routes, intercepting routes).
 
-### Full tech stack
+### Full Tech Stack
 - Next.js 13
 - CreateT3App Bootrapped
 - Neon (postgres)
@@ -17,6 +17,18 @@ Netflix clone, project inspired by [@sadmann17](https://twitter.com/sadmann17). 
 
 ### Overall Thoughts
 Parallel and intercepting routes currently very broken, not worth using. But their usefullness would be immese if they actually worked correctly. Being able to show a modal that is fetched with server components is huge. I couldn't find a way to use server component with my modal so it had to be fetched with client component. Streaming ui and suspense is great. It really makes it easy to handle loading states. This is one of the most impactful things about app dir vs page dir. I saved the most important topic for last. When I first started using server actions I really didn't understand the point. They kind of felt like another way to write api endpoints and just felt like a worst version of tRPC. The Next.js docs will push you to use the server component version of server actions using forms but trust me, don't use server actions with forms. If you do, you are giving up the best feature of server actions which is the tRPC like typesafety. To get the best DX out of server actions, I recommend using [next-safe-actions](https://github.com/TheEdoRan/next-safe-action/tree/main/packages/next-safe-action), this lib is a game changer. It made server actions felt just like tRPC and overall was just an amazing DX. Important note, I was using [Zact](https://github.com/pingdotgg/zact) at first but it was much too limited, just use next-safe-actions instead. I think it's still too early for server actions to replace tRPC but the nice thing is that it requires zero setup. Setting tRPC up for app dir would be a headache right now. Also note, [revalidatePath/Tag currently only work with server actions](https://github.com/pingdotgg/zact) and you will definitely need them.
+
+### Thoughts about Clerk
+Clerk was amazing to work with in terms of DX. Extremely easy to setup and get rolling. However, there are 2 major problems that are deal breakers until they get fixed.
+- Clerk causes your entire app to be dyamically rendered. Meaning you can not benefit from things like SSG and ISR. Override with "cache: force-cache" or "revalidate = 0" is not possible.
+   ![Screenshot (83)](https://github.com/Apestein/nextflix/assets/107362680/6d2d89d0-63f3-4d6c-97a7-3a12f514868e)
+- Clerk does not currently work with edge runtime. Clerk claims they are edge ready but it doesn't work for me. Might be a problem on my end but I also saw other people having this issue so it's not just me. I also did a refresh create-next-app install and was able to recreate the issue so I'm almost 100% certain it's a problem with Clerk currently. 
+
+### Thoughts about Neon
+- Overally great. Foreign key contraint is nice to have compared to Planetscale. The biggest pro is that [data branching](https://planetscale.com/docs/concepts/data-branching) feature is free. On Planetscale you need "Scaler Pro" for this feature. Data branching makes a huge difference for development/debugging. However, I do miss not having Planetscale's "Slowest queries during the last 24 hours" panel in the dashboard.
+
+### Thoughts about Drizzle
+Fantastic. Noticably faster than Prisma. Schema file being in typescript results in superior DX. Their docs are a little lacking though.
 
 ### Project Setup
 To bootstrap with CreateT3App, you just need to delete page dir and create app dir. And VERY important, in next.config.mjs you must delete "i18n" property.
