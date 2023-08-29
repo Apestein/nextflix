@@ -28,7 +28,7 @@ Clerk was amazing to work with in terms of DX. Extremely easy to setup and get r
 - Overall great. Foreign key contraint is nice to have compared to Planetscale. The biggest pro is the [data branching](https://planetscale.com/docs/concepts/data-branching) feature is free. On Planetscale you need "Scaler Pro" for this feature. Data branching makes a huge difference for development/debugging. I do miss not having Planetscale's "Slowest queries during the last 24 hours" panel in the dashboard. However, having no Discord server is a deal breaker for me. Discord is the best way for developers to get help and learn from each other. Neon uses Discourse which is much worst than Discord and for this reason alone, I'm out. 
 
 ### Thoughts about Drizzle
-Fantastic. Noticably faster than Prisma. Schema file being in typescript results in superior DX. Their docs are a little lacking though.
+Fantastic. Noticeably faster than Prisma. Schema file being in typescript results in superior DX. Their docs are a little lacking though.
 
 ### Project Setup
 To bootstrap with CreateT3App, you just need to delete page dir and create app dir. And VERY important, in next.config.mjs you must delete "i18n" property.
