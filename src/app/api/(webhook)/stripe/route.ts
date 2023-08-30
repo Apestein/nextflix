@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     event = stripe.webhooks.constructEvent(
       body,
       signature,
-      process.env.NODE_ENV === "production"
+      env.NODE_ENV === "production"
         ? env.STRIPE_WEBHOOK_SECRET
         : env.STRIPE_DEV_WEBHOOK_SECRET,
     )
