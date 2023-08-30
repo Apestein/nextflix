@@ -1,6 +1,5 @@
 "use client"
 
-import Link from "next/link"
 import { useEffect } from "react"
 import { Button } from "~/components/ui/button"
 
@@ -24,7 +23,7 @@ export default function Error({
           Try again
         </Button>
         <Button asChild variant="secondary" className="font-semibold">
-          <Link href="/">Go back home</Link>
+          <a href="/">Go back home</a>
         </Button>
       </section>
     </main>
