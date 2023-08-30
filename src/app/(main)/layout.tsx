@@ -77,8 +77,8 @@ function Header() {
           <Image
             src="/netflix-logo.svg"
             alt="netflix-logo"
-            width={1024}
-            height={276.74}
+            width={300}
+            height={81}
             priority
             className="h-auto w-28 transition-opacity hover:opacity-80 active:opacity-100"
           />

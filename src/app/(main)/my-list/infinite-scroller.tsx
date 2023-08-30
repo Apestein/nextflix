@@ -2,11 +2,11 @@
 import { useEffect, useRef, useState } from "react"
 import type { Show } from "~/lib/types"
 import { ShowCard } from "~/components/show-card"
-import Image from "next/image"
 import { getMyShowsInfinite } from "~/actions"
 import { getShows } from "~/lib/client-fetchers"
 import { ERR } from "~/lib/utils"
 import { Button } from "~/components/ui/button"
+import { ShowCardTrigger } from "~/components/show-card-trigger"
 
 export function ShowScroller({
   initialShows,
@@ -94,15 +94,7 @@ export function ShowScroller({
       <ul className="grid grid-cols-[repeat(auto-fill,_minmax(160px,_1fr))] gap-5 md:grid-cols-[repeat(auto-fill,_minmax(240px,_1fr))]">
         {shows.map((show) => (
           <ShowCard key={show.id} show={show}>
-            <Image
-              src={`https://image.tmdb.org/t/p/w500${
-                show.backdrop_path ?? show.poster_path
-              }`}
-              alt="show-backdrop"
-              width={240}
-              height={135}
-              className="aspect-video w-full cursor-pointer object-cover transition-transform hover:scale-110"
-            />
+            <ShowCardTrigger show={show} />
           </ShowCard>
         ))}
       </ul>

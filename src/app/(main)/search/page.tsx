@@ -2,8 +2,8 @@ import { ERR } from "~/lib/utils"
 import { env } from "~/env.mjs"
 import type { Show } from "~/lib/types"
 import { ShowCard } from "~/components/show-card"
-import Image from "next/image"
 import { SearchInput } from "./search-input"
+import { ShowCardTrigger } from "~/components/show-card-trigger"
 
 export default async function SearchPage({
   searchParams,
@@ -24,15 +24,7 @@ export default async function SearchPage({
         {shows.map((show) => (
           <ShowCard key={show.id} show={show}>
             {show.backdrop_path || show.poster_path ? (
-              <Image
-                src={`https://image.tmdb.org/t/p/w500${
-                  show.backdrop_path ?? show.poster_path
-                }`}
-                alt="show-backdrop"
-                width={240}
-                height={135}
-                className="aspect-video w-full cursor-pointer object-cover transition-transform hover:scale-110"
-              />
+              <ShowCardTrigger show={show} />
             ) : (
               <div className="grid aspect-video place-content-center text-xl font-semibold outline outline-1 outline-neutral-800">
                 No Image

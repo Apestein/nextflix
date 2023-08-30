@@ -6,7 +6,6 @@ import { Button } from "./ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { type Show } from "~/lib/types"
 import { ShowCard } from "./show-card"
-import Image from "next/image"
 
 type ComponentProps = {
   title: string
@@ -82,8 +81,9 @@ export const ShowsCarousel = ({ title, shows }: ComponentProps) => {
             <div ref={showsRef} className="flex gap-1.5 overflow-hidden">
               {shows.map((show) => (
                 <ShowCard key={show.id} show={show}>
-                  <Image
-                    src={`https://image.tmdb.org/t/p/w500${
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`https://image.tmdb.org/t/p/w300${
                       show.backdrop_path ?? show.poster_path
                     }`}
                     alt="show-backdrop"
