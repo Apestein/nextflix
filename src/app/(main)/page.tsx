@@ -1,12 +1,11 @@
 import { type Show } from "~/lib/types"
-import { buttonVariants } from "~/components/ui/button"
 import { ShowsCarousel } from "~/components/show-carousel"
 import { Play, Info } from "lucide-react"
 import Image from "next/image"
 import { ERR } from "~/lib/utils"
 import { getShows } from "~/lib/client-fetchers"
-import { ShowCard } from "~/components/show-card"
-import { cn } from "~/lib/utils"
+import Link from "next/link"
+import { Button } from "~/components/ui/button"
 
 export default async function Home() {
   const allShows = await getShows("movie")
@@ -40,28 +39,28 @@ export default async function Home() {
             {randomShow.overview}
           </p>
           <div className="flex items-center gap-3">
-            <ShowCard show={randomShow}>
-              <div
-                className={cn(
-                  "flex gap-1.5",
-                  buttonVariants({ variant: "default" }),
-                )}
-              >
+            <Link
+              href={`/show/${randomShow.id}?mediaType=${
+                randomShow.title ? "movie" : "tv"
+              }`}
+              key={randomShow.id}
+            >
+              <Button className="flex gap-1.5">
                 <Play fill="black" />
                 Play
-              </div>
-            </ShowCard>
-            <ShowCard show={randomShow}>
-              <div
-                className={cn(
-                  "flex gap-1.5",
-                  buttonVariants({ variant: "outline" }),
-                )}
-              >
+              </Button>
+            </Link>
+            <Link
+              href={`/show/${randomShow.id}?mediaType=${
+                randomShow.title ? "movie" : "tv"
+              }`}
+              key={randomShow.id}
+            >
+              <Button variant="outline" className="flex gap-1.5">
                 <Info />
                 More Info
-              </div>
-            </ShowCard>
+              </Button>
+            </Link>
           </div>
         </div>
         <div className="space-y-10">

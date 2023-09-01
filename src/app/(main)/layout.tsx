@@ -38,8 +38,10 @@ import { getAccountWithActiveProfile } from "~/lib/server-fetchers"
 
 export default function ShowsLayout({
   children,
+  modal,
 }: {
   children: React.ReactNode
+  modal: React.ReactNode
 }) {
   return (
     <div
@@ -48,6 +50,7 @@ export default function ShowsLayout({
     >
       <Header />
       {children}
+      {modal}
       <Footer />
     </div>
   )
