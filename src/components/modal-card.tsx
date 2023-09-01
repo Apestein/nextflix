@@ -10,11 +10,10 @@ import {
 import { PlusCircle, CheckCircle } from "lucide-react"
 import { toggleMyShow } from "~/actions"
 import { useOptimisticAction } from "next-safe-action/hook"
-import { SignedIn } from "@clerk/nextjs"
 
 interface ModalCardProps extends React.ComponentPropsWithoutRef<"div"> {
   show: ShowWithVideoAndGenre
-  isSaved: boolean
+  isSaved?: boolean
 }
 export function ModalCard({ show, isSaved, ...props }: ModalCardProps) {
   const trailer = show.videos.results.find((el) => el.type === "Trailer")
@@ -23,9 +22,9 @@ export function ModalCard({ show, isSaved, ...props }: ModalCardProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-1.5">
           {show.title ?? show.name}
-          <SignedIn>
+          {isSaved !== undefined && (
             <MyShowToggler show={show} isSaved={isSaved} />
-          </SignedIn>
+          )}
         </CardTitle>
         <div className="flex items-center gap-1.5">
           <p className="text-green-400">

@@ -9,7 +9,7 @@ export function Modal({
   isSaved,
 }: {
   show: ShowWithVideoAndGenre
-  isSaved: boolean
+  isSaved?: boolean
 }) {
   const overlay = useRef(null)
   const router = useRouter()
