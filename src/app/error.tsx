@@ -15,7 +15,7 @@ export default function Error({
   }, [error])
 
   return (
-    <main className="grid min-h-screen place-content-center space-y-5 text-center">
+    <main className="container grid min-h-screen place-content-center space-y-5 text-center">
       <h1 className="text-3xl font-semibold">There was a problem</h1>
       <p>{error.message}</p>
       <section className="space-x-8">

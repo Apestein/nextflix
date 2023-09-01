@@ -120,32 +120,6 @@ export const toggleMyShow = authAction(
   },
 )
 
-export const getMyShowStatus = authAction(
-  z.object({
-    id: z.number(),
-  }),
-  async (input, { userId }) => {
-    const account = await db.query.accounts.findFirst({
-      where: eq(accounts.id, userId),
-      columns: {},
-      with: {
-        activeProfile: {
-          columns: {},
-          with: {
-            savedShows: {
-              where: eq(myShows.id, input.id),
-              limit: 1,
-            },
-          },
-        },
-      },
-    })
-    if (!account) throw new Error(ERR.db)
-    const showExist = !!account.activeProfile.savedShows.length
-    return { isSaved: showExist }
-  },
-)
-
 export const createCheckoutSession = authAction(
   z.object({
     stripeProductId: z.string(),

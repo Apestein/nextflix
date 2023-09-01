@@ -58,7 +58,7 @@ export async function getMyShows(limit: number) {
     limit: limit + 1,
   })
   const hasNextPage = shows.length > limit ? true : false
-  shows.pop()
+  if (hasNextPage) shows.pop()
   const filteredShows = await getMyShowsFromTmdb(shows)
   return { shows: filteredShows, hasNextPage }
 }
