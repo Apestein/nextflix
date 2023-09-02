@@ -7,6 +7,7 @@ import { Toaster } from "~/components/ui/toaster"
 import { Analytics } from "@vercel/analytics/react"
 
 export const runtime = "edge"
+export const preferredRegion = "iad1"
 const inter = Inter({ subsets: ["latin"] })
 
 const siteConfig = {
