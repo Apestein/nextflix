@@ -1,4 +1,4 @@
-## Open source project using bleeding-edge stack. Drizzle ORM + Neon postgres + Clerk auth + Shadcn/ui + everything new in Next.js 13 (server components, server actions, streaming ui, parallel routes, intercepting routes).
+## Project using bleeding-edge stack. Drizzle ORM + Neon postgres + Clerk auth + Shadcn/ui + everything new in Next.js 13 (server components, server actions, streaming ui, parallel routes, intercepting routes). Now fully edge runtime deployed.
 
 ### Full Tech Stack
 
@@ -19,15 +19,14 @@ Netflix clone, project inspired by [@sadmann17](https://twitter.com/sadmann17). 
 
 ### Overall Thoughts
 
-Parallel and intercepting routes currently very broken, not worth using. But their usefullness would be immese if they actually worked correctly. Being able to show a modal that is fetched with server components is huge. I couldn't find a way to use server component with my modal so it had to be fetched with client component. Streaming ui and suspense is great. It really makes it easy to handle loading states. This is one of the most impactful things about app dir vs page dir. I saved the most important topic for last. When I first started using server actions I really didn't understand the point. They kind of felt like another way to write api endpoints and just felt like a worst version of tRPC. The Next.js docs will push you to use the server component version of server actions using forms but trust me, don't use server actions with forms. If you do, you are giving up the best feature of server actions which is the tRPC like typesafety. To get the best DX out of server actions, I recommend using [next-safe-actions](https://github.com/TheEdoRan/next-safe-action/tree/main/packages/next-safe-action), this lib is a game changer. It made server actions felt just like tRPC and overall was just an amazing DX. Important note, I was using [Zact](https://github.com/pingdotgg/zact) at first but it was much too limited, just use next-safe-actions instead. I think it's still too early for server actions to replace tRPC but the nice thing is that it requires zero setup. Setting tRPC up for app dir would be a headache right now. Also note, [revalidatePath/Tag currently only work with server actions](https://github.com/pingdotgg/zact) and you will definitely need them.
+Next.js 13 app router overall was a joy to work with, don't hate it till you try it. I will say the Next.js app router docs are currently very terrible and you will be left to figure out many things on your own. However, the tools that Next.js 13 gives you are very powerful and things you won't find in any other framework. Server components are underrated and more powerful than you may think, I'll leave examples in the "Tricky things" section below. Parrallel and intercepting routes are incredibly useful although very buggy. Lucky for you, I've already figured out most of the bugs/tricky bits so just read the "Tricky things" section. Streaming ui and suspense is great. It really makes it easy to handle loading states. This is one of the most impactful things about app dir vs page dir. I saved the most important topic for last. When I first started using server actions I really didn't understand the point. They kind of felt like another way to write api endpoints and just felt like a worst version of tRPC. The Next.js docs will push you to use the server component version of server actions using forms but trust me, don't use server actions with forms. If you do, you are giving up the best feature of server actions which is the tRPC like typesafety. To get the best DX out of server actions, I recommend using [next-safe-actions](https://github.com/TheEdoRan/next-safe-action/tree/main/packages/next-safe-action), this lib is a game changer. It made server actions felt just like tRPC and overall was just an amazing DX. I think it's still too early for server actions to replace tRPC but the nice thing is that it requires zero setup. Setting tRPC up for app dir would be a headache right now. Also note, [revalidatePath/Tag currently only work with server actions](https://github.com/pingdotgg/zact) and you will definitely need them.
 
 ### Thoughts about Clerk
 
-Clerk was amazing to work with in terms of DX. Extremely easy to setup and get rolling. However, there are 2 major problems that are deal breakers until they get fixed.
+Clerk was amazing to work with in terms of DX. Extremely easy to setup and get rolling. However, there is a major problems that's a deal breakers until they fix it.
 
 - Clerk causes your entire app to be dyamically rendered. Meaning you can not benefit from things like SSG and ISR. Override with "cache: force-cache" or "revalidate = 0" is not possible.
   ![Screenshot (83)](https://github.com/Apestein/nextflix/assets/107362680/6d2d89d0-63f3-4d6c-97a7-3a12f514868e)
-- Clerk does not currently work with edge runtime. Clerk claims they are edge ready but it doesn't work for me. Might be a problem on my end but I also saw other people having this issue so it's not just me. I also did a fresh create-next-app install and was able to recreate the issue so I'm almost 100% certain it's a problem with Clerk currently.
 
 ### Thoughts about Neon
 
@@ -103,7 +102,7 @@ export const getMyShowsInfinite = authAction(
       offset: input.index * input.limit,
     })
     const hasNextPage = shows.length > input.limit ? true : false
-    shows.pop()
+    if (hasNextPage) shows.pop()
     const filteredShows = await getMyShowsFromTmdb(shows)
     return { shows: filteredShows, hasNextPage }
   },
@@ -125,8 +124,7 @@ const observer = new IntersectionObserver((entries) => {
 - [Official Next.js example using server actions](https://github.com/vercel/next.js/tree/canary/examples/with-stripe-typescript)
 - [Taxonomy](https://github.com/shadcn-ui/taxonomy)
 
-#### 6. Optimistic update with server actions can be tricky. Using next-safe-action's useOptimisticAction hook helps here. [Here is how I did it](https://github.com/Apestein/nextflix/blob/main/src/components/show-card.tsx). I decided to use server action to query initial state just to test it, but for client side querying it's probably better to use React Query/SWR.
-
+#### 6. Optimistic update with server actions can be tricky. Using next-safe-action's useOptimisticAction hook helps here. [Here is how I did it](https://github.com/Apestein/nextflix/blob/main/src/components/modal-card.tsx).
 [scrnli_8_22_2023_12-17-36 PM.webm](https://github.com/Apestein/nextflix/assets/107362680/00f9690a-8698-498a-b639-5e45b5e5518c)
 
 #### 7. To prevent the search function from firing with every keystroke. Use the [use-debounce package](https://www.npmjs.com/package/use-debounce). [See my implementation here](<https://github.com/Apestein/nextflix/blob/main/src/app/(main)/search/search-input.tsx>). All data fetching can be done with server component by using router.push()/replace(). Pretty crazy pattern if you ask me🤯.
@@ -179,6 +177,21 @@ Edit: Unfortunately, the solution above introduced some new layout shift. But I 
 >
   ...
 </body>
+```
+9. For modal using [intercepting route](https://nextjs.org/docs/app/building-your-application/routing/intercepting-routes#modals). Follow next.js [official example(https://github.com/vercel-labs/nextgram). You can only use router.back() to close the modal as far as I know. By default when opening the intercepting modal it will cause page to scroll either all the way up or down. To prevent this, set scroll={false} on Link. If you have a loading.tsx file for the modal it should go in the @modal folder [like this](https://github.com/Apestein/nextflix/tree/main/src/app/(main)/%40modal).
+```ts
+<Link
+  href={`/show/${show.id}?mediaType=${
+  show.title ? "movie" : "tv"
+  }`}
+  scroll={false}
+  key={show.id}
+>
+```
+10. To deploy to the edge, you only need 2 lines of code. Since my database is located in US East, edge can be [slower than normal serverless lambda](https://vercel.com/docs/functions/edge-functions#using-a-database-with-edge-functions) if I don't set a preferredRegion close to my database location. Currently, there is bug with Clerk and Next.js in local development if you're on Windows. Just comment out the edge runtime export when in development, when you deploy to vercel it should be fine.
+```ts
+export const runtime = "edge"
+export const preferredRegion = "iad1"
 ```
 
 #### Feel free to ask me questions at [@Apestein_Dev](https://twitter.com/Apestein_Dev).
