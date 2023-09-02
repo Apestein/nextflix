@@ -8,7 +8,6 @@
 - Drizzle ORM
 - Tailwind + Shadcn/ui
 - Clerk
-- SWR
 - Lucide Icons
 - Zod Validation
 - Stripe
@@ -125,6 +124,7 @@ const observer = new IntersectionObserver((entries) => {
 - [Taxonomy](https://github.com/shadcn-ui/taxonomy)
 
 #### 6. Optimistic update with server actions can be tricky. Using next-safe-action's useOptimisticAction hook helps here. [Here is how I did it](https://github.com/Apestein/nextflix/blob/main/src/components/modal-card.tsx).
+
 [scrnli_8_22_2023_12-17-36 PM.webm](https://github.com/Apestein/nextflix/assets/107362680/00f9690a-8698-498a-b639-5e45b5e5518c)
 
 #### 7. To prevent the search function from firing with every keystroke. Use the [use-debounce package](https://www.npmjs.com/package/use-debounce). [See my implementation here](<https://github.com/Apestein/nextflix/blob/main/src/app/(main)/search/search-input.tsx>). All data fetching can be done with server component by using router.push()/replace(). Pretty crazy pattern if you ask me🤯.
@@ -178,7 +178,9 @@ Edit: Unfortunately, the solution above introduced some new layout shift. But I 
   ...
 </body>
 ```
-9. For modal using [intercepting route](https://nextjs.org/docs/app/building-your-application/routing/intercepting-routes#modals). Follow next.js [official example(https://github.com/vercel-labs/nextgram). You can only use router.back() to close the modal as far as I know. By default when opening the intercepting modal, it will cause page to scroll either all the way up or down. To prevent this, set scroll={false} on Link. If you have a loading.tsx file for the modal it should go in the @modal folder [like this](https://github.com/Apestein/nextflix/tree/main/src/app/(main)/%40modal). You can see just how much of different intercepting modal makes vs normal modal by looking at my previous solution. [Previous](https://github.com/Apestein/nextflix/blob/normal-modal/src/components/show-card.tsx) vs [New](https://github.com/Apestein/nextflix/blob/main/src/app/(main)/%40modal/(.)show/%5Bid%5D/page.tsx)
+
+9. For modal using [intercepting route](https://nextjs.org/docs/app/building-your-application/routing/intercepting-routes#modals). Follow next.js [official example(https://github.com/vercel-labs/nextgram). You can only use router.back() to close the modal as far as I know. By default when opening the intercepting modal, it will cause page to scroll either all the way up or down. To prevent this, set scroll={false} on Link. If you have a loading.tsx file for the modal it should go in the @modal folder [like this](<https://github.com/Apestein/nextflix/tree/main/src/app/(main)/%40modal>). You can see just how much of different intercepting modal makes vs normal modal by looking at my previous solution. [Previous](https://github.com/Apestein/nextflix/blob/normal-modal/src/components/show-card.tsx) vs [New](<https://github.com/Apestein/nextflix/blob/main/src/app/(main)/%40modal/(.)show/%5Bid%5D/page.tsx>)
+
 ```ts
 <Link
   href={`/show/${show.id}?mediaType=${
@@ -188,7 +190,9 @@ Edit: Unfortunately, the solution above introduced some new layout shift. But I 
   key={show.id}
 >
 ```
+
 10. To deploy to the edge, you only need 2 lines of code. Since my database is located in US East, edge can be [slower than normal serverless lambda](https://vercel.com/docs/functions/edge-functions#using-a-database-with-edge-functions) if I don't set a preferredRegion close to my database location. Currently, there is bug with Clerk and Next.js in local development if you're on Windows. Just comment out the edge runtime export when in development, when you deploy to vercel it should be fine.
+
 ```ts
 export const runtime = "edge"
 export const preferredRegion = "iad1"
