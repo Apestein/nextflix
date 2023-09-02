@@ -1,12 +1,11 @@
 "use client"
 import { useEffect, useRef, useState } from "react"
 import type { Show } from "~/lib/types"
-import { ShowCard } from "~/components/show-card"
 import { getMyShowsInfinite } from "~/actions"
 import { getShows } from "~/lib/client-fetchers"
 import { ERR } from "~/lib/utils"
 import { Button } from "~/components/ui/button"
-import { ShowCardTrigger } from "~/components/show-card-trigger"
+import Link from "next/link"
 
 export function ShowScroller({
   initialShows,
@@ -93,9 +92,22 @@ export function ShowScroller({
     <main className="space-y-1.5 [overflow-anchor:none]">
       <ul className="grid grid-cols-[repeat(auto-fill,_minmax(160px,_1fr))] gap-5 md:grid-cols-[repeat(auto-fill,_minmax(240px,_1fr))]">
         {shows.map((show) => (
-          <ShowCard key={show.id} show={show}>
-            <ShowCardTrigger show={show} />
-          </ShowCard>
+          <Link
+            href={`/show/${show.id}?mediaType=${show.title ? "movie" : "tv"}`}
+            scroll={false}
+            key={show.id}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`https://image.tmdb.org/t/p/w300${
+                show.backdrop_path ?? show.poster_path
+              }`}
+              alt="show-backdrop"
+              width={300}
+              height={169}
+              className="aspect-video max-w-full cursor-pointer object-cover transition-transform hover:scale-110"
+            />
+          </Link>
         ))}
       </ul>
       <div ref={observerTarget}></div>

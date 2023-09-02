@@ -5,7 +5,7 @@ import { cn } from "~/lib/utils"
 import { Button } from "./ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { type Show } from "~/lib/types"
-import { ShowCard } from "./show-card"
+import Link from "next/link"
 
 type ComponentProps = {
   title: string
@@ -80,7 +80,13 @@ export const ShowsCarousel = ({ title, shows }: ComponentProps) => {
             ) : null}
             <div ref={showsRef} className="flex gap-1.5 overflow-hidden">
               {shows.map((show) => (
-                <ShowCard key={show.id} show={show}>
+                <Link
+                  href={`/show/${show.id}?mediaType=${
+                    show.title ? "movie" : "tv"
+                  }`}
+                  scroll={false}
+                  key={show.id}
+                >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={`https://image.tmdb.org/t/p/w300${
@@ -91,7 +97,7 @@ export const ShowsCarousel = ({ title, shows }: ComponentProps) => {
                     height={135}
                     className="aspect-video min-w-[160px] cursor-pointer object-cover transition-transform hover:scale-110 md:min-w-[240px]"
                   />
-                </ShowCard>
+                </Link>
               ))}
             </div>
           </div>
