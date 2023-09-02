@@ -102,7 +102,7 @@ function Header() {
         </nav>
       </div>
       <div className="flex items-center gap-6">
-        <Link href="/search?keyword=">
+        <Link href="/search?keyword=" aria-label="search">
           <Search />
         </Link>
         <Bell />
@@ -217,16 +217,16 @@ function Footer() {
   return (
     <footer className="mt-auto pb-3 pt-12 text-sm">
       <i className="flex gap-3 py-3">
-        <Link href="/">
+        <Link href="/" aria-label="facebook">
           <Facebook className="hover:text-red-500" />
         </Link>
-        <Link href="/" className="hover:text-red-500">
+        <Link href="/" className="hover:text-red-500" aria-label="instagram">
           <Instagram />
         </Link>
-        <Link href="/" className="hover:text-red-500">
+        <Link href="/" className="hover:text-red-500" aria-label="twitter">
           <Twitter />
         </Link>
-        <Link href="/" className="hover:text-red-500">
+        <Link href="/" className="hover:text-red-500" aria-label="youtube">
           <Youtube />
         </Link>
       </i>
