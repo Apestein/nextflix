@@ -84,6 +84,7 @@ export const ShowsCarousel = ({ title, shows }: ComponentProps) => {
                   href={`/show/${show.id}?mediaType=${
                     show.title ? "movie" : "tv"
                   }`}
+                  scroll={false}
                   key={show.id}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}

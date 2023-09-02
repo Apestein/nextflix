@@ -6,6 +6,7 @@ import { ClerkProvider } from "@clerk/nextjs"
 import { Toaster } from "~/components/ui/toaster"
 import { Analytics } from "@vercel/analytics/react"
 
+export const runtime = "edge"
 const inter = Inter({ subsets: ["latin"] })
 
 const siteConfig = {

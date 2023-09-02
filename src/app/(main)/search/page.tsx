@@ -24,6 +24,7 @@ export default async function SearchPage({
           show.backdrop_path || show.poster_path ? (
             <Link
               href={`/show/${show.id}?mediaType=${show.title ? "movie" : "tv"}`}
+              scroll={false}
               key={show.id}
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
