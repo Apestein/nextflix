@@ -1,8 +1,8 @@
 import { env } from "~/env.mjs"
-import type { Show } from "./types"
+import type { Show, MediaType } from "./types"
 import { ERR } from "./utils"
 
-export async function getShows(mediaType: "movie" | "tv") {
+export async function getShows(mediaType: MediaType) {
   const [
     trendingRes,
     topRatedRes,

@@ -1,7 +1,9 @@
-import type { myShows, profiles } from "~/db/schema"
+import { type myShows, type profiles, mediaTypeEnum } from "~/db/schema"
 import type { PLANS } from "~/lib/configs"
 
 export type MyShow = typeof myShows.$inferSelect
+export const MediaTuple = mediaTypeEnum.enumValues
+export type MediaType = (typeof MediaTuple)[number]
 export type Profile = typeof profiles.$inferSelect
 export type SubscriptionPlan = (typeof PLANS)[number]
 export type PlanName = (typeof PLANS)[number]["name"]

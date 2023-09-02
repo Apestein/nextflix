@@ -18,6 +18,7 @@ import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 import type { Stripe } from "stripe"
 import { planTuple } from "~/lib/configs"
+import { MediaTuple } from "~/lib/types"
 
 export const createProfile = authAction(
   z.object({
@@ -102,7 +103,7 @@ export const toggleMyShow = authAction(
   z.object({
     id: z.number(),
     isSaved: z.boolean(),
-    movieOrTv: z.enum(["movie", "tv"]),
+    movieOrTv: z.enum(MediaTuple),
   }),
   async (input) => {
     const account = await getAccount()

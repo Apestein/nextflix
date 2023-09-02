@@ -1,10 +1,11 @@
 import { env } from "~/env.mjs"
-import type { Show, MyShow } from "~/lib/types"
+import type { Show, MyShow, ShowWithVideoAndGenre } from "~/lib/types"
 import { ERR } from "~/lib/utils"
 import { db } from "~/db/client"
 import { eq } from "drizzle-orm"
 import { accounts, profiles, myShows } from "~/db/schema"
 import { auth } from "@clerk/nextjs"
+import type { MediaType } from "~/lib/types"
 
 export async function getAccount() {
   const userId = auth().userId
@@ -75,4 +76,42 @@ export async function getMyShowsFromTmdb(shows: MyShow[]) {
   )
   const filteredShows = data.filter((el): el is Show => !!el)
   return filteredShows
+}
+
+export async function getShowVideoAndGenreWithStatus(
+  showId: number,
+  mediaType: MediaType,
+) {
+  const userId = auth().userId
+  const accountPromise = userId
+    ? db.query.accounts.findFirst({
+        where: eq(accounts.id, userId),
+        columns: {},
+        with: {
+          activeProfile: {
+            columns: {},
+            with: {
+              savedShows: {
+                where: eq(myShows.id, showId),
+                limit: 1,
+              },
+            },
+          },
+        },
+      })
+    : null
+  const [show, account] = await Promise.all([
+    fetch(
+      `https://api.themoviedb.org/3/${mediaType}/${showId}?api_key=${env.NEXT_PUBLIC_TMDB_API}&append_to_response=videos,genres`,
+    )
+      .then((r) => r.json() as Promise<ShowWithVideoAndGenre>)
+      .catch((err) => console.error(err)),
+    accountPromise,
+  ])
+  if (!show || account === undefined) throw new Error(ERR.fetch)
+  const isSaved = account
+    ? !!account.activeProfile.savedShows.length
+    : undefined
+
+  return { show, isSaved }
 }
