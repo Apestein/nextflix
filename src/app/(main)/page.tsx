@@ -1,9 +1,8 @@
-import { type Show } from "~/lib/types"
 import { ShowsCarousel } from "~/components/show-carousel"
-import { ERR } from "~/lib/utils"
 import { getShows } from "~/lib/client-fetchers"
 import { ShowHero } from "~/components/show-hero"
 import { ShowBg } from "~/components/show-bg"
+import { pickRandomShow } from "~/lib/utils"
 
 export default async function Home() {
   const allShows = await getShows("movie")
@@ -29,10 +28,4 @@ export default async function Home() {
       </main>
     </>
   )
-}
-
-export function pickRandomShow(shows: Show[]) {
-  const show = shows[Math.floor(Math.random() * shows.length)]
-  if (show) return show
-  else throw new Error(ERR.undefined)
 }

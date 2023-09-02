@@ -2,9 +2,9 @@ import type { Show } from "~/lib/types"
 import { ShowsCarousel } from "~/components/show-carousel"
 import { ERR } from "~/lib/utils"
 import { env } from "~/env.mjs"
-import { pickRandomShow } from "../page"
 import { ShowBg } from "../../../components/show-bg"
 import { ShowHero } from "../../../components/show-hero"
+import { pickRandomShow } from "~/lib/utils"
 
 export default async function NewAndPopular() {
   const newAndPopularShows = await getNewAndPopularShows()
