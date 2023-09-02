@@ -169,7 +169,7 @@ export const getMyShowsInfinite = authAction(
       offset: input.index * input.limit,
     })
     const hasNextPage = shows.length > input.limit ? true : false
-    shows.pop()
+    if (hasNextPage) shows.pop()
     const filteredShows = await getMyShowsFromTmdb(shows)
     return { shows: filteredShows, hasNextPage }
   },
