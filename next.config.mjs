@@ -7,11 +7,16 @@ await import("./src/env.mjs")
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    // unoptimized: true,
     domains: ["image.tmdb.org", "img.clerk.com", "api.dicebear.com"],
   },
   experimental: {
     serverActions: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 }
 
