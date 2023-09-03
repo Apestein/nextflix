@@ -198,4 +198,19 @@ export const runtime = "edge"
 export const preferredRegion = "iad1"
 ```
 
+11. Next.js image component is more complicated than you think, check out this [video](https://www.youtube.com/watch?v=gpJKj45AikY). To optimize, first I request the smallest resolution necessary. TMDB api won't let us request anything smaller than 300w, but ideally it should be 240w since I know that's the maximum size it can be. You should use Next.js Image component here, I can't with my app because hobby plan has limits on image optimization. 
+```ts
+<img
+  src={`https://image.tmdb.org/t/p/w300${
+  show.backdrop_path ?? show.poster_path
+}`}
+  alt="show-backdrop"
+  width={240} //should be on-screen rendered size not image actual resolution
+  height={135} //should be on-screen rendered size not image actual resolution
+  className="aspect-video min-w-[160px] cursor-pointer object-cover transition-transform hover:scale-110 md:min-w-[240px]"
+  />
+```
+
+12. You should move your linting and typechecking to Github workflows instead of Vercel, this will [greatly reduce build times](https://youtu.be/YkOSUVzOAA4?t=10047). It's very easy, just include this [file](https://github.com/Apestein/nextflix/blob/7170c65c9928bbaf296196bdc54fd4e43e64a1bb/.github/workflows/ci.yml) in .github/workflows folder. "DATABASE_URL" can be any valid URL. If using T3 Env or bootrapping with CreateT3App set "SKIP_ENV_VALIDATION: true" to skip env check on Github. 
+
 #### Feel free to ask me questions at [@Apestein_Dev](https://twitter.com/Apestein_Dev).
