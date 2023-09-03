@@ -9,6 +9,8 @@ import { env } from "~/env.mjs"
 import { planTuple } from "~/lib/configs"
 import { z } from "zod"
 
+export const runtime = "nodejs"
+
 export async function POST(req: Request) {
   const body = await req.text()
   const signature = headers().get("Stripe-Signature")!
