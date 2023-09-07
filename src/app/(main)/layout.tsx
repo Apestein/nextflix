@@ -35,6 +35,7 @@ import {
 } from "lucide-react"
 import { LinkButton } from "~/components/link-button"
 import { getAccountWithActiveProfile } from "~/lib/server-fetchers"
+import { OverlayScrollbar } from "~/components/overlay-scrollbar"
 
 export default function ShowsLayout({
   children,
@@ -44,14 +45,12 @@ export default function ShowsLayout({
   modal: React.ReactNode
 }) {
   return (
-    <div
-      className="container flex min-h-screen flex-col px-4 md:px-8"
-      data-layout="main"
-    >
+    <div className="container flex min-h-screen flex-col px-4 md:px-8">
       <Header />
       {children}
       {modal}
       <Footer />
+      <OverlayScrollbar />
     </div>
   )
 }
