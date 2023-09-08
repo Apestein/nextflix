@@ -46,7 +46,7 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body
           className={cn(
-            "scrollbar-none bg-neutral-900 text-slate-50 antialiased",
+            "bg-neutral-900 text-slate-50 antialiased scrollbar-none",
             inter.className,
           )}
         >

@@ -1,9 +1,8 @@
-import { ShowsCarousel } from "~/components/show-carousel"
 import { getShows } from "~/lib/client-fetchers"
 import { ShowHero } from "~/components/show-hero"
 import { ShowBg } from "~/components/show-bg"
 import { pickRandomShow } from "~/lib/utils"
-import { SnapCarousel } from "~/components/snap-carousel"
+import { ShowsCarousel } from "~/components/shows-carousel"
 
 export default async function Home() {
   const allShows = await getShows("movie")
@@ -25,7 +24,6 @@ export default async function Home() {
           <ShowsCarousel title="Horror" shows={allShows.horror} />
           <ShowsCarousel title="Romance" shows={allShows.romance} />
           <ShowsCarousel title="Documentary" shows={allShows.documentary} />
-          <SnapCarousel shows={allShows.documentary} />
         </div>
       </main>
     </>
