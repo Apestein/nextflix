@@ -15,7 +15,7 @@ export function OverlayScrollbar() {
 
   useEffect(() => {
     //only run on none touch screen devices
-    if (window.matchMedia("only screen and (hover: hover)").matches)
+    if (window.matchMedia("(hover: hover)").matches)
       initBodyOverlayScrollbars(document.body)
   }, [initBodyOverlayScrollbars])
 
