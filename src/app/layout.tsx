@@ -1,4 +1,5 @@
 import "~/lib/globals.css"
+import "overlayscrollbars/overlayscrollbars.css"
 import { Inter } from "next/font/google"
 import { cn } from "~/lib/utils"
 import { ThemeProvider } from "~/components/theme-provider"
@@ -6,7 +7,7 @@ import { ClerkProvider } from "@clerk/nextjs"
 import { Toaster } from "~/components/ui/toaster"
 import { Analytics } from "@vercel/analytics/react"
 
-export const runtime = "edge"
+// export const runtime = "edge"
 export const preferredRegion = "iad1"
 const inter = Inter({ subsets: ["latin"] })
 
@@ -45,7 +46,7 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body
           className={cn(
-            "bg-neutral-900 text-slate-50 antialiased [&:has([data-layout='main'])]:overflow-y-scroll",
+            "bg-neutral-900 text-slate-50 antialiased scrollbar-none",
             inter.className,
           )}
         >
