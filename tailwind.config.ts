@@ -71,7 +71,7 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       screens: {
-        mobile: { raw: "(hover: none)" },
+        mobile: { raw: "(hover: none) and (pointer: coarse)" },
       },
     },
   },
