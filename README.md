@@ -29,7 +29,7 @@ Clerk was amazing to work with in terms of DX. Extremely easy to setup and get r
 
 ### Thoughts about Neon
 
-- Overall great. Foreign key contraint is nice to have compared to Planetscale. The biggest pro is the [data branching](https://planetscale.com/docs/concepts/data-branching) feature is free. On Planetscale you need "Scaler Pro" for this feature. Data branching makes a huge difference for development/debugging. I do miss not having Planetscale's "Slowest queries during the last 24 hours" panel in the dashboard. However, having no Discord server is a deal breaker for me. Discord is the best way for developers to get help and learn from each other. Neon uses Discourse which is much worst than Discord and for this reason alone, I'm out.
+- Error prone, not production ready, support is slow to respond, and hard to get help because they don't have Discord. Wouldn't recommend for serious projects. Foreign key contraint is nice to have compared to Planetscale. The biggest pro is the [data branching](https://planetscale.com/docs/concepts/data-branching) feature is free. On Planetscale you need "Scaler Pro" for this feature. Data branching makes a huge difference for development/debugging. I do miss not having Planetscale's "Slowest queries during the last 24 hours" panel in the dashboard.
 
 ### Thoughts about Drizzle
 
@@ -178,9 +178,9 @@ Edit: Unfortunately, the solution above introduced some new layout shift. But I 
   ...
 </body>
 ```
+Edit: Now I'm using [OverlayScrollbars](https://kingsora.github.io/OverlayScrollbars/). I think this is the best solution. See my implementation [here](https://github.com/Apestein/nextflix/blob/main/src/components/overlay-scrollbar.tsx).
 
-9. For modal using [intercepting route](https://nextjs.org/docs/app/building-your-application/routing/intercepting-routes#modals). Follow next.js [official example(https://github.com/vercel-labs/nextgram). You can only use router.back() to close the modal as far as I know. By default when opening the intercepting modal, it will cause page to scroll either all the way up or down. To prevent this, set scroll={false} on Link. If you have a loading.tsx file for the modal it should go in the @modal folder [like this](<https://github.com/Apestein/nextflix/tree/main/src/app/(main)/%40modal>). You can see just how much of different intercepting modal makes vs normal modal by looking at my previous solution. [Previous](https://github.com/Apestein/nextflix/blob/normal-modal/src/components/show-card.tsx) vs [New](<https://github.com/Apestein/nextflix/blob/main/src/app/(main)/%40modal/(.)show/%5Bid%5D/page.tsx>)
-
+#### 9. For modal using [intercepting route](https://nextjs.org/docs/app/building-your-application/routing/intercepting-routes#modals). Follow next.js [official example(https://github.com/vercel-labs/nextgram). You can only use router.back() to close the modal as far as I know. By default when opening the intercepting modal, it will cause page to scroll either all the way up or down. To prevent this, set scroll={false} on Link.
 ```ts
 <Link
   href={`/show/${show.id}?mediaType=${
@@ -190,15 +190,16 @@ Edit: Unfortunately, the solution above introduced some new layout shift. But I 
   key={show.id}
 >
 ```
+If you have a loading.tsx file for the modal it should go in the @modal folder [like this](<https://github.com/Apestein/nextflix/tree/main/src/app/(main)/%40modal>). You can see just how much of different intercepting modal makes vs normal modal by looking at my previous solution. [Previous](https://github.com/Apestein/nextflix/blob/normal-modal/src/components/show-card.tsx) vs [New](<https://github.com/Apestein/nextflix/blob/main/src/app/(main)/%40modal/(.)show/%5Bid%5D/page.tsx>)
 
-10. To deploy to the edge, you only need 2 lines of code. Since my database is located in US East, edge can be [slower than normal serverless lambda](https://vercel.com/docs/functions/edge-functions#using-a-database-with-edge-functions) if I don't set a preferredRegion close to my database location. Currently, there is bug with Clerk and Next.js in local development if you're on Windows. Just comment out the edge runtime export when in development, when you deploy to vercel it should be fine.
+#### 10. To deploy to the edge, you only need 2 lines of code. Since my database is located in US East, edge can be [slower than normal serverless lambda](https://vercel.com/docs/functions/edge-functions#using-a-database-with-edge-functions) if I don't set a preferredRegion close to my database location. Currently, there is bug with Clerk and Next.js in local development if you're on Windows. Just comment out the edge runtime export when in development, when you deploy to vercel it should be fine.
 
 ```ts
 export const runtime = "edge"
 export const preferredRegion = "iad1"
 ```
 
-11. Next.js image component is more complicated than you think, check out this [video](https://www.youtube.com/watch?v=gpJKj45AikY). To optimize, first I request the smallest resolution necessary. TMDB api won't let us request anything smaller than 300w, but ideally it should be 240w since I know that's the maximum size it can be. You should use Next.js Image component here, I can't with my app because hobby plan has limits on image optimization. 
+#### 11. Next.js image component is more complicated than you think, check out this [video](https://www.youtube.com/watch?v=gpJKj45AikY). To optimize, first I request the smallest resolution necessary. TMDB api won't let us request anything smaller than 300w, but ideally it should be 240w since I know that's the maximum size it can be. You should use Next.js Image component here, I can't with my app because hobby plan has limits on image optimization. 
 ```ts
 <img
   src={`https://image.tmdb.org/t/p/w300${
@@ -211,6 +212,6 @@ export const preferredRegion = "iad1"
   />
 ```
 
-12. You should move your linting and typechecking to Github workflows instead of Vercel, this will [greatly reduce build times](https://youtu.be/YkOSUVzOAA4?t=10047). It's very easy, just include this [file](https://github.com/Apestein/nextflix/blob/7170c65c9928bbaf296196bdc54fd4e43e64a1bb/.github/workflows/ci.yml) in .github/workflows folder. "DATABASE_URL" can be any valid URL. If using T3 Env or bootrapping with CreateT3App set "SKIP_ENV_VALIDATION: true" to skip env check on Github. 
+#### 12. You should move your linting and typechecking to Github workflows instead of Vercel, this will [greatly reduce build times](https://youtu.be/YkOSUVzOAA4?t=10047). It's very easy, just include this [file](https://github.com/Apestein/nextflix/blob/7170c65c9928bbaf296196bdc54fd4e43e64a1bb/.github/workflows/ci.yml) in .github/workflows folder. "DATABASE_URL" can be any valid URL. If using T3 Env or bootrapping with CreateT3App set "SKIP_ENV_VALIDATION: true" to skip env check on Github. 
 
 #### Feel free to ask me questions at [@Apestein_Dev](https://twitter.com/Apestein_Dev).
