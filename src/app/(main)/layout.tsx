@@ -144,30 +144,30 @@ async function CustomeUserButton() {
       <DropdownMenuContent>
         <DropdownMenuLabel>{account.activeProfile.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Link className="flex gap-1.5" href="/manage-profile">
+        <Link href="/manage-profile">
+          <DropdownMenuItem className="gap-1.5">
             <Pencil className="w-5" />
             Manage Profile
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link className="flex gap-1.5" href="/switch-profile">
+          </DropdownMenuItem>
+        </Link>
+        <Link href="/switch-profile">
+          <DropdownMenuItem className="gap-1.5">
             <ArrowLeftRight className="w-5" />
             Switch Profile
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link className="flex gap-1.5" href="/account">
+          </DropdownMenuItem>
+        </Link>
+        <Link href="/account">
+          <DropdownMenuItem className="gap-1.5">
             <User className="w-5" />
             Account
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Link className="flex gap-1.5" href="/subscription">
+          </DropdownMenuItem>
+        </Link>
+        <Link href="/subscription">
+          <DropdownMenuItem className="gap-1.5">
             <BadgeCheck className="w-5" />
             Subscription
-          </Link>
-        </DropdownMenuItem>
+          </DropdownMenuItem>
+        </Link>
         <DropdownMenuItem>
           <SignOutButton>
             <Button className="w-full font-semibold">Sign Out</Button>
@@ -202,10 +202,12 @@ function MainMenu() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         {NAVINFO.map((el) => (
-          <DropdownMenuItem key={el.name} className="gap-1.5">
-            {el.icon}
-            <Link href={el.href}>{el.name}</Link>
-          </DropdownMenuItem>
+          <Link href={el.href} key={el.name}>
+            <DropdownMenuItem className="gap-1.5">
+              {el.icon}
+              {el.name}
+            </DropdownMenuItem>
+          </Link>
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
