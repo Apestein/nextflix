@@ -5,9 +5,9 @@ export default function Loading() {
     <main>
       <div className="space-y-10">
         <Skeleton className="my-16 h-[250px] w-full max-w-lg md:h-[384px]" />
-        <Skeleton className="h-[138px] w-full" />
-        <Skeleton className="h-[138px] w-full" />
-        <Skeleton className="h-[138px] w-full" />
+        <Skeleton className="h-[138px] w-full md:h-[189px]" />
+        <Skeleton className="h-[138px] w-full md:h-[189px]" />
+        <Skeleton className="h-[138px] w-full md:h-[189px]" />
       </div>
     </main>
   )

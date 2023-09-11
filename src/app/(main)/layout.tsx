@@ -285,9 +285,10 @@ async function createAccountAndProfile() {
       id: user.id + "-1",
       accountId: user.id,
       profileImgPath: `https://api.dicebear.com/6.x/bottts-neutral/svg?seed=${
-        user.username ?? user.firstName!
+        user.username ?? user.firstName ?? user.emailAddresses[0]!.emailAddress
       }`,
-      name: user.username ?? user.firstName!,
+      name:
+        user.username ?? user.firstName ?? user.emailAddresses[0]!.emailAddress,
     })
     .onConflictDoNothing()
   return getAccountWithActiveProfile()
