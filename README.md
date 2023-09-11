@@ -16,7 +16,7 @@
 
 Netflix clone, project inspired by [@sadmann17](https://twitter.com/sadmann17). Bootrapped with CreateT3App. Project uses 100% server actions, zero api endpoints aside for webhooks. [next-safe-action](https://github.com/TheEdoRan/next-safe-action) library for typesafe server actions. Each account can have up to 4 profiles. Each profiles have it's own avatar and list of saved shows. Feature includes ability to search show catalog, SaaS subscription service with Stripe, optimistic update, and infinite scrolling.
 
-### How to run locally
+### How To Run Locally
 Clone repo, install dependencies, and set environment variables inside ".env.example", remember to rename ".env.exmaple" to ".env". Run "npm run dev" -> "npm run stripe:listen"(forward stripe events to local). 
 
 ### Overall Thoughts
@@ -215,6 +215,8 @@ export const preferredRegion = "iad1"
   />
 ```
 
-#### 12. You should move your linting and typechecking to Github workflows instead of Vercel, this will [greatly reduce build times](https://youtu.be/YkOSUVzOAA4?t=10047). It's very easy, just include this [file](https://github.com/Apestein/nextflix/blob/7170c65c9928bbaf296196bdc54fd4e43e64a1bb/.github/workflows/ci.yml) in .github/workflows folder. "DATABASE_URL" can be any valid URL. If using T3 Env or bootrapping with CreateT3App set "SKIP_ENV_VALIDATION: true" to skip env check on Github. 
+#### 12. You should move your linting and typechecking to Github workflows instead of Vercel, this will [greatly reduce build times](https://youtu.be/YkOSUVzOAA4?t=10047). It's very easy, just include this [file](https://github.com/Apestein/nextflix/blob/7170c65c9928bbaf296196bdc54fd4e43e64a1bb/.github/workflows/ci.yml) in .github/workflows folder. "DATABASE_URL" can be any valid URL. If using T3 Env or bootrapping with CreateT3App set "SKIP_ENV_VALIDATION: true" to skip env check on Github.
 
-#### Feel free to ask me questions at [@Apestein_Dev](https://twitter.com/Apestein_Dev).
+#### 13. Carousel is created using [react-snap-carousel](https://github.com/richardscarrott/react-snap-carousel). Carousel drag scroll is implement using [react-use-draggable-scroll](https://github.com/rfmiotto/react-use-draggable-scroll). See my implementation [here](https://github.com/Apestein/nextflix/blob/main/src/components/show-carousel.tsx). 
+
+### Follow and ask me questions at [@Apestein_Dev](https://twitter.com/Apestein_Dev).
