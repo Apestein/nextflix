@@ -29,7 +29,7 @@ export function ShowsCarousel({
           <Button
             aria-label="scroll left"
             variant="ghost"
-            className="mobile:hidden absolute left-0 z-10 h-[90px] rounded-none rounded-r bg-slate-950/50 px-2 py-0 opacity-0 group-hover:opacity-100 hover:bg-slate-950/75 md:h-[135px]"
+            className="absolute left-0 z-10 h-[90px] rounded-none rounded-r bg-slate-950/50 px-2 py-0 opacity-0 group-hover:opacity-100 hover:bg-slate-950/75 md:h-[135px] mobile:hidden"
             onClick={() => prev()}
           >
             <ChevronLeft className="h-8 w-8 text-white" aria-hidden="true" />
@@ -37,7 +37,7 @@ export function ShowsCarousel({
           <Button
             aria-label="scroll right"
             variant="ghost"
-            className="mobile:hidden absolute right-0 z-10 h-[90px] rounded-none rounded-l bg-slate-950/50 px-2 py-0 opacity-0 group-hover:opacity-100 hover:bg-slate-950/75 md:h-[135px]"
+            className="absolute right-0 z-10 h-[90px] rounded-none rounded-l bg-slate-950/50 px-2 py-0 opacity-0 group-hover:opacity-100 hover:bg-slate-950/75 md:h-[135px] mobile:hidden"
             onClick={() => next()}
           >
             <ChevronRight className="h-8 w-8 text-white" aria-hidden="true" />

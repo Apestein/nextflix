@@ -1,5 +1,6 @@
 "use client"
 import { useOverlayScrollbars } from "overlayscrollbars-react"
+import "overlayscrollbars/overlayscrollbars.css"
 import { useEffect } from "react"
 
 export function OverlayScrollbar() {

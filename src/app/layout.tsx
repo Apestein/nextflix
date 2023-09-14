@@ -1,5 +1,4 @@
 import "~/lib/globals.css"
-import "overlayscrollbars/overlayscrollbars.css"
 import { Inter } from "next/font/google"
 import { cn } from "~/lib/utils"
 import { ThemeProvider } from "~/components/theme-provider"
@@ -15,11 +14,11 @@ const siteConfig = {
   title: "Netflix Clone",
   description:
     "Open source project using bleeding-edge stack. Drizzle ORM + Neon postgres + Clerk auth + Shadcn/ui + everything new in Next.js 13 (server components, server actions, streaming ui, parallel routes, intercepting routes).",
-  url: "https://nextflix-blush.vercel.app/",
-  og: "https://nextflix-blush.vercel.app/og.png",
+  url: "/",
   siteName: "Nextflix",
 }
 export const metadata = {
+  metadataBase: new URL("https://nextflix-blush.vercel.app"),
   title: siteConfig.title,
   description: siteConfig.description,
   openGraph: {

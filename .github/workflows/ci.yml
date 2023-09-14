@@ -14,14 +14,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Bun
+        uses: oven-sh/setup-bun@v1
+
       - name: Install Dependencies
-        run: npm install
+        run: bun install
 
       - name: Typecheck
-        run: npm run typecheck
+        run: bun run typecheck
 
       - name: Lint
-        run: npm run lint
+        run: bun run lint
 
       - name: Print Environment Variable
         run: echo $MY_ENV_VAR
